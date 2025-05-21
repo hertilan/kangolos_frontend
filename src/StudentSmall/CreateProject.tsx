@@ -131,22 +131,23 @@ useEffect(() => {
   return (
     <div className='min-h-screen max-w-screen text-gray-600 flex flex-col gap-2'>
     <Header/>
-    <div className='p-4 py-2 grid grid-cols-1'>
+    <div className='p-4 py-2 grid grid-cols-1 gap-3'>
     <div className='flex flex-row text-2xl gap-5'>
       <Link to ='/student'>
       <FaArrowLeftLong size={25} className='mt-1 text-gray-700'/>
       </Link>
       <h1 className='text-[#000000]'>Submit Project</h1>
     </div>
-    <h1 className='text-gray-900'>Project Submission Form</h1>
-          <p>Fill in the details of your project and upload all requested documents.</p>
-    <form onSubmit={handleProject} className='grid grid-cols-1 justify-self-start gap-2 p-2 rounded-sm border border-gray-400 lg:w-4/5 justify-items-start text-start'>
+    {/* <h1 className='text-gray-900 justify-self-center grid'>Project Submission Form</h1> */}
+          
+    <form onSubmit={handleProject} className='grid grid-cols-1 justify-self-center gap-2 p-2 rounded-sm border border-gray-400 lg:w-4/5 justify-items-start text-start'>
+    <p>Fill in the details of your project and upload all requested documents.</p>
     <p style={{color: errorColor}}>{error}</p>
     <label htmlFor='Title'>Project Title</label>
     <input type='text' name='Title' placeholder='The title of your project ' value={formData.title} onChange={(e)=>{
       setFormData({...formData,title: e.target.value})
     }} className='p-2 rounded-md text-gray-800  border border-gray-300 w-2/3 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500'/>
-    {/* <p>{formError.title}</p> */}
+    <p>{formError.title}</p>
      <label htmlFor='Category'>Project Category</label>
      <select name='Category' value={formData.category} onChange={(e)=>{
       setFormData({...formData,category:e.target.value})
