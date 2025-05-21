@@ -30,7 +30,7 @@ const Notifications :React.FC= () => {
         <div className="flex flex-col items-center justify-center p-8 text-center w-full">
          <FiInfo className="text-orange-300 text-4xl mb-4" />
          <h2 className="text-xl font-semibold text-gray-800 mb-2">No  notifications yet</h2>
-         <p className="text-gray-600">It seems like , your notifications storage is empty</p>
+         <p className="text-gray-600">It seems like your notifications storage is empty</p>
         </div>)
       :(
         yourNotifications.map((notification)=>{

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { IoIosSearch } from "react-icons/io";
 import { IoNotificationsOutline } from "react-icons/io5";
+import { Link } from 'react-router-dom';
 
 const Header :React.FC= () => {
     const [searchText,setSearchText] = useState<string>('')
@@ -9,9 +10,9 @@ const Header :React.FC= () => {
       <h1>FYPMS</h1>
       <ul className='flex flex-row gap-10 '>
 
-        <li className='hover:text-green-400 transition-colors duration-500 ease-in-out'><button className='cursor-pointer'>Dashboard</button></li>
-        <li className='hover:text-green-400 transition-colors duration-500 ease-in-out'><button className='cursor-pointer'>My Projects</button></li>
-        <li className='hover:text-green-400 transition-colors duration-500 ease-in-out'><button className='cursor-pointer'>Browser Projects</button></li>
+        <li className='hover:text-green-400 transition-colors duration-500 ease-in-out'><Link className='cursor-pointer'>Dashboard</Link></li>
+        <li className='hover:text-green-400 transition-colors duration-500 ease-in-out'><Link to='/student/projects' className='cursor-pointer'>My Projects</Link></li>
+        <li className='hover:text-green-400 transition-colors duration-500 ease-in-out'><Link className='cursor-pointer'>Browser Projects</Link></li>
 
       </ul>
       <div className=' justify-self-end justify-items-end flex flex-row self-end gap-6 right-0'>
