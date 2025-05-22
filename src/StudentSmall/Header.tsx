@@ -10,7 +10,7 @@ const Header :React.FC= () => {
       <Link to ='/'>FYPMS</Link>
       <ul className='flex flex-row gap-10 '>
 
-        <li className='hover:text-green-400 transition-colors duration-500 ease-in-out'><Link to ='/student' className='cursor-pointer'>Dashboard</Link></li>
+        <li className='hover:text-green-400 transition-colors duration-500 ease-in-out'><Link to ='/admin' className='cursor-pointer'>Dashboard</Link></li>
         <li className='hover:text-green-400 transition-colors duration-500 ease-in-out'><Link to='/student/projects' className='cursor-pointer'>My Projects</Link></li>
         <li className='hover:text-green-400 transition-colors duration-500 ease-in-out'><Link to ='/student' className='cursor-pointer'>Browser Projects</Link></li>
 

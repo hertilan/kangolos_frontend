@@ -147,7 +147,7 @@ useEffect(() => {
     <input type='text' name='Title' placeholder='The title of your project ' value={formData.title} onChange={(e)=>{
       setFormData({...formData,title: e.target.value})
     }} className='p-2 rounded-md text-gray-800  border border-gray-300 w-2/3 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500'/>
-    <p>{formError.title}</p>
+    <p className='hidden'>{formError.title}</p>
      <label htmlFor='Category'>Project Category</label>
      <select name='Category' value={formData.category} onChange={(e)=>{
       setFormData({...formData,category:e.target.value})
