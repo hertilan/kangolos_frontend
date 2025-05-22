@@ -21,25 +21,25 @@ const StudentDashboard :React.FC= () => {
           Submit new project</Link>
       </div>
       <div className='w-full p-5 grid grid-cols-4 gap-5 '>
-        <div className='grid justify-items-center pb-5 bg-[#1A3753] rounded-md '>
+        <div className='grid justify-items-center pb-5 bg-[#1A3753] rounded-md hover:scale-105 transition cursor-pointer '>
           <CiFileOn size={25} className='justify-self-end text-[#2C4FFF]'/>
           <p className='text-gray-400'>Active projects</p>
 
           <h1>1</h1>
         </div>
-                <div className='grid justify-items-center pb-5 bg-[#1A3753] rounded-md '>
+          <div className='grid justify-items-center pb-5 bg-[#1A3753] rounded-md hover:scale-105 transition cursor-pointer '>
           <CiFileOn size={25} className='justify-self-end text-[#2C4FFF]'/>
           <p className='text-gray-400'>Rejected</p>
 
           <h1>4</h1>
         </div>
-                <div className='grid justify-items-center pb-5 bg-[#1A3753] rounded-md '>
+          <div className='grid justify-items-center pb-5 bg-[#1A3753] rounded-md hover:scale-105 transition cursor-pointer '>
           <CiFileOn size={25} className='justify-self-end text-[#2C4FFF]'/>
           <p className='text-gray-400'>Academic Year</p>
 
           <h1>Year Four</h1>
         </div>
-                <div className='grid justify-items-center pb-5 bg-[#1A3753] rounded-md hover:shadow-lg'>
+        <div className='grid justify-items-center pb-5 bg-[#1A3753] rounded-md hover:shadow-lg hover:scale-105 transition cursor-pointer '>
           <CiFileOn size={25} className='justify-self-end text-[#2C4FFF]'/>
           <p className='text-gray-400'>Department</p>
 
