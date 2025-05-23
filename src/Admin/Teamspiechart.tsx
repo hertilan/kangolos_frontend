@@ -3,17 +3,19 @@ import {
     PieChart,Pie,Tooltip,Cell, ResponsiveContainer,Legend
 } from 'recharts'
 
-const Piechart :React.FC= () => {
-const data = [
-  { name: "Completed", value: 400 },
-  { name: "Rejected", value: 300 },
-  { name: "Under Development", value: 300 },
-  { name: "unsupervised", value: 200 },
-];
-const COLORS = ["green", "red", "#34d399", "#fbbf24"];
+const Teamspiechart :React.FC= () => {
+        const data = [
+        { name: 'Nyarugenge', value: 300},
+        { name: 'Gikondo', value: 230},
+        { name: 'Huye', value: 410},
+        { name: 'Musanze', value: 570},
+        {name: 'Nyagatare', value: 810},
+        { name: 'Remera', value: 180}
+    ];
+    const COLORS = ["#28a745", "brown", "#dc3545", "green","#6c757d","blue"];
   return (
-    <div className="w-full  h-64 bg-white p-4 shadow rounded-xl">
-      <h2 className="text-xl font-bold mb-4 text-center">projects analysis</h2>
+    <div className="w-full  h-64 p-4 shadow bg-white rounded-xl">
+      <h2 className="text-xl font-bold mb-4 text-center">Teams analysis</h2>
       <ResponsiveContainer width="100%" height="100%" className='w-full h-fit'>
         <PieChart>
           <Pie
@@ -38,4 +40,4 @@ const COLORS = ["green", "red", "#34d399", "#fbbf24"];
   )
 }
 
-export default Piechart
+export default Teamspiechart
