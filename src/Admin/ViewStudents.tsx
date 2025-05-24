@@ -13,7 +13,6 @@ interface student{
     school: string;
     department: string;
 }
-
 const ViewStudents :React.FC= () => {
     const [registeredStudents, setRegisteredStudents] = useState<student[]>([])
 
@@ -29,7 +28,6 @@ const ViewStudents :React.FC= () => {
         .catch((error)=>{
             console.error('Failed to view users',error)
         })
-
     },[])
   return (
     <div className='grid grid-cols-1 w-full'>

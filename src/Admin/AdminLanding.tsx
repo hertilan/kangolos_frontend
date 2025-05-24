@@ -87,7 +87,7 @@ const AdminLanding :React.FC= () => {
 
       {/* Right Nav */}
 
-      <div className='h-screen overflow-y-auto'>
+      <div className='h-screen overflow-y-auto w-full'>
         { activePage === 'Dashboard' ? <Dashboard/>
         :
         activePage === 'Users' ? <Users/>
