@@ -48,13 +48,13 @@ const StudentDashboard :React.FC= () => {
 
       </div>
       <div className='flex flex-row gap-5 w-fit p-2 border border-gray-400 text-gray-600 mx-5 rounded-sm'>
-        <h1 className={`${activePage === 'myProjects' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md':''} px-4 cursor-pointer`} onClick={()=>{
+        <h1 className={`${activePage === 'myProjects' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md':''} px-4 cursor-pointer transition-colors duration-300 ease-in-out`} onClick={()=>{
           setActivePage('myProjects')
         }}>My projects</h1>
-        <h1 className={`${activePage === 'notifications' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md':''} px-4 cursor-pointer`} onClick={()=>{
+        <h1 className={`${activePage === 'notifications' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md':''} px-4 cursor-pointer transition-colors duration-300 ease-in-out`} onClick={()=>{
           setActivePage('notifications')
         }}>Notifications</h1>
-        <h1 className={`${activePage === 'deadlines' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md':''} px-4 cursor-pointer`} onClick={()=>{
+        <h1 className={`${activePage === 'deadlines' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md':''} px-4 cursor-pointer transition-colors duration-300 ease-in-out`} onClick={()=>{
           setActivePage('deadlines')
         }}>Deadlines</h1>
       </div>

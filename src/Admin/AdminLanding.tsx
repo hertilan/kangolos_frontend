@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom'
 import Dashboard from './Dashboard'
 import Users from './Users'
 import Teams from './Teams'
+import Projects from './Projects'
 
 const AdminLanding :React.FC= () => {
   const [activePage, setActivePage] = useState<string>('Dashboard')
@@ -93,6 +94,8 @@ const AdminLanding :React.FC= () => {
         activePage === 'Users' ? <Users/>
         : 
         activePage === 'Teams' ? <Teams/>
+        :
+        activePage === 'Projects' ? <Projects/>
         :
         ''
 

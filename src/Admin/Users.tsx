@@ -35,7 +35,7 @@ const Users: React.FC = () => {
       </div>
     </div>
   )}
-      <div className='flex flex-row gap-3 min-w-full'>
+      <div className='flex flex-row justify-center  bg-white w-fit justify-self-end'>
         <div className='relative'>
           <input
             type='text'
@@ -44,7 +44,7 @@ const Users: React.FC = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder='Search users...'
-            className='border border-gray-400 px-6 p-1 rounded-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-80'
+            className='border-1 border-gray-400 px-6 p-2 rounded-l-sm bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 w-80'
           />
           <button className='absolute left-0 top-2' aria-label='Search by name'>
             <BiUser size={20} />
@@ -56,7 +56,7 @@ const Users: React.FC = () => {
           aria-label='Filter by role'
           value={role}
           onChange={(e) => setRole(e.target.value)}
-          className='border border-gray-400 p-1 rounded-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-60'
+          className='border border-gray-400 p-1 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 w-60'
         >
           <option value='all'>All roles</option>
           <option value='Students'>Students</option>
@@ -68,41 +68,39 @@ const Users: React.FC = () => {
           aria-label='Filter by department'
           value={department}
           onChange={(e) => setDepartment(e.target.value)}
-          className='border border-gray-400 p-1 rounded-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-60'
+          className='border border-gray-400 p-1 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 w-60'
         >
           <option value='all'>All departments</option>
           <option value='IT'>IT</option>
           <option value='HR'>HR</option>
         </select>
-
-        <button
-          onClick={toggleAddUser}
-          className='flex flex-row items-center text-white bg-[#00628B] rounded-md cursor-pointer hover:bg-[#3d94bd] transition-colors duration-500 ease-in-out px-2 py-1'
-        >
-          <FaPlus size={20} className='mr-1' />
-          Add new user
-        </button>
+        <button className='flex flex-row items-center text-white bg-[#00628B] rounded-r-sm cursor-pointer hover:bg-[#3d94bd] transition-colors duration-500 ease-in-out px-2 py-1'>Search</button>
       </div>
-
-      <div className='w-fit px-2 py-1 mt-4 gap-4 flex flex-row border border-gray-300 text-gray-600'>
+      <div className='w-full flex flex-row justify-between mt-4'>
+      <div className='w-fit px-2 py-1 gap-4 flex flex-row border border-gray-300 text-gray-600'>
         <button
-          className={`px-4 ${activePage === 'all' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md' : ''}`}
+          className={`px-4 ${activePage === 'all' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md' : ''} cursor-pointer transition-colors duration-300 ease-in-out`}
           onClick={() => handleSetActive('all')}
         >
           All users
         </button>
         <button
-          className={`px-4 ${activePage === 'students' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md' : ''}`}
+          className={`px-4 ${activePage === 'students' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md' : ''} cursor-pointer transition-colors duration-300 ease-in-out`}
           onClick={() => handleSetActive('students')}
         >
           Students
         </button>
         <button
-          className={`px-4 ${activePage === 'staff' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md' : ''}`}
+          className={`px-4 ${activePage === 'staff' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md' : ''} cursor-pointer transition-colors duration-300 ease-in-out`}
           onClick={() => handleSetActive('staff')}
         >
           Staffs
         </button>
+      </div>
+      <button onClick={toggleAddUser} className='flex flex-row items-center px-5 py-1 h-fit text-white bg-[#00628B] rounded-md cursor-pointer hover:bg-[#3d94bd] transition-colors duration-500 ease-in-out'>
+      <FaPlus size={20} className='mr-1' />
+        Add new user
+      </button>
       </div>
 
       {activePage === 'students' ? (
