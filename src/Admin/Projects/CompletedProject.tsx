@@ -12,7 +12,7 @@ interface project{
     college: string;
 }
 
-const SubmitedProject :React.FC= () => {
+const CompletedProjects :React.FC= () => {
     const [allProjects, setAllProjects] = useState<project[]>([])
 
     useEffect(()=>{
@@ -78,4 +78,4 @@ const SubmitedProject :React.FC= () => {
   )
 }
 
-export default SubmitedProject
+export default CompletedProjects

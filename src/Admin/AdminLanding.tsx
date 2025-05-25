@@ -9,9 +9,9 @@ import { CiSettings } from 'react-icons/ci'
 import { CgLogOut } from 'react-icons/cg'
 import { Link } from 'react-router-dom'
 import Dashboard from './Dashboard'
-import Users from './Users'
-import Teams from './Teams'
-import Projects from './Projects'
+import Users from './Users/Users'
+import Teams from './Teams/Teams'
+import Projects from './Projects/Projects'
 
 const AdminLanding :React.FC= () => {
   const [activePage, setActivePage] = useState<string>('Dashboard')

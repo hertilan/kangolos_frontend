@@ -12,7 +12,7 @@ interface project{
     college: string;
 }
 
-const PendingProjects :React.FC= () => {
+const RejectedProjects :React.FC= () => {
     const [allProjects, setAllProjects] = useState<project[]>([])
 
     useEffect(()=>{
@@ -78,4 +78,4 @@ const PendingProjects :React.FC= () => {
   )
 }
 
-export default PendingProjects
+export default RejectedProjects

@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import Piechart from './Piechart'
-import Barchart from './Barchart'
-import Userspiechart from './Userspiechart'
-import Usersbarchart from './Usersbarchart'
-import Teamspiechart from './Teamspiechart'
-import Teamsbarchart from './Teamsbarchart'
+import Piechart from './Projects/Piechart'
+import Barchart from './Projects/Barchart'
+import Userspiechart from './Users/Userspiechart'
+import Usersbarchart from './Users/Usersbarchart'
+import Teamspiechart from './Teams/Teamspiechart'
+import Teamsbarchart from './Teams/Teamsbarchart'
 import Total from './Total'
 
 const Dashboard :React.FC= () => {
