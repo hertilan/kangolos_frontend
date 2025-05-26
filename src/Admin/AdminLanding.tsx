@@ -12,6 +12,7 @@ import Dashboard from './Dashboard'
 import Users from './Users/Users'
 import Teams from './Teams/Teams'
 import Projects from './Projects/Projects'
+import AdminSettings from './AdminSettings'
 
 const AdminLanding :React.FC= () => {
   const [activePage, setActivePage] = useState<string>('Dashboard')
@@ -58,12 +59,12 @@ const AdminLanding :React.FC= () => {
           <LuLogs size={23}/>
           <h1>System Logs</h1>
         </div>
-        <div className={`flex flex-row gap-4  ${activePage === 'Analytics' ? 'bg-white text-[#00628B]' : '' } p-1 rounded-sm cursor-pointer`} onClick={()=>{
+        {/* <div className={`flex flex-row gap-4  ${activePage === 'Analytics' ? 'bg-white text-[#00628B]' : '' } p-1 rounded-sm cursor-pointer`} onClick={()=>{
         setActivePage('Analytics')
       }}>
         <MdAnalytics size={23}/>
         <h1>Analytics</h1>
-        </div>
+        </div> */}
         <div className={`flex flex-row gap-4 ${activePage === 'Security' ? 'bg-white text-[#00628B]' : '' } p-1 rounded-sm cursor-pointer`}
         onClick={()=>{
         setActivePage('Security')
@@ -96,6 +97,9 @@ const AdminLanding :React.FC= () => {
         activePage === 'Teams' ? <Teams/>
         :
         activePage === 'Projects' ? <Projects/>
+        :
+        activePage === 'Settings' ?
+        <AdminSettings/>
         :
         ''
 
