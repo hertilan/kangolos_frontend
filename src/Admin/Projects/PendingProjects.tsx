@@ -12,7 +12,7 @@ interface project{
     college: string;
 }
 
-const RejectedProjects :React.FC= () => {
+const PendingProjects :React.FC= () => {
     const [allProjects, setAllProjects] = useState<project[]>([])
 
     useEffect(()=>{
@@ -45,7 +45,7 @@ const RejectedProjects :React.FC= () => {
         <tbody>
             { allProjects.length === 0 ?(
             <tr>
-             <td colSpan={7} className="text-center text-xl text-gray-700 p-2">No projects Rejected from the system
+             <td colSpan={7} className="text-center text-xl text-gray-700 p-2">No projects pending in the system
              </td>
              </tr>)
             :
@@ -57,7 +57,7 @@ const RejectedProjects :React.FC= () => {
                 <td className='border border-gray-700'> {project.title} </td>
                 <td className='border border-gray-700'> {project.team} </td>
                 <td className='border border-gray-700'> {project.supervisor} </td>
-                <td className='border border-gray-700 text-red-500'> {project.status} </td>
+                <td className='border border-gray-700 text-orange-500'> {project.status} </td>
                 <td className='border border-gray-700'> {project.college} </td>
                 <td className='border border-gray-700 flex flex-row gap-4'>
                     <button type='button'>
@@ -78,4 +78,4 @@ const RejectedProjects :React.FC= () => {
   )
 }
 
-export default RejectedProjects
+export default PendingProjects

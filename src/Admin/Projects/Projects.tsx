@@ -3,6 +3,7 @@ import { IoMdSearch } from "react-icons/io";
 import AllProjects from './AllProjects';
 import RejectedProjects from './RejectedProjects';
 import CompletedProjects from './CompletedProject';
+import PendingProjects from './PendingProjects';
 
 const Projects :React.FC= () => {
       const [search, setSearch] = useState<string>('')
@@ -58,6 +59,12 @@ const Projects :React.FC= () => {
           Completed
         </button>
         <button
+          className={`px-4 ${activePage === 'Pending' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md' : ''} cursor-pointer transition-colors duration-300 ease-in-out`}
+          onClick={() => handleSetActive('Pending')}
+        >
+          Pending
+        </button>
+        <button
           className={`px-4 ${activePage === 'Rejected' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md ' : ''} cursor-pointer transition-colors duration-300 ease-in-out`}
           onClick={() => handleSetActive('Rejected')}
         >
@@ -68,9 +75,10 @@ const Projects :React.FC= () => {
         <AllProjects/>
       ) : activePage === 'Completed' ? (
         <CompletedProjects/>
-      ) : (
+      ) : activePage === 'rejected' ? (
         <RejectedProjects/>
-      )}
+      ) : (<PendingProjects/>)
+    }
     </div>
   )
 }

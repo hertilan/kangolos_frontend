@@ -4,6 +4,7 @@ import StudentDashboard from './StudentDashboard';
 import Notifications from './Notifications';
 import CreateProject from '../StudentSmall/CreateProject';
 import ViewProjects from './ViewProjects';
+import Team from './Team';
 
 const Student: React.FC = () => {
   return (
@@ -12,6 +13,7 @@ const Student: React.FC = () => {
       <Route path='notifications' element={<Notifications/>}/>
       <Route path='create-project' element={<CreateProject/>}/>
       <Route path='/projects' element={< ViewProjects/>}/>
+      <Route path='/team' element={<Team/>}/>
     </Routes>
   )
 }
