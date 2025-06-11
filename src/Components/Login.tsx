@@ -4,6 +4,7 @@ import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa6";
 import axios from 'axios';
 import { MdOutlineEmail } from "react-icons/md";
+import project from '../assets/project.png'
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState<string>('')
@@ -75,11 +76,15 @@ const Login: React.FC = () => {
 }
 
   return (
+    <div className='grid grid-cols-2 w-screen h-screen'>
+        <div style={{ backgroundImage: `url(${project})` }} className='w-full h-full bg-cover bg-center bg-no-repeat'>
+
+        </div>
     <div className='bg-white w-full h-screen grid grid-cols-1 justify-items-center gap-0 py-[4%]'>
         {/* <div className='max-h-screen'>
         <img src={signup} alt='signup' className='w-[85%]'/>
         </div> */}
-              <form onSubmit={handleLogin} className=' justify-items-center'>
+              <form onSubmit={handleLogin} className=' justify-items-center grid grid-cols-1 gap-2'>
             <h1 className='text-[#2C4FFF] text-[30px]'>FYPMS</h1>
             <p style={{color: errorColor}} className='text-[22px]'>{loginError}</p>
             <h1 className='text-[#000000] text-[30px]'>Welcome back</h1>
@@ -108,6 +113,7 @@ const Login: React.FC = () => {
             <p className='text-[#000000] text-[16px]'>Don't have an account? <Link to='/signup' className='text-[#2C4FFF] cursor-pointer hover:text-blue-800'>Sign Up</Link></p>
             <Link to='/' className='text-[16px] text-[#808080]'> Back to home</Link>
             </form>
+    </div>
     </div>
   )
 }

@@ -6,13 +6,13 @@ import { Link } from 'react-router-dom';
 const Header :React.FC= () => {
     const [searchText,setSearchText] = useState<string>('')
   return (
-    <div className='w-screen top-0 right-0 bg-[#00628B] text-gray-200 p-3 py-2 flex flex-row lg:gap-29 sticky'>
+    <div className='w-screen top-0 right-0 bg-[#00628B] text-gray-200 p-3 py-2 flex flex-row lg:gap-29 sticky px-17'>
       <Link to ='/'>FYPMS</Link>
       <ul className='flex flex-row gap-10 '>
 
         <li className='hover:text-green-400 transition-colors duration-500 ease-in-out'><Link to ='/admin' className='cursor-pointer'>Dashboard</Link></li>
-        <li className='hover:text-green-400 transition-colors duration-500 ease-in-out'><Link to='/student/projects' className='cursor-pointer'>My Projects</Link></li>
-        <li className='hover:text-green-400 transition-colors duration-500 ease-in-out'><Link to ='/student' className='cursor-pointer'>Browser Projects</Link></li>
+        <li className='hover:text-green-400 transition-colors duration-500 ease-in-out'><Link to='/student/projects' className='cursor-pointer'>Browse Projects</Link></li>
+        <li className='hover:text-green-400 transition-colors duration-500 ease-in-out'><Link to ='/student' className='cursor-pointer'>Students</Link></li>
         <li className='hover:text-green-400 transition-colors duration-500 ease-in-out'><Link to ='/student/team' className='cursor-pointer'>My team</Link></li>
 
       </ul>

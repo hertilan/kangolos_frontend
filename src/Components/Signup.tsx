@@ -6,6 +6,7 @@ import { FaPhone } from "react-icons/fa6";
 import { MdOutlineEmail } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
 import axios from 'axios';
+import project from '../assets/project.png'
 
 
 const Signup: React.FC = () => {
@@ -86,6 +87,10 @@ const Signup: React.FC = () => {
     
 
   return (
+        <div className='grid grid-cols-2 w-screen h-screen'>
+        <div style={{ backgroundImage: `url(${project})` }} className='w-full h-full bg-cover bg-center bg-no-repeat'>
+
+        </div>
     <div className='bg-white w-full h-screen grid grid-cols-1 justify-items-center gap-0  px-3'>
         {/* <div className='max-h-screen'>
         <img src={signup} alt='signup' className='w-[85%]'/>
@@ -93,7 +98,7 @@ const Signup: React.FC = () => {
 
         {/* Sign up form */}
 
-        <form onSubmit={handleSignup} className=' justify-items-center'>
+        <form onSubmit={handleSignup} className=' justify-items-center grid grid-cols-1 gap-2'>
             <h1 className='text-[#2C4FFF] text-[30px]'>FYPMS</h1>
             <p style={{color: errorColor}} className='text-[22px]'>{signupError}</p>
             <h1 className='text-[#000000] text-[30px]'>Welcome Here</h1>
@@ -158,6 +163,7 @@ const Signup: React.FC = () => {
             <Link to='/' className='text-[16px] text-[#808080]'> Back to home</Link>
         </form>
       
+    </div>
     </div>
   )
 }

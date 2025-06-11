@@ -20,7 +20,7 @@ const AdminLanding :React.FC= () => {
     <div className='h-fit w-screen flex flex-row'>
       {/* Left Nav */}
 
-      <div className='h-screen w-fit text-gray-300 flex flex-col gap-3 bg-[#1A3753] p-3'>
+      <div className='h-screen w-fit text-gray-300 flex flex-col gap-3 bg-[#1A3753] p-3 px-10'>
         <img src={logo} alt='logo' className='mb-8 w-30 h-20'/>
         <div className={`flex flex-row gap-4 ${activePage === 'Dashboard' ? 'bg-white text-[#00628B]' : '' } p-1 rounded-sm cursor-pointer`}      onClick={()=>{
         setActivePage('Dashboard')
