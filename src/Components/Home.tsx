@@ -1,17 +1,20 @@
 import React from 'react';
-import { FaArrowRight, FaChartLine, FaSearch, FaUsers, FaFileAlt, FaComments, FaUniversity } from 'react-icons/fa';
+import { FaArrowRight, FaChartLine, FaFileAlt, FaComments } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import heroImage from '../assets/project.png'; // Replace with your actual image
 import feature1 from '../assets/project.png';
 import feature2 from '../assets/project.png';
 import feature3 from '../assets/project.png';
-import testimonial1 from '../assets/project.png';
-import testimonial2 from '../assets/project.png';
 import Footer from './Footer';
 import HomeHeader from '../assets/HomeHeader';
+import Testimonial from './Testimonial';
+
 
 const Home: React.FC = () => {
+
+
+
   return (
     <div className="min-h-screen font-sans bg-gray-50">
       {/* Modern Navbar */}
@@ -172,46 +175,8 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-20 bg-indigo-50">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">What Our Students Say</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Hear from students who have successfully used ProjectFlow for their final year projects
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white p-8 rounded-xl shadow-sm">
-              <div className="flex items-center mb-6">
-                <img src={testimonial1} alt="Student" className="w-12 h-12 rounded-full mr-4" />
-                <div>
-                  <h4 className="font-semibold">Alice Uwase</h4>
-                  <p className="text-gray-600 text-sm">Computer Science, 2023</p>
-                </div>
-              </div>
-              <p className="text-gray-700 italic">
-                "ProjectFlow made managing my final year project so much easier. The submission process was seamless, and I could easily track all feedback from my supervisor in one place."
-              </p>
-            </div>
-            
-            <div className="bg-white p-8 rounded-xl shadow-sm">
-              <div className="flex items-center mb-6">
-                <img src={testimonial2} alt="Student" className="w-12 h-12 rounded-full mr-4" />
-                <div>
-                  <h4 className="font-semibold">John Mugisha</h4>
-                  <p className="text-gray-600 text-sm">Electrical Engineering, 2023</p>
-                </div>
-              </div>
-              <p className="text-gray-700 italic">
-                "As someone who struggled with organization, ProjectFlow was a game-changer. The progress tracking features helped me stay on top of deadlines and deliverables throughout my project."
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
+      {/* Testimonials Section */}
+      <Testimonial/>
       {/* CTA Section */}
       <section className="py-20 bg-indigo-600 text-white">
         <div className="container mx-auto px-6 text-center">

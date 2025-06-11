@@ -155,7 +155,7 @@ const Team: React.FC = () => {
                             onChange={(e) => setMessageInput(e.target.value)}
                             onKeyPress={handleKeyPress}
                             placeholder='Your Message...' 
-                            className='p-2 rounded-md text-gray-800 border border-gray-300 w-full bg-white focus:outline-none focus:ring-1 focus:ring-blue-500'
+                            className='p-2 rounded-md text-gray-800 border placeholder:text-gray-500 border-gray-300 w-full bg-white focus:outline-none focus:ring-1 focus:ring-blue-500'
                         />
                         <button 
                             type="submit"
