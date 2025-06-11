@@ -8,44 +8,14 @@ import feature2 from '../assets/project.png';
 import feature3 from '../assets/project.png';
 import testimonial1 from '../assets/project.png';
 import testimonial2 from '../assets/project.png';
-import universityLogo from '../assets/project.png';
+import Footer from './Footer';
+import HomeHeader from '../assets/HomeHeader';
 
 const Home: React.FC = () => {
   return (
     <div className="min-h-screen font-sans bg-gray-50">
       {/* Modern Navbar */}
-      <nav className="sticky top-0 z-50 bg-white shadow-sm">
-        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <img src={universityLogo} alt="University Logo" className="h-10" />
-            <span className="text-xl font-bold text-indigo-800">ProjectFlow</span>
-          </div>
-          
-          <div className="hidden md:flex items-center space-x-8">
-            <Link to="/features" className="text-gray-600 hover:text-indigo-600 transition">Features</Link>
-            <Link to="/how-it-works" className="text-gray-600 hover:text-indigo-600 transition">How It Works</Link>
-            <Link to="/resources" className="text-gray-600 hover:text-indigo-600 transition">Resources</Link>
-            <Link to="/contact" className="text-gray-600 hover:text-indigo-600 transition">Contact</Link>
-            
-            <div className="flex space-x-4">
-              <Link 
-                to="/login" 
-                className="px-4 py-2 text-indigo-600 border border-indigo-600 rounded-lg hover:bg-indigo-50 transition"
-              >
-                Login
-              </Link>
-              <Link 
-                to="/signup" 
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition shadow-md"
-              >
-                Get Started
-              </Link>
-            </div>
-          </div>
-          
-          {/* Mobile menu button would go here */}
-        </div>
-      </nav>
+      <HomeHeader/>
 
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-indigo-50 to-blue-50 py-20">
@@ -259,57 +229,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <img src={universityLogo} alt="University Logo" className="h-8" />
-                <span className="text-xl font-bold">ProjectFlow</span>
-              </div>
-              <p className="text-gray-400">
-                The official project management system for University of Rwanda students.
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold text-lg mb-4">Quick Links</h4>
-              <ul className="space-y-2">
-                <li><Link to="/features" className="text-gray-400 hover:text-white transition">Features</Link></li>
-                <li><Link to="/how-it-works" className="text-gray-400 hover:text-white transition">How It Works</Link></li>
-                <li><Link to="/resources" className="text-gray-400 hover:text-white transition">Resources</Link></li>
-                <li><Link to="/faq" className="text-gray-400 hover:text-white transition">FAQ</Link></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold text-lg mb-4">Support</h4>
-              <ul className="space-y-2">
-                <li><Link to="/contact" className="text-gray-400 hover:text-white transition">Contact Us</Link></li>
-                <li><Link to="/help" className="text-gray-400 hover:text-white transition">Help Center</Link></li>
-                <li><Link to="/feedback" className="text-gray-400 hover:text-white transition">Feedback</Link></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold text-lg mb-4">Connect With Us</h4>
-              <div className="flex space-x-4">
-                <Link to="#" className="text-gray-400 hover:text-white transition">Twitter</Link>
-                <Link to="#" className="text-gray-400 hover:text-white transition">Facebook</Link>
-                <Link to="#" className="text-gray-400 hover:text-white transition">LinkedIn</Link>
-              </div>
-              <div className="mt-4">
-                <p className="text-gray-400">Email: support@projectflow.edu.rw</p>
-                <p className="text-gray-400">Phone: +250 123 456 789</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>© {new Date().getFullYear()} ProjectFlow - University of Rwanda. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer/>
     </div>
   );
 };
