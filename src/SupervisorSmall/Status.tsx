@@ -8,7 +8,7 @@ const Status :React.FC= () => {
               { title: 'Projects', value: '8', change: '+1', trend: 'up' },
               { title: 'Pending Reviews', value: '3', change: '-1', trend: 'down' }
             ].map((stat, index) => (
-              <div key={index} className="bg-white rounded-xl shadow-sm p-6">
+              <div key={index} className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md">
                 <h3 className="text-gray-500 text-sm font-medium">{stat.title}</h3>
                 <div className="flex items-end mt-2">
                   <span className="text-3xl font-bold text-gray-800">{stat.value}</span>

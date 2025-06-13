@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FiHome, FiUsers, FiFileText, FiCalendar,FiMessageSquare,FiSettings,FiLogOut } from 'react-icons/fi';
-import Header from '../SupervisorSmall/Header';
+import { FiHome, FiFileText, FiCalendar,FiMessageSquare,FiSettings,FiLogOut } from 'react-icons/fi';
+import Header from '../SupervisorSmall/SupervisorHeader';
 import SupervisorDashboard from '../SupervisorSmall/SupervisorDashboard';
 
 const SupervisorLanding: React.FC = () => {
@@ -17,7 +17,6 @@ const SupervisorLanding: React.FC = () => {
         <nav className="mt-6">
           {[
             { icon: <FiHome />, name: 'Dashboard', id: 'dashboard' },
-            { icon: <FiUsers />, name: 'Students', id: 'students' },
             { icon: <FiFileText />, name: 'Projects', id: 'projects' },
             { icon: <FiCalendar />, name: 'Calendar', id: 'calendar' },
             { icon: <FiMessageSquare />, name: 'Messages', id: 'messages' },
