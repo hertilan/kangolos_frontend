@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
+import Status from './Status';
 
 
 
@@ -15,7 +16,7 @@ import { Link } from 'react-router-dom';
         { id: 2, name: 'Student B', project: 'Blockchain Dev', progress: 45, status: 'Needs Help' },
         { id: 3, name: 'Student C', project: 'Mobile App', progress: 90, status: 'Ahead' }
       ]);
-    
+
       const [projects] = useState([
         { id: 1, title: 'AI Research', student: 'Student A', deadline: '2023-12-15', status: 'In Progress' },
         { id: 2, title: 'Blockchain Dev', student: 'Student B', deadline: '2023-11-30', status: 'Needs Review' },
@@ -26,23 +27,7 @@ import { Link } from 'react-router-dom';
           <h2 className="text-2xl font-bold text-gray-800 mb-6">Dashboard Overview</h2>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            {[
-              { title: 'Active Students', value: '12', change: '+2', trend: 'up' },
-              { title: 'Projects', value: '8', change: '+1', trend: 'up' },
-              { title: 'Pending Reviews', value: '3', change: '-1', trend: 'down' }
-            ].map((stat, index) => (
-              <div key={index} className="bg-white rounded-xl shadow-sm p-6">
-                <h3 className="text-gray-500 text-sm font-medium">{stat.title}</h3>
-                <div className="flex items-end mt-2">
-                  <span className="text-3xl font-bold text-gray-800">{stat.value}</span>
-                  <span className={`ml-2 text-sm font-medium ${stat.trend === 'up' ? 'text-green-500' : 'text-red-500'}`}>
-                    {stat.change} from last week
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+          <Status/>
 
           {/* Students Progress */}
           <div className="bg-white rounded-xl shadow-sm p-6 mb-8">

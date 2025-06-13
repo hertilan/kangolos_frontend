@@ -1,16 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  FiHome, 
-  FiUsers, 
-  FiFileText, 
-  FiCalendar,
-  FiMessageSquare,
-  FiSettings,
-  FiLogOut
-} from 'react-icons/fi';
+import { FiHome, FiUsers, FiFileText, FiCalendar,FiMessageSquare,FiSettings,FiLogOut } from 'react-icons/fi';
 import Header from '../SupervisorSmall/Header';
-import SupervisorDashboard from '../SupervisorSmall/Dashboard';
+import SupervisorDashboard from '../SupervisorSmall/SupervisorDashboard';
 
 const SupervisorLanding: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
