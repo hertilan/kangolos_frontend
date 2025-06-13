@@ -40,10 +40,10 @@ const Testimonial :React.FC= () => {
     return () => clearInterval(interval);
   }, []);
   return (
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-gray-50 ">
         <div className="container mx-auto px-6">
           <div className="flex justify-center">
-            <div className='relative h-24 w-2/3 overflow-hidden rounded-lg bg-gradient-to-r from-[#1A3753] to-[#00628B]'>
+            <div className='relative h-30 w-full lg:w-2/3 overflow-hidden rounded-lg bg-gradient-to-r from-[#1A3753] to-[#00628B] py-8'>
               <AnimatePresence mode='wait'>
                 <motion.div
                   key={testimonials[currentTestimonial].id}

@@ -7,7 +7,7 @@ import feature1 from '../assets/project.png';
 import feature2 from '../assets/project.png';
 import feature3 from '../assets/project.png';
 import Footer from './Footer';
-import HomeHeader from '../assets/HomeHeader';
+import HomeHeader from './HomeHeader';
 import Testimonial from './Testimonial';
 import CompletedProjects from './CompletedProjects';
 import SubmissionRate from './SubmissionRate';
