@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Header from '../StudentSmall/Header';
-import Footer from '../Components/Footer';
+// import Footer from '../Components/Footer';
 import { FaPlus } from "react-icons/fa6";
 import { CiFileOn } from "react-icons/ci";
 import { Link } from 'react-router-dom';

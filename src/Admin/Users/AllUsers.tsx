@@ -50,7 +50,7 @@ const AllUsers :React.FC= () => {
         <tbody>
             { registeredUsers.length === 0 ?(
             <tr>
-             <td colSpan='100%' className="text-center text-xl text-gray-700 p-2">No users available in the system
+             <td colSpan={9} className="text-center text-xl text-gray-700 p-2">No users available in the system
              </td>
              </tr>)
             :

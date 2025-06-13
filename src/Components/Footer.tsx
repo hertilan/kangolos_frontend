@@ -4,7 +4,7 @@ import universityLogo from '../assets/project.png';
 
 const Footer :React.FC= () => {
   return (
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-gray-900 text-white py-12 px-10">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
@@ -51,11 +51,10 @@ const Footer :React.FC= () => {
           </div>
           
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>© {new Date().getFullYear()} ProjectFlow - University of Rwanda. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} Kangalos - University of Rwanda. All rights reserved.</p>
           </div>
         </div>
       </footer>
   )
 }
-
 export default Footer

@@ -1,121 +1,183 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { FaRegEye } from "react-icons/fa6";
-import { FaRegEyeSlash } from "react-icons/fa6";
-import axios from 'axios';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { MdOutlineEmail } from "react-icons/md";
-import project from '../assets/project.png'
+import axios from 'axios';
+import project from '../assets/project.png';
 
 const Login: React.FC = () => {
-    const [email, setEmail] = useState<string>('')
-    const [password,setPassword] = useState<string>('')
-    const [showPassword, setShowPassword] = useState<boolean>(false)
-    const [loginError, setLoginError] = useState<string>('')
-    const [errorColor,setErrorColor] = useState<string>('red')
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [loginError, setLoginError] = useState<string>('');
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const navigate = useNavigate();
 
-    {/* Handle login */}
+    const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => { 
+        event.preventDefault();
+        setIsLoading(true);
+        setLoginError('');
 
-    const handleLogin = (event: React.FormEvent<HTMLFormElement>) =>{ 
-        event.preventDefault()
-        axios.post('https://www.eric.com', 
-        {
+        try {
+            const response = await axios.post('https://www.eric.com/api/login', 
+                { email, password },
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
+                }
+            );
 
-            email: email,
-            password: password,
-        },
-        {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            withCredentials: true
+            if (response.status === 200) {
+                // Store token or user data if needed
+                navigate('/dashboard'); // Redirect to dashboard on success
+            } else {
+                throw new Error(response.data.message || 'Login failed');
+            }
+        } catch (error) {
+            let errorMessage = 'Login failed. Please try again.';
+            
+            if (axios.isAxiosError(error)) {
+                switch (error.response?.status) {
+                    case 400:
+                        errorMessage = 'Invalid email or password format';
+                        break;
+                    case 401:
+                        errorMessage = 'Invalid credentials';
+                        break;
+                    case 404:
+                        errorMessage = 'User not found';
+                        break;
+                    case 500:
+                        errorMessage = 'Server error. Please try later';
+                        break;
+                }
+            }
+            
+            setLoginError(errorMessage);
+            setTimeout(() => setLoginError(''), 4000);
+        } finally {
+            setIsLoading(false);
         }
-    )
-    .then(function(response) {
-        if (response.status=== 500) {
-            setLoginError('Internal server error')
-          setErrorColor('red')
-          setTimeout(function(){
-            setLoginError('')
-          },4000) 
-          throw new Error('Internal server error') 
-        }
-        else if(response.status === 404){
-            setLoginError('Invalid inputs')
-            setErrorColor('red')
-            setTimeout(function(){
-                setLoginError('')
-              },4000)
-              throw new Error('Invalid inputs')
-        }
-        else if(response.status === 400){
-            setLoginError('Bad Request')
-            setErrorColor('red')
-            setTimeout(function(){
-                setLoginError('')
-              },4000)
-              throw new Error('Bad Request')
-        }
+    };
 
-        return response.statusText;
-    })
-    .then(function(){
-        setLoginError('Signup successfully')
-        setErrorColor('green')
-        setTimeout(function(){
-            setLoginError('')
-          },4000)
-    })
-    .catch(function(error) {
-        console.error('Login error:', error);
-        setLoginError('Login error')
-        setErrorColor('red')
-        setTimeout(function(){
-            setLoginError('')
-          },4000)
-    });
-}
+    return (
+        <div className='grid grid-cols-1 lg:grid-cols-2 w-full min-h-screen'>
+            {/* Image Section */}
+            <div 
+                className='hidden lg:block w-full h-full bg-cover bg-center bg-no-repeat'
+                style={{ backgroundImage: `url(${project})` }}
+                aria-label="Students working on projects"
+            />
+            
+            {/* Form Section */}
+            <div className='flex items-center justify-center p-6 bg-white'>
+                <div className='w-full max-w-md'>
+                    <form onSubmit={handleLogin} className='space-y-6'>
+                        <div className='text-center'>
+                            <h1 className='text-[#2C4FFF] text-3xl font-bold mb-2'>FYPMS</h1>
+                            <h2 className='text-2xl font-semibold text-gray-900'>Welcome back</h2>
+                            <p className='text-gray-500'>Sign in to access your FYPMS account</p>
+                        </div>
 
-  return (
-    <div className='grid grid-cols-2 w-screen h-screen'>
-        <div style={{ backgroundImage: `url(${project})` }} className='w-full h-full bg-cover bg-center bg-no-repeat'>
+                        {loginError && (
+                            <div className={`p-3 rounded-md text-center ${
+                                loginError.includes('success') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                            }`}>
+                                {loginError}
+                            </div>
+                        )}
 
-        </div>
-    <div className='bg-white w-full h-screen grid grid-cols-1 justify-items-center gap-0 py-[4%]'>
-        {/* <div className='max-h-screen'>
-        <img src={signup} alt='signup' className='w-[85%]'/>
-        </div> */}
-              <form onSubmit={handleLogin} className=' justify-items-center grid grid-cols-1 gap-2'>
-            <h1 className='text-[#2C4FFF] text-[30px]'>FYPMS</h1>
-            <p style={{color: errorColor}} className='text-[22px]'>{loginError}</p>
-            <h1 className='text-[#000000] text-[30px]'>Welcome back</h1>
-            <p className='text-[#808080] text-[17px]'> Sign in to access your FYPMS account</p>
-             <div className='relative'>
-             <label htmlFor='Email' className='grid text-[#000000] text-[16px] justify-self-start mt-3'>Email</label>
-             <input type='email' placeholder='youremail@example.com' name='Email' value={email} onChange={function(e){
-                 setEmail(e.target.value)
-             }} className=' grid border-[1.5px] border-[#A6A6A6] px-8 p-2 justify-self-start rounded-sm w-[400px] placeholder:text-[#808080] placeholder:text-[14px] text-[14px]'/>
-             <MdOutlineEmail size={25} className='absolute top-7.5 right-2'/>
-             </div>
-            <div className='relative'>
-            <label htmlFor='Password' className='grid text-[#000000] text-[16px] justify-self-start mt-3'>Password</label>
-            <input type={!showPassword ? 'password' : 'text'} placeholder='Create password' name='Password' value={password} onChange={function(e){
-                setPassword(e.target.value)
-            }} className=' grid border-[1.5px] border-[#A6A6A6] px-8 p-2 justify-self-start rounded-sm placeholder:text-[#808080] placeholder:text-[14px] text-[14px] w-[400px]'/>
-            <button type='button' onClick={function(){
-                if(!showPassword && password.length>0) setShowPassword(true)
-                else setShowPassword(false)
-            }} className='absolute top-8 right-1'>{!showPassword ?  <FaRegEyeSlash size={25} />: <FaRegEye size={25} />}
-            </button>
+                        <div>
+                            <label htmlFor='email' className='block text-sm font-medium text-gray-700 mb-1'>
+                                Email
+                            </label>
+                            <div className='relative'>
+                                <input
+                                    id='email'
+                                    type='email'
+                                    placeholder='youremail@example.com'
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className='w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pl-10'
+                                    required
+                                />
+                                <MdOutlineEmail 
+                                    size={20} 
+                                    className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400'
+                                />
+                            </div>
+                        </div>
 
+                        <div>
+                            <label htmlFor='password' className='block text-sm font-medium text-gray-700 mb-1'>
+                                Password
+                            </label>
+                            <div className='relative'>
+                                <input
+                                    id='password'
+                                    type={showPassword ? 'text' : 'password'}
+                                    placeholder='Enter your password'
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className='w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pl-10 pr-10'
+                                    required
+                                    minLength={6}
+                                />
+                                <button
+                                    type='button'
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600'
+                                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                >
+                                    {showPassword ? <FaRegEyeSlash size={20} /> : <FaRegEye size={20} />}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className='flex items-center justify-between'>
+                            <Link 
+                                to='/forgot-password' 
+                                className='text-sm text-[#2C4FFF] hover:underline'
+                            >
+                                Forgot Password?
+                            </Link>
+                        </div>
+
+                        <button
+                            type='submit'
+                            disabled={isLoading}
+                            className={`w-full py-3 px-4 rounded-md text-white font-medium ${
+                                isLoading 
+                                    ? 'bg-blue-400 cursor-not-allowed' 
+                                    : 'bg-[#2C4FFF] hover:bg-blue-700'
+                            } transition-colors`}
+                        >
+                            {isLoading ? 'Logging in...' : 'Login'}
+                        </button>
+
+                        <div className='text-center text-sm text-gray-600'>
+                            Don't have an account?{' '}
+                            <Link 
+                                to='/signup' 
+                                className='text-[#2C4FFF] hover:underline font-medium'
+                            >
+                                Sign Up
+                            </Link>
+                        </div>
+
+                        <div className='text-center'>
+                            <Link 
+                                to='/' 
+                                className='text-sm text-gray-500 hover:underline'
+                            >
+                                Back to home
+                            </Link>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <p className='grid justify-self-end text-[#2C4FFF] text-[15px] py-2 '><u>Forgot Password</u></p>
-            <button type='submit' className='bg-[#2C4FFF] text-white text-center w-[400px] rounded-sm py-2.5 mt-2 hover:bg-blue-700 transition cursor-pointer'>Login</button>
-            <p className='text-[#000000] text-[16px]'>Don't have an account? <Link to='/signup' className='text-[#2C4FFF] cursor-pointer hover:text-blue-800'>Sign Up</Link></p>
-            <Link to='/' className='text-[16px] text-[#808080]'> Back to home</Link>
-            </form>
-    </div>
-    </div>
-  )
-}
+        </div>
+    );
+};
 
-export default Login
+export default Login;

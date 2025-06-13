@@ -45,7 +45,7 @@ const AllProjects :React.FC= () => {
         <tbody>
             { allProjects.length === 0 ?(
             <tr>
-             <td colSpan='100%' className="text-center text-xl text-gray-700 p-2">No projects available in the system
+             <td colSpan={7} className="text-center text-xl text-gray-700 p-2">No projects available in the system
              </td>
              </tr>)
             :

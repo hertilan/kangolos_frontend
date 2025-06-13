@@ -1,112 +1,106 @@
-import React, { useState } from 'react'
-import logo from '../assets/logo.png'
-import { LuLayoutDashboard, LuLogs, LuProjector } from 'react-icons/lu'
-import { FaUsers } from 'react-icons/fa'
-import { TbBrandTeams } from 'react-icons/tb'
-import { MdAnalytics, MdBackup, MdSecurity } from 'react-icons/md'
-import { FcTreeStructure } from 'react-icons/fc'
-import { CiSettings } from 'react-icons/ci'
-import { CgLogOut } from 'react-icons/cg'
-import { Link } from 'react-router-dom'
-import Dashboard from './Dashboard'
-import Users from './Users/Users'
-import Teams from './Teams/Teams'
-import Projects from './Projects/Projects'
-import AdminSettings from './AdminSettings'
+import React, { useState } from 'react';
+import logo from '../assets/logo.png';
+import { LuLayoutDashboard, LuLogs, LuProjector } from 'react-icons/lu';
+import { FaUsers, FaBars, FaTimes } from 'react-icons/fa';
+import { TbBrandTeams } from 'react-icons/tb';
+import { MdSecurity } from 'react-icons/md';
+import { FcTreeStructure } from 'react-icons/fc';
+import { CiSettings } from 'react-icons/ci';
+import { CgLogOut } from 'react-icons/cg';
+import { Link } from 'react-router-dom';
+import Dashboard from './Dashboard';
+import Users from './Users/Users';
+import Teams from './Teams/Teams';
+import Projects from './Projects/Projects';
+import AdminSettings from './AdminSettings';
 
-const AdminLanding :React.FC= () => {
-  const [activePage, setActivePage] = useState<string>('Dashboard')
+const AdminLanding: React.FC = () => {
+  const [activePage, setActivePage] = useState<string>('Dashboard');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navItems = [
+    { name: 'Dashboard', icon: <LuLayoutDashboard size={23} /> },
+    { name: 'Users', icon: <FaUsers size={23} /> },
+    { name: 'Projects', icon: <LuProjector size={23} /> },
+    { name: 'Teams', icon: <TbBrandTeams size={23} /> },
+    { name: 'Structure', icon: <FcTreeStructure size={23} /> },
+    { name: 'Logs', icon: <LuLogs size={23} /> },
+    { name: 'Security', icon: <MdSecurity size={23} /> },
+    { name: 'Settings', icon: <CiSettings size={23} /> },
+  ];
+
+  const renderPage = () => {
+    switch (activePage) {
+      case 'Dashboard': return <Dashboard />;
+      case 'Users': return <Users />;
+      case 'Teams': return <Teams />;
+      case 'Projects': return <Projects />;
+      case 'Settings': return <AdminSettings />;
+      default: return <Dashboard />;
+    }
+  };
+
   return (
-    <div className='h-fit w-screen flex flex-row'>
-      {/* Left Nav */}
-
-      <div className='h-screen w-fit text-gray-300 flex flex-col gap-3 bg-[#1A3753] p-3 px-10'>
-        <img src={logo} alt='logo' className='mb-8 w-30 h-20'/>
-        <div className={`flex flex-row gap-4 ${activePage === 'Dashboard' ? 'bg-white text-[#00628B]' : '' } p-1 rounded-sm cursor-pointer`}      onClick={()=>{
-        setActivePage('Dashboard')
-      }}>
-          <LuLayoutDashboard size={23}/>
-          <h1>Dashboard</h1>
-        </div>
-        <div className={`flex flex-row gap-4 ${activePage === 'Users' ? 'bg-white text-[#00628B]' : '' } p-1 rounded-sm cursor-pointer`} onClick={()=>{
-        setActivePage('Users')
-      }}>
-          <FaUsers size={23}/>
-          <h1>User Management</h1>
-        </div>
-        <div className={`flex flex-row gap-4  ${activePage === 'Projects' ? 'bg-white text-[#00628B]' : '' } p-1 rounded-sm cursor-pointer`} onClick={()=>{
-        setActivePage('Projects')
-      }}>
-        <LuProjector size={23}/>
-        <h1>Projects</h1>
-        </div>
-        <div className={`flex flex-row gap-4 ${activePage === 'Teams' ? 'bg-white text-[#00628B]' : '' } p-1 rounded-sm cursor-pointer`}
-        onClick={()=>{
-        setActivePage('Teams')
-      }}>
-        <TbBrandTeams size={23}/>
-        <h1>Teams</h1>
-        </div>
-        <div className={`flex flex-row gap-4 ${activePage === 'Structure' ? 'bg-white text-[#00628B]' : '' } p-1 rounded-sm cursor-pointer`}      onClick={()=>{
-        setActivePage('Structure')
-      }}>
-          <FcTreeStructure size={23}/>
-          <h1>University Structure</h1>
-        </div>
-        <div className={`flex flex-row gap-4 ${activePage === 'Logs' ? 'bg-white text-[#00628B]' : '' } p-1 rounded-sm cursor-pointer`} onClick={()=>{
-        setActivePage('Logs')
-      }}>
-          <LuLogs size={23}/>
-          <h1>System Logs</h1>
-        </div>
-        {/* <div className={`flex flex-row gap-4  ${activePage === 'Analytics' ? 'bg-white text-[#00628B]' : '' } p-1 rounded-sm cursor-pointer`} onClick={()=>{
-        setActivePage('Analytics')
-      }}>
-        <MdAnalytics size={23}/>
-        <h1>Analytics</h1>
-        </div> */}
-        <div className={`flex flex-row gap-4 ${activePage === 'Security' ? 'bg-white text-[#00628B]' : '' } p-1 rounded-sm cursor-pointer`}
-        onClick={()=>{
-        setActivePage('Security')
-      }}>
-        <MdSecurity size={23}/>
-        <h1>Security</h1>
-        </div>
-        <div className={`flex flex-row gap-4 ${activePage === 'Settings' ? 'bg-white text-[#00628B]' : '' } p-1 rounded-sm cursor-pointer`}
-        onClick={()=>{
-        setActivePage('Settings')
-      }}>
-        <CiSettings size={23}/>
-        <h1>Settings</h1>
-        </div>
-        <Link to='/student' className='bottom-0 flex flex-row gap-4 bg-red-200/20 p-1 rounded-sm'>
-          <h1>
-            admin@example.com
-          </h1>
-          <CgLogOut size={23}/>
-        </Link>
+    <div className='min-h-screen w-full flex flex-col lg:flex-row'>
+      {/* Mobile Menu Button */}
+      <div className='lg:hidden flex justify-between items-center p-4 bg-[#1A3753] text-white'>
+        <img src={logo} alt='logo' className='w-24 h-auto' />
+        <button 
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className='text-2xl focus:outline-none'
+        >
+          {mobileMenuOpen ? <FaTimes /> : <FaBars />}
+        </button>
       </div>
 
-      {/* Right Nav */}
+      {/* Left Navigation - Hidden on mobile unless menu is open */}
+      <div 
+        className={`${mobileMenuOpen ? 'block' : 'hidden'} lg:block lg:h-screen w-full lg:w-64 text-gray-300 flex flex-col gap-3 bg-[#1A3753] p-4 lg:p-6`}
+      >
+        <img src={logo} alt='logo' className='hidden lg:block mb-8 w-full h-auto max-h-20 object-contain' />
+        
+        <div className='flex flex-col gap-2'>
+          {navItems.map((item) => (
+            <div
+              key={item.name}
+              className={`flex flex-row items-center gap-4 p-3 rounded-md cursor-pointer transition-colors ${
+                activePage === item.name 
+                  ? 'bg-white text-[#00628B]' 
+                  : 'hover:bg-[#2a4a6e]'
+              }`}
+              onClick={() => {
+                setActivePage(item.name);
+                setMobileMenuOpen(false);
+              }}
+            >
+              {item.icon}
+              <h1 className='text-sm lg:text-base'>{item.name}</h1>
+            </div>
+          ))}
+        </div>
 
-      <div className='h-screen overflow-y-auto w-full px-10'>
-        { activePage === 'Dashboard' ? <Dashboard/>
-        :
-        activePage === 'Users' ? <Users/>
-        : 
-        activePage === 'Teams' ? <Teams/>
-        :
-        activePage === 'Projects' ? <Projects/>
-        :
-        activePage === 'Settings' ?
-        <AdminSettings/>
-        :
-        ''
+        <div className='mt-auto'>
+          <Link 
+            to='/student' 
+            className='flex flex-row items-center gap-4 p-3 rounded-md bg-red-200/20 hover:bg-red-200/30 transition-colors'
+          >
+            <span className='text-sm lg:text-base'>admin@example.com</span>
+            <CgLogOut size={20} />
+          </Link>
+        </div>
+      </div>
 
-        }
+      {/* Main Content Area */}
+      <div className='flex-1 overflow-y-auto p-4 lg:p-8 bg-gray-50'>
+        {/* Mobile Page Title */}
+        <h1 className='lg:hidden text-2xl font-bold text-gray-800 mb-6'>
+          {activePage}
+        </h1>
+        
+        {renderPage()}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AdminLanding
+export default AdminLanding;

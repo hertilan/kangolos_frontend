@@ -9,6 +9,9 @@ import feature3 from '../assets/project.png';
 import Footer from './Footer';
 import HomeHeader from '../assets/HomeHeader';
 import Testimonial from './Testimonial';
+import CompletedProjects from './CompletedProjects';
+import SubmissionRate from './SubmissionRate';
+import StudentSatsfaction from './StudentSatsfaction';
 
 
 const Home: React.FC = () => {
@@ -21,7 +24,8 @@ const Home: React.FC = () => {
       <HomeHeader/>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-indigo-50 to-blue-50 py-20">
+      <div className='w-full '>
+      <section className="bg-gradient-to-r from-indigo-50 to-blue-50 py-20 px-10">
         <div className="container mx-auto px-6 flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 mb-12 md:mb-0">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
@@ -39,7 +43,7 @@ const Home: React.FC = () => {
               </Link>
               <Link 
                 to="/demo" 
-                className="px-8 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition flex items-center justify-center"
+                className="px-8 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-indigo-700 transition-all duration-700 ease-ease-out flex items-center hover:text-gray-100 justify-center"
               >
                 See How It Works
               </Link>
@@ -56,21 +60,12 @@ const Home: React.FC = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white px-10">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div className="p-8 rounded-xl bg-indigo-50">
-              <div className="text-4xl font-bold text-indigo-600 mb-2">1,200+</div>
-              <div className="text-gray-600">Projects Completed</div>
-            </div>
-            <div className="p-8 rounded-xl bg-blue-50">
-              <div className="text-4xl font-bold text-blue-600 mb-2">95%</div>
-              <div className="text-gray-600">Submission Rate</div>
-            </div>
-            <div className="p-8 rounded-xl bg-purple-50">
-              <div className="text-4xl font-bold text-purple-600 mb-2">4.8/5</div>
-              <div className="text-gray-600">Student Satisfaction</div>
-            </div>
+            <CompletedProjects/>
+            <SubmissionRate/>
+            <StudentSatsfaction/>
           </div>
         </div>
       </section>
@@ -195,6 +190,7 @@ const Home: React.FC = () => {
 
       {/* Footer */}
       <Footer/>
+    </div>
     </div>
   );
 };
