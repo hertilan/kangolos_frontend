@@ -7,42 +7,71 @@ import Teamspiechart from './Teams/Teamspiechart'
 import Teamsbarchart from './Teams/Teamsbarchart'
 import Total from './Total'
 
-const Dashboard :React.FC= () => {
-    const [activePage, setActivePage] = useState<string>('Projects')
+const Dashboard: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<string>('Projects')
+  
+  const tabs = [
+    { id: 'Projects', label: 'Projects Analytics' },
+    { id: 'Users', label: 'User Analytics' },
+    { id: 'Teams', label: 'Active Teams' }
+  ]
+
   return (
-    <div className='grid grid-cols-1 p-2  gap-1 w-full text-[#000000]'>
-      <h1 className='text-2xl font-bold'>Admin Dashboard</h1>
-      <p>Welcome back, Admin. Here's an overview of the system</p>
-     <Total/>
-      <div className='w-fit p-2 mt-4 gap-4 flex flex-row border border-gray-300 text-gray-600'>
-        <h1 className={`${activePage === 'Projects' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md':''} px-4 cursor-pointer transition-colors duration-300 ease-in-out`} onClick={()=>{
-          setActivePage('Projects')
-        }}>Projects analytics</h1>
-        <h1 className={`${activePage === 'Users' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md':''} px-4 cursor-pointer transition-colors duration-300 ease-in-out`} onClick={()=>{
-          setActivePage('Users')
-        }}>User analytics</h1>
-        <h1 className={`${activePage === 'Teams' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md':''} px-4 cursor-pointer transition-colors duration-300 ease-in-out`} onClick={()=>{
-          setActivePage('Teams')
-        }}>active Teams</h1>
+    <div className='w-full p-6 space-y-6'>
+      <div className='space-y-2'>
+        <h1 className='text-2xl font-bold text-gray-800'>Admin Dashboard</h1>
+        <p className='text-gray-600'>Welcome back, Admin. Here's an overview of the system</p>
       </div>
-      <div className='w-full'>
-        { activePage === 'Projects' ? 
-        <div className='flex flex-row gap-2'>
-        <Piechart/>
-        <Barchart/>
-        </div>
-        :
-        activePage === 'Users' ? 
-        <div className='flex flex-row gap-2'>
-            <Userspiechart/>
-            <Usersbarchart/>
-        </div>
-        : 
-        <div className='flex flex-row gap-2'>
-            <Teamspiechart/>
-            <Teamsbarchart/>
-        </div>
-        }
+      
+      <Total />
+      
+      {/* Tab Navigation */}
+      <div className='flex space-x-1 p-1 bg-gray-100 rounded-lg w-fit'>
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
+              activeTab === tab.id
+                ? 'bg-white text-indigo-600 shadow-sm'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+            onClick={() => setActiveTab(tab.id)}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+      
+      {/* Charts Container */}
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+        {activeTab === 'Projects' ? (
+          <>
+            <div className='bg-white p-4 rounded-xl shadow-sm'>
+              <Piechart />
+            </div>
+            <div className='bg-white p-4 rounded-xl shadow-sm'>
+              <Barchart />
+            </div>
+          </>
+        ) : activeTab === 'Users' ? (
+          <>
+            <div className='bg-white p-4 rounded-xl shadow-sm'>
+              <Userspiechart />
+            </div>
+            <div className='bg-white p-4 rounded-xl shadow-sm'>
+              <Usersbarchart />
+            </div>
+          </>
+        ) : (
+          <>
+            <div className='bg-white p-4 rounded-xl shadow-sm'>
+              <Teamspiechart />
+            </div>
+            <div className='bg-white p-4 rounded-xl shadow-sm'>
+              <Teamsbarchart />
+            </div>
+          </>
+        )}
       </div>
     </div>
   )

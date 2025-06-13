@@ -5,80 +5,94 @@ import RejectedProjects from './RejectedProjects';
 import CompletedProjects from './CompletedProject';
 import PendingProjects from './PendingProjects';
 
-const Projects :React.FC= () => {
-      const [search, setSearch] = useState<string>('')
-      const [status, setStatus] = useState<string>('all')
-      const [activePage,setActivePage] = useState<string>('all')
+const Projects: React.FC = () => {
+  const [search, setSearch] = useState<string>('')
+  const [status, setStatus] = useState<string>('all')
+  const [activePage, setActivePage] = useState<string>('all')
 
-       const handleSetActive = (page: string) => setActivePage(page)
+  const handleSetActive = (page: string) => {
+    setActivePage(page)
+    setStatus(page === 'all' ? 'all' : page) // Sync status filter with active page
+  }
 
   return (
-    <div  className="min-w-full right-0 grid grid-cols-1 justify-items-start gap-3 p-2">
-    <h1 className="text-2xl font-bold">Project Management</h1>
-      <div className='flex flex-row justify-center  bg-white w-fit justify-self-end'>
-        <div className='relative'>
-          <input
-            type='text'
-            name='search'
-            aria-label='Search users'
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder='Search projects...'
-            className='border-1 border-gray-400 px-6 p-2 rounded-l-sm bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 w-80'
-          />
-          <button className='absolute left-0 top-2 text-gray-500' aria-label='Search by name'>
-            <IoMdSearch size={23} />
-          </button>
-        </div>
+    <div className="w-full p-6 space-y-6">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <h1 className="text-2xl font-bold text-gray-800">Project Management</h1>
+        
+        {/* Search and Filter Bar */}
+        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+          <div className="relative flex-1">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <IoMdSearch className="text-gray-400" size={20} />
+            </div>
+            <input
+              type="text"
+              name="search"
+              aria-label="Search projects"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search projects..."
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
 
-        <select
-          name='role'
-          aria-label='Filter by role'
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-          className='border border-gray-400 p-1 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 w-60'
-        >
-          <option value='all'disabled>All Statuses</option>
-          <option value='Completed'>Completed</option>
-          <option value='Pending'>Pending</option>
-          <option value='Rejected'>Rejected</option>
-        </select>
-        <button className='flex flex-row items-center text-white bg-[#00628B] rounded-r-sm cursor-pointer hover:bg-[#3d94bd] transition-colors duration-500 ease-in-out px-2 py-1'>Search</button>
+          <div className="flex gap-3">
+            <select
+              name="status"
+              aria-label="Filter by status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="all">All Statuses</option>
+              <option value="Completed">Completed</option>
+              <option value="Pending">Pending</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+
+            <button 
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm"
+              onClick={() => {
+                // Handle search functionality here
+                // You might want to pass search and status to child components
+              }}
+            >
+              Search
+            </button>
+          </div>
+        </div>
       </div>
-        <div className='w-fit px-2 py-1 mt-4 gap-4 flex flex-row border border-gray-300 text-gray-600'>
-        <button
-          className={`px-4 ${activePage === 'all' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md' : ''} cursor-pointer transition-colors duration-300 ease-in-out`}
-          onClick={() => handleSetActive('all')}
-        >
-          All Projects
-        </button>
-        <button
-          className={`px-4 ${activePage === 'Completed' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md' : ''} cursor-pointer transition-colors duration-300 ease-in-out`}
-          onClick={() => handleSetActive('Completed')}
-        >
-          Completed
-        </button>
-        <button
-          className={`px-4 ${activePage === 'Pending' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md' : ''} cursor-pointer transition-colors duration-300 ease-in-out`}
-          onClick={() => handleSetActive('Pending')}
-        >
-          Pending
-        </button>
-        <button
-          className={`px-4 ${activePage === 'Rejected' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md ' : ''} cursor-pointer transition-colors duration-300 ease-in-out`}
-          onClick={() => handleSetActive('Rejected')}
-        >
-          Rejected
-        </button>
+
+      {/* Tab Navigation */}
+      <div className="flex space-x-1 p-1 bg-gray-100 rounded-lg w-fit">
+        {[
+          { id: 'all', label: 'All Projects' },
+          { id: 'Completed', label: 'Completed' },
+          { id: 'Pending', label: 'Pending' },
+          { id: 'Rejected', label: 'Rejected' }
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
+              activePage === tab.id
+                ? 'bg-white text-indigo-600 shadow-sm'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+            onClick={() => handleSetActive(tab.id)}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
-        {activePage === 'all' ? (
-        <AllProjects/>
-      ) : activePage === 'Completed' ? (
-        <CompletedProjects/>
-      ) : activePage === 'rejected' ? (
-        <RejectedProjects/>
-      ) : (<PendingProjects/>)
-    }
+
+      {/* Content Area */}
+      <div className="bg-white rounded-lg shadow-sm p-4">
+        {activePage === 'all' && <AllProjects searchTerm={search} statusFilter={status} />}
+        {activePage === 'Completed' && <CompletedProjects searchTerm={search} />}
+        {activePage === 'Rejected' && <RejectedProjects searchTerm={search} />}
+        {activePage === 'Pending' && <PendingProjects searchTerm={search} />}
+      </div>
     </div>
   )
 }
