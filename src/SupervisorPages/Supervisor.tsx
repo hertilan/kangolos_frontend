@@ -1,10 +1,12 @@
 import React from 'react'
+import { Routes,Route } from 'react-router-dom'
+import SupervisorLanding from './SupervisorsLanding'
 
 const Supervisor :React.FC= () => {
   return (
-    <div>
-      
-    </div>
+    <Routes>
+      <Route index element={<SupervisorLanding/>}/>
+    </Routes>
   )
 }
 

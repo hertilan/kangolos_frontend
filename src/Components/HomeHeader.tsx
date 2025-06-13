@@ -29,10 +29,10 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({ isScrolledDown }) => {
             Features
           </Link>
           <Link 
-            to="/how-it-works" 
+            to="/supervisor/" 
             className={`${isScrolledDown ? 'text-white' : 'text-gray-600 hover:text-indigo-600'} transition-colors duration-300`}
           >
-            How It Works
+            supervisor
           </Link>
           <Link 
             to="/resources" 
