@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaArrowRight, FaChartLine, FaFileAlt, FaComments } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
@@ -15,13 +15,34 @@ import StudentSatsfaction from './StudentSatsfaction';
 
 
 const Home: React.FC = () => {
+  const [isScrolledDown, setIsScrolledDown] = useState(false);
+  const [prevScrollY, setPrevScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > prevScrollY && currentScrollY > 50) {
+        // Scrolling down past 50px threshold
+        setIsScrolledDown(true);
+      } else if (currentScrollY < prevScrollY || currentScrollY <= 50) {
+        // Scrolling up or near top of page
+        setIsScrolledDown(false);
+      }
+      
+      setPrevScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [prevScrollY]);
 
 
 
   return (
     <div className="min-h-screen font-sans bg-gray-50">
       {/* Modern Navbar */}
-      <HomeHeader/>
+      <HomeHeader isScrolledDown={isScrolledDown} />
 
       {/* Hero Section */}
       <div className='w-full '>
