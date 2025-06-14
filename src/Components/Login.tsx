@@ -19,17 +19,17 @@ const Login: React.FC = () => {
         setLoginError('');
 
         try {
-            const response = await axios.post('https://www.eric.com/api/login', 
+            const response = await axios.post('https://kangalos-intern.onrender.com/user/login', 
                 { email, password },
                 {
                     headers: { 'Content-Type': 'application/json' },
-                    withCredentials: true
+                    // withCredentials: true
                 }
             );
 
             if (response.status === 200) {
                 // Store token or user data if needed
-                navigate('/dashboard'); // Redirect to dashboard on success
+                navigate('/student/'); // Redirect to dashboard on success
             } else {
                 throw new Error(response.data.message || 'Login failed');
             }
@@ -39,7 +39,7 @@ const Login: React.FC = () => {
             if (axios.isAxiosError(error)) {
                 switch (error.response?.status) {
                     case 400:
-                        errorMessage = 'Invalid email or password format';
+                        errorMessage = 'Invalid credential.';
                         break;
                     case 401:
                         errorMessage = 'Invalid credentials';
@@ -121,7 +121,7 @@ const Login: React.FC = () => {
                                     onChange={(e) => setPassword(e.target.value)}
                                     className='w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pl-10 pr-10'
                                     required
-                                    minLength={6}
+                                    minLength={5}
                                 />
                                 <button
                                     type='button'
