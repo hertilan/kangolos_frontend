@@ -41,10 +41,10 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({ isScrolledDown }) => {
             Student
           </Link>
           <Link 
-            to="/contact" 
+            to="/admin" 
             className={`${isScrolledDown ? 'text-white' : 'text-gray-600 hover:text-indigo-600'} transition-colors duration-300`}
           >
-            Contact
+            Admin
           </Link>
           
           <div className="flex space-x-4">

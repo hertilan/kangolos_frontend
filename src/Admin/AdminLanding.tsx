@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import logo from '../assets/logo.png';
+import universityLogo from '../assets/project.png';
 import { LuLayoutDashboard, LuLogs, LuProjector } from 'react-icons/lu';
 import { FaUsers, FaBars, FaTimes, FaSearch } from 'react-icons/fa';
 import { TbBrandTeams } from 'react-icons/tb';
@@ -45,7 +45,7 @@ const AdminLanding: React.FC = () => {
     <div className='min-h-screen w-full flex flex-col lg:flex-row bg-gray-50'>
       {/* Mobile Menu Button */}
       <div className='lg:hidden flex justify-between items-center  p-4 bg-indigo-700 text-white'>
-        <img src={logo} alt='logo' className='w-24 h-auto' />
+        <img src={universityLogo} alt='logo' className='w-24 h-auto rounded-full' />
         <button 
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className='text-2xl focus:outline-none'
@@ -58,7 +58,7 @@ const AdminLanding: React.FC = () => {
       <div 
         className={`${mobileMenuOpen ? 'block' : 'hidden'} lg:block min-h-screen lg:h-screen w-full lg:w-64 text-gray-200 flex flex-col gap-3 bg-indigo-700 p-4 lg:p-6 transition-all duration-300`}
       >
-        <img src={logo} alt='logo' className='hidden lg:block mb-8 w-full h-auto max-h-20 object-contain' />
+        <img src={universityLogo} alt='logo' className='hidden rounded-full lg:block mb-8 w-full h-auto max-h-20 object-contain' />
         
         <div className='flex flex-col gap-1'>
           {navItems.map((item) => (
@@ -87,10 +87,10 @@ const AdminLanding: React.FC = () => {
             <div className='w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center'>
               <CgProfile className='text-white' size={18} />
             </div>
-            <div className='flex-1'>
+            <Link to='/' className='flex-1'>
               <p className='text-sm font-medium'>admin@example.com</p>
               <p className='text-xs text-indigo-200'>Administrator</p>
-            </div>
+            </Link>
             <CgLogOut className='text-gray-300 hover:text-white' size={18} />
           </div>
         </div>
