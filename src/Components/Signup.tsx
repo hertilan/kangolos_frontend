@@ -6,6 +6,7 @@ import axios from 'axios';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import project from '../assets/project.png';
+import Otp from './Otp';
 
 interface FormValues {
   firstName: string;
@@ -27,6 +28,7 @@ const Signup: React.FC = () => {
     password: false,
     confirmPassword: false
   });
+  const [showOtp,setShowOtp] = useState<boolean>(false)
   const [apiStatus, setApiStatus] = useState({
     message: '',
     type: '' as 'success' | 'error' | ''
@@ -97,24 +99,28 @@ const Signup: React.FC = () => {
         );
 
         setApiStatus({
-          message: 'Account created successfully! Redirecting to login...',
+          message: `Account created successfully!`,
           type: 'success'
         });
         
-        setTimeout(() => navigate('/login'), 2000);
+        setTimeout(() =>{ 
+          setShowOtp(true)
+          // navigate('/login')
+        }, 2000);
+        
       } catch (error: any) {
-        let errorMessage = 'Signup failed. Please try again.';
+        let errorMessage = `Signup failed. Please try again.`;
         
         if (error.response) {
           switch (error.response.status) {
             case 400:
-              errorMessage = 'Invalid input data. Please check your information.';
+              errorMessage = `Invalid input data. Please check your information.`;
               break;
             case 409:
-              errorMessage = 'Email already exists. Please login instead.';
+              errorMessage = `Email already exists. Please login instead.`;
               break;
             case 500:
-              errorMessage = 'Server error. Please try again later.';
+              errorMessage = `Server error. Please try again later.`;
               break;
           }
         }
@@ -167,7 +173,20 @@ const Signup: React.FC = () => {
       </div>
 
       {/* Form Section */}
-      <div className="lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
+      <div className="lg:w-1/2 flex items-center justify-center p-6 sm:p-12 relative">
+        {/* OTP Modal Backdrop and Container */}
+        {showOtp && (
+          <>
+            <div className="fixed inset-0 bg-gray-500/30 bg-opacity-50 z-40"></div>
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 mx-4">
+                <Otp 
+                  email={formik.values.email} onClose={() => setShowOtp(false)}
+                />
+              </div>
+            </div>
+          </>
+        )}
         <div className="w-full max-w-md">
           <div className="mb-8 text-center">
             <h1 className="text-3xl font-bold text-[#2C4FFF] mb-2">FYPMS</h1>
