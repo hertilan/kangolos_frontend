@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaUserEdit, FaSearch } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
-import Department from './Department';
+import Department from '../Departments/Department';
 import AddSchool from './AddSchool';
 
 interface SchoolProps {
