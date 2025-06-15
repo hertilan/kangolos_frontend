@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Header from '../StudentSmall/Header';
-import { IoSend } from "react-icons/io5";
+import { IoSend, IoChevronBack } from "react-icons/io5";
 import { FiAlertCircle } from "react-icons/fi";
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -19,7 +19,20 @@ const Team: React.FC = () => {
     const [teamMembers, setTeamMembers] = useState<string[]>(['Kayitsinga TH', 'Eric TUYISHIME', 'Merci RUYANGA']);
     const [activeMember, setActiveMember] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [showSidebar, setShowSidebar] = useState(true);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    // Toggle sidebar on mobile
+    const toggleSidebar = () => {
+        setShowSidebar(!showSidebar);
+    };
+
+    // Auto-close sidebar on mobile when a member is selected
+    useEffect(() => {
+        if (window.innerWidth < 768 && activeMember) {
+            setShowSidebar(false);
+        }
+    }, [activeMember]);
 
     // Scroll to bottom of messages
     useEffect(() => {
@@ -44,25 +57,12 @@ const Team: React.FC = () => {
         setMessageInput('');
 
         try {
-            const response = await fetch('https://www.binary.com/api/messages', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    message: messageInput,
-                    user: currentUser
-                })
-            });
-
-            if (!response.ok) throw new Error('Network response was not ok');
-            
-            const data = await response.json();
+            // Simulated API call
+            await new Promise(resolve => setTimeout(resolve, 1000));
             
             // Update message status
             setMessages(prev => prev.map(msg => 
-                msg.id === tempId ? { ...msg, id: data.id, status: 'sent' } : msg
+                msg.id === tempId ? { ...msg, status: 'sent' } : msg
             ));
             
         } catch (error) {
@@ -90,24 +90,11 @@ const Team: React.FC = () => {
         ));
 
         try {
-            const response = await fetch('https://www.binary.com/api/messages', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    message: messageToResend.text,
-                    user: currentUser
-                })
-            });
-
-            if (!response.ok) throw new Error('Network response was not ok');
-            
-            const data = await response.json();
+            // Simulated API call
+            await new Promise(resolve => setTimeout(resolve, 1000));
             
             setMessages(prev => prev.map(msg => 
-                msg.id === messageId ? { ...msg, id: data.id, status: 'sent' } : msg
+                msg.id === messageId ? { ...msg, status: 'sent' } : msg
             ));
             
         } catch (error) {
@@ -122,24 +109,27 @@ const Team: React.FC = () => {
         const fetchData = async () => {
             setIsLoading(true);
             try {
-                const [receivedRes, sentRes] = await Promise.all([
-                    fetch('https://www.binary.com/api/messages/received'),
-                    fetch('https://www.binary.com/api/messages/sent')
-                ]);
-
-                if (!receivedRes.ok || !sentRes.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                const [receivedData, sentData] = await Promise.all([
-                    receivedRes.json(),
-                    sentRes.json()
-                ]);
-
-                setMessages([
-                    ...receivedData.map((msg: any) => ({ ...msg, time: new Date(msg.time), status: 'sent' })),
-                    ...sentData.map((msg: any) => ({ ...msg, time: new Date(msg.time), status: 'sent' }))
-                ]);
+                // Simulated data fetching
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                const mockMessages = [
+                    {
+                        id: '1',
+                        text: 'Hello team! How is the project going?',
+                        sender: 'Kayitsinga TH',
+                        time: new Date(Date.now() - 3600000),
+                        status: 'sent'
+                    },
+                    {
+                        id: '2',
+                        text: 'We are making good progress on the frontend',
+                        sender: 'me',
+                        time: new Date(Date.now() - 1800000),
+                        status: 'sent'
+                    }
+                ];
+                
+                setMessages(mockMessages);
                 
             } catch (error) {
                 console.error('Error fetching messages', error);
@@ -160,10 +150,16 @@ const Team: React.FC = () => {
             <Header />
             
             <div className='flex flex-row flex-1 overflow-hidden'>
-                {/* Team members sidebar */}
-                <div className='w-72 flex flex-col h-full border-r bg-white'>
-                    <div className='p-4 border-b'>
+                {/* Team members sidebar - hidden on mobile when chat is open */}
+                <div className={`${showSidebar ? 'flex' : 'hidden'} md:flex w-full md:w-72 flex-col h-full border-r bg-white`}>
+                    <div className='p-4 border-b flex items-center justify-between'>
                         <h2 className='text-xl font-bold text-gray-800'>Team Members</h2>
+                        <button 
+                            onClick={toggleSidebar}
+                            className='md:hidden p-1 text-gray-500 hover:text-gray-700'
+                        >
+                            <IoChevronBack size={20} />
+                        </button>
                     </div>
                     <div className='overflow-y-auto flex-1'>
                         {teamMembers.map((member, index) => (
@@ -187,9 +183,15 @@ const Team: React.FC = () => {
                 </div>
 
                 {/* Chat area */}
-                <div className='flex-1 flex flex-col h-full'>
-                    {/* Chat header */}
+                <div className={`${!showSidebar ? 'flex' : 'hidden'} md:flex flex-1 flex-col h-full`}>
+                    {/* Chat header with back button for mobile */}
                     <div className='p-4 border-b bg-white flex items-center'>
+                        <button 
+                            onClick={toggleSidebar}
+                            className='md:hidden mr-2 p-1 text-gray-500 hover:text-gray-700'
+                        >
+                            <IoChevronBack size={20} />
+                        </button>
                         {activeMember ? (
                             <>
                                 <div className='w-10 h-10 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold mr-3'>
@@ -224,7 +226,7 @@ const Team: React.FC = () => {
                                         transition={{ duration: 0.3 }}
                                         className={`mb-4 flex ${message.sender === currentUser ? 'justify-end' : 'justify-start'}`}
                                     >
-                                        <div className={`max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl ${message.sender === currentUser ? 'flex flex-col items-end' : 'flex flex-col items-start'}`}>
+                                        <div className={`max-w-xs md:max-w-md lg:max-w-lg ${message.sender === currentUser ? 'flex flex-col items-end' : 'flex flex-col items-start'}`}>
                                             <div className={`flex items-center mb-1 ${message.sender === currentUser ? 'justify-end' : 'justify-start'}`}>
                                                 <span className={`text-sm font-medium ${message.sender === currentUser ? 'text-blue-600' : 'text-green-600'}`}>
                                                     {message.sender === currentUser ? 'You' : message.sender}
