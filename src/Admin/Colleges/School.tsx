@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaUserEdit, FaSearch, FaUniversity, FaUserTie, FaUsers, FaProjectDiagram } from "react-icons/fa";
+import { FaUserEdit, FaSearch } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import Department from './Department';
 import AddSchool from './AddSchool';
