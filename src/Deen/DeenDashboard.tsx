@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 
 const DeanDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notifications, setNotifications] = useState([
     { 
       id: 1, 
@@ -54,53 +55,94 @@ const DeanDashboard: React.FC = () => {
     { id: 2, title: 'Final Projects Exhibition', date: '2023-06-25', time: '8:00 AM', venue: 'ICT Innovation Hub' },
   ];
 
+  const markAsRead = (id: number) => {
+    setNotifications(notifications.map(n => 
+      n.id === id ? { ...n, read: true } : n
+    ));
+  };
+
   return (
     <div className="flex h-screen bg-gray-50">
+      {/* Mobile Menu Button */}
+      <button 
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-md"
+      >
+        {mobileMenuOpen ? (
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        ) : (
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        )}
+      </button>
+
       {/* Sidebar - UR Colors */}
-      <div className="w-64 bg-blue-900 text-white shadow-lg">
+      <div className={`w-64 bg-blue-900 text-white shadow-lg transform transition-all duration-300 fixed md:static z-40 h-full
+        ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
         <div className="p-6">
           <h1 className="text-xl font-bold">Dean's Dashboard</h1>
           <p className="text-sm text-blue-200">School of Engineering</p>
           <p className="text-xs text-blue-300 mt-1">University of Rwanda</p>
         </div>
-        <nav className="mt-6">
+        <nav className="mt-6 overflow-y-auto h-[calc(100%-180px)]">
           <button
-            onClick={() => setActiveTab('dashboard')}
+            onClick={() => {
+              setActiveTab('dashboard');
+              setMobileMenuOpen(false);
+            }}
             className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'dashboard' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
           >
             <FiHome className="mr-3" />
             Overview
           </button>
           <button
-            onClick={() => setActiveTab('departments')}
+            onClick={() => {
+              setActiveTab('departments');
+              setMobileMenuOpen(false);
+            }}
             className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'departments' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
           >
             <BsBuilding className="mr-3" />
             Departments
           </button>
           <button
-            onClick={() => setActiveTab('projects')}
+            onClick={() => {
+              setActiveTab('projects');
+              setMobileMenuOpen(false);
+            }}
             className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'projects' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
           >
             <FiFileText className="mr-3" />
             All Projects
           </button>
           <button
-            onClick={() => setActiveTab('supervisors')}
+            onClick={() => {
+              setActiveTab('supervisors');
+              setMobileMenuOpen(false);
+            }}
             className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'supervisors' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
           >
             <FaChalkboardTeacher className="mr-3" />
             Supervisors
           </button>
           <button
-            onClick={() => setActiveTab('reports')}
+            onClick={() => {
+              setActiveTab('reports');
+              setMobileMenuOpen(false);
+            }}
             className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'reports' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
           >
             <FiPieChart className="mr-3" />
             Reports
           </button>
           <button
-            onClick={() => setActiveTab('calendar')}
+            onClick={() => {
+              setActiveTab('calendar');
+              setMobileMenuOpen(false);
+            }}
             className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'calendar' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
           >
             <FiCalendar className="mr-3" />
@@ -108,13 +150,20 @@ const DeanDashboard: React.FC = () => {
           </button>
           <div className="mt-12">
             <button
-              onClick={() => setActiveTab('settings')}
+              onClick={() => {
+                setActiveTab('settings');
+                setMobileMenuOpen(false);
+              }}
               className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'settings' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
             >
               <FiSettings className="mr-3" />
               School Settings
             </button>
-            <Link to='/' className="flex items-center w-full px-6 py-3 text-left hover:bg-blue-700">
+            <Link 
+              to='/' 
+              className="flex items-center w-full px-6 py-3 text-left hover:bg-blue-700"
+              onClick={() => setMobileMenuOpen(false)}
+            >
               <FiLogOut className="mr-3" />
               Logout
             </Link>
@@ -143,75 +192,95 @@ const DeanDashboard: React.FC = () => {
                   <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
                 )}
               </button>
+              
+              {/* Notifications dropdown */}
+              <div className="hidden absolute right-0 mt-2 w-72 bg-white rounded-md shadow-lg py-1 z-50">
+                {notifications.map(notification => (
+                  <div 
+                    key={notification.id} 
+                    className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${!notification.read ? 'bg-blue-50' : ''}`}
+                    onClick={() => markAsRead(notification.id)}
+                  >
+                    <p className="text-sm font-medium">{notification.title}</p>
+                    <p className="text-sm text-gray-600">{notification.message}</p>
+                    <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
+                  </div>
+                ))}
+                <div className="border-t border-gray-200 px-4 py-2 text-center">
+                  <button className="text-sm text-blue-600 hover:text-blue-800">
+                    View all notifications
+                  </button>
+                </div>
+              </div>
             </div>
             <div className="flex items-center">
               <div className="w-8 h-8 rounded-full bg-blue-800 flex items-center justify-center text-white font-medium">
                 D
               </div>
-              <span className="ml-2 text-sm font-medium">Prof. Dean Name</span>
+              <span className="ml-2 text-sm font-medium hidden md:inline">Prof. Dean Name</span>
             </div>
           </div>
         </header>
 
         {/* Dashboard Content */}
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-4 md:p-6">
           {activeTab === 'dashboard' && (
             <div className="space-y-6">
               {/* School Stats Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-600">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                <div className="bg-white rounded-lg shadow p-4 md:p-6 border-l-4 border-blue-600">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-500">Departments</p>
-                      <h3 className="text-2xl font-bold">{schoolStats.departments}</h3>
+                      <h3 className="text-xl md:text-2xl font-bold">{schoolStats.departments}</h3>
                     </div>
-                    <div className="p-3 rounded-full bg-blue-100 text-blue-600">
-                      <FaUniversity size={20} />
+                    <div className="p-2 md:p-3 rounded-full bg-blue-100 text-blue-600">
+                      <FaUniversity size={18} />
                     </div>
                   </div>
                 </div>
-                <div className="bg-white rounded-lg shadow p-6 border-l-4 border-green-600">
+                <div className="bg-white rounded-lg shadow p-4 md:p-6 border-l-4 border-green-600">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-500">Total Projects</p>
-                      <h3 className="text-2xl font-bold">{schoolStats.totalProjects}</h3>
+                      <h3 className="text-xl md:text-2xl font-bold">{schoolStats.totalProjects}</h3>
                     </div>
-                    <div className="p-3 rounded-full bg-green-100 text-green-600">
-                      <FiFileText size={20} />
+                    <div className="p-2 md:p-3 rounded-full bg-green-100 text-green-600">
+                      <FiFileText size={18} />
                     </div>
                   </div>
                 </div>
-                <div className="bg-white rounded-lg shadow p-6 border-l-4 border-purple-600">
+                <div className="bg-white rounded-lg shadow p-4 md:p-6 border-l-4 border-purple-600">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-500">Completed</p>
-                      <h3 className="text-2xl font-bold text-purple-600">{schoolStats.completed}</h3>
+                      <h3 className="text-xl md:text-2xl font-bold text-purple-600">{schoolStats.completed}</h3>
                     </div>
-                    <div className="p-3 rounded-full bg-purple-100 text-purple-600">
-                      <FiCheckCircle size={20} />
+                    <div className="p-2 md:p-3 rounded-full bg-purple-100 text-purple-600">
+                      <FiCheckCircle size={18} />
                     </div>
                   </div>
                 </div>
-                <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-600">
+                <div className="bg-white rounded-lg shadow p-4 md:p-6 border-l-4 border-yellow-600">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-500">Supervisors</p>
-                      <h3 className="text-2xl font-bold">{schoolStats.supervisors}</h3>
+                      <h3 className="text-xl md:text-2xl font-bold">{schoolStats.supervisors}</h3>
                     </div>
-                    <div className="p-3 rounded-full bg-yellow-100 text-yellow-600">
-                      <FaChalkboardTeacher size={20} />
+                    <div className="p-2 md:p-3 rounded-full bg-yellow-100 text-yellow-600">
+                      <FaChalkboardTeacher size={18} />
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Departments Progress */}
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-white rounded-lg shadow p-4 md:p-6">
                 <h3 className="text-lg font-semibold mb-4">Departments Progress</h3>
                 <div className="space-y-4">
                   {departments.map(dept => (
                     <div key={dept.name} className="mb-3">
-                      <div className="flex justify-between mb-1">
+                      <div className="flex justify-between mb-1 text-sm md:text-base">
                         <span className="font-medium">{dept.name}</span>
                         <span>{dept.completed}/{dept.projects} projects</span>
                       </div>
@@ -227,8 +296,8 @@ const DeanDashboard: React.FC = () => {
               </div>
 
               {/* Recent Activities and Upcoming Events */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-2 bg-white rounded-lg shadow p-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+                <div className="lg:col-span-2 bg-white rounded-lg shadow p-4 md:p-6">
                   <h3 className="text-lg font-semibold mb-4">Recent Activities</h3>
                   <div className="space-y-4">
                     {recentActivities.map(activity => (
@@ -237,8 +306,8 @@ const DeanDashboard: React.FC = () => {
                           <FiFileText size={16} />
                         </div>
                         <div>
-                          <p className="font-medium">{activity.action}</p>
-                          <p className="text-sm text-gray-600">
+                          <p className="font-medium text-sm md:text-base">{activity.action}</p>
+                          <p className="text-xs md:text-sm text-gray-600">
                             {activity.user} • {activity.time}
                           </p>
                         </div>
@@ -246,16 +315,16 @@ const DeanDashboard: React.FC = () => {
                     ))}
                   </div>
                 </div>
-                <div className="bg-white rounded-lg shadow p-6">
+                <div className="bg-white rounded-lg shadow p-4 md:p-6">
                   <h3 className="text-lg font-semibold mb-4">Upcoming School Events</h3>
                   <div className="space-y-4">
                     {upcomingEvents.map(event => (
                       <div key={event.id} className="pb-4 border-b border-gray-100 last:border-0">
-                        <h4 className="font-medium">{event.title}</h4>
-                        <p className="text-sm text-gray-600 mt-1">
+                        <h4 className="font-medium text-sm md:text-base">{event.title}</h4>
+                        <p className="text-xs md:text-sm text-gray-600 mt-1">
                           <span className="font-medium">{event.date}</span> at {event.time}
                         </p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-xs md:text-sm text-gray-600">
                           <span className="font-medium">Venue:</span> {event.venue}
                         </p>
                       </div>
@@ -267,35 +336,35 @@ const DeanDashboard: React.FC = () => {
           )}
 
           {activeTab === 'departments' && (
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white rounded-lg shadow p-4 md:p-6">
               <h3 className="text-lg font-semibold mb-6">Department Management</h3>
               <p className="text-gray-500">Department management interface will be displayed here</p>
             </div>
           )}
 
           {activeTab === 'projects' && (
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white rounded-lg shadow p-4 md:p-6">
               <h3 className="text-lg font-semibold mb-6">All Final Year Projects</h3>
               <p className="text-gray-500">School-wide projects interface will be displayed here</p>
             </div>
           )}
 
           {activeTab === 'supervisors' && (
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white rounded-lg shadow p-4 md:p-6">
               <h3 className="text-lg font-semibold mb-6">Supervisors Overview</h3>
               <p className="text-gray-500">Supervisor management interface will be displayed here</p>
             </div>
           )}
 
           {activeTab === 'reports' && (
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white rounded-lg shadow p-4 md:p-6">
               <h3 className="text-lg font-semibold mb-6">School Reports</h3>
               <p className="text-gray-500">Reporting interface will be displayed here</p>
             </div>
           )}
 
           {activeTab === 'calendar' && (
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white rounded-lg shadow p-4 md:p-6">
               <h3 className="text-lg font-semibold mb-6">Academic Calendar</h3>
               <p className="text-gray-500">School calendar interface will be displayed here</p>
             </div>

@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 
 const HODDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notifications, setNotifications] = useState([
     { 
       id: 1, 
@@ -53,51 +54,86 @@ const HODDashboard: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Sidebar - University of Rwanda Colors */}
-      <div className="w-64 bg-blue-900 text-white shadow-lg">
+      {/* Mobile Menu Button */}
+      <button 
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-md"
+      >
+        {mobileMenuOpen ? (
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        ) : (
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        )}
+      </button>
+
+      {/* Sidebar */}
+      <div className={`w-64 bg-blue-900 text-white shadow-lg transform transition-all duration-300 fixed md:static z-40 h-full
+        ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
         <div className="p-6">
           <h1 className="text-xl font-bold">HOD Dashboard</h1>
           <p className="text-sm text-blue-200">Computer Science Department</p>
           <p className="text-xs text-blue-300 mt-1">University of Rwanda</p>
         </div>
-        <nav className="mt-6">
+        <nav className="mt-6 overflow-y-auto h-[calc(100%-180px)]">
           <button
-            onClick={() => setActiveTab('dashboard')}
+            onClick={() => {
+              setActiveTab('dashboard');
+              setMobileMenuOpen(false);
+            }}
             className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'dashboard' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
           >
             <FiHome className="mr-3" />
             Dashboard
           </button>
           <button
-            onClick={() => setActiveTab('projects')}
+            onClick={() => {
+              setActiveTab('projects');
+              setMobileMenuOpen(false);
+            }}
             className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'projects' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
           >
             <FiBook className="mr-3" />
             Projects
           </button>
           <button
-            onClick={() => setActiveTab('students')}
+            onClick={() => {
+              setActiveTab('students');
+              setMobileMenuOpen(false);
+            }}
             className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'students' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
           >
             <FaUserGraduate className="mr-3" />
             Students
           </button>
           <button
-            onClick={() => setActiveTab('supervisors')}
+            onClick={() => {
+              setActiveTab('supervisors');
+              setMobileMenuOpen(false);
+            }}
             className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'supervisors' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
           >
             <FaChalkboardTeacher className="mr-3" />
             Supervisors
           </button>
           <button
-            onClick={() => setActiveTab('teams')}
+            onClick={() => {
+              setActiveTab('teams');
+              setMobileMenuOpen(false);
+            }}
             className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'teams' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
           >
             <RiTeamFill className="mr-3" />
             Project Teams
           </button>
           <button
-            onClick={() => setActiveTab('defenses')}
+            onClick={() => {
+              setActiveTab('defenses');
+              setMobileMenuOpen(false);
+            }}
             className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'defenses' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
           >
             <BsCalendarCheck className="mr-3" />
@@ -105,18 +141,37 @@ const HODDashboard: React.FC = () => {
           </button>
           <div className="mt-12">
             <button
-              onClick={() => setActiveTab('settings')}
+              onClick={() => {
+                setActiveTab('settings');
+                setMobileMenuOpen(false);
+              }}
               className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'settings' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
             >
               <FiSettings className="mr-3" />
               Settings
             </button>
-            <Link to='/' className="flex items-center w-full px-6 py-3 text-left hover:bg-blue-700">
+            <Link 
+              to='/' 
+              className="flex items-center w-full px-6 py-3 text-left hover:bg-blue-700"
+              onClick={() => setMobileMenuOpen(false)}
+            >
               <FiLogOut className="mr-3" />
               Logout
             </Link>
           </div>
         </nav>
+        
+        <div className="absolute bottom-0 w-full p-4 border-t border-blue-800 bg-blue-900">
+          <div className="flex items-center">
+            <div className="w-10 h-10 rounded-full bg-blue-800 flex items-center justify-center text-white">
+              HOD
+            </div>
+            <div className="ml-3">
+              <p className="text-sm font-medium">Dr. Department Head</p>
+              <p className="text-xs text-blue-200">Computer Science</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Main Content */}
@@ -140,18 +195,38 @@ const HODDashboard: React.FC = () => {
                   <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
                 )}
               </button>
+              
+              {/* Notifications dropdown */}
+              <div className="hidden absolute right-0 mt-2 w-72 bg-white rounded-md shadow-lg py-1 z-50">
+                {notifications.map(notification => (
+                  <div 
+                    key={notification.id} 
+                    className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${!notification.read ? 'bg-blue-50' : ''}`}
+                    onClick={() => markAsRead(notification.id)}
+                  >
+                    <p className="text-sm font-medium">{notification.title}</p>
+                    <p className="text-sm text-gray-600">{notification.message}</p>
+                    <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
+                  </div>
+                ))}
+                <div className="border-t border-gray-200 px-4 py-2 text-center">
+                  <button className="text-sm text-blue-600 hover:text-blue-800">
+                    View all notifications
+                  </button>
+                </div>
+              </div>
             </div>
             <div className="flex items-center">
               <div className="w-8 h-8 rounded-full bg-blue-800 flex items-center justify-center text-white font-medium">
                 HOD
               </div>
-              <span className="ml-2 text-sm font-medium">Dr. Department Head</span>
+              <span className="ml-2 text-sm font-medium hidden md:inline">Dr. Department Head</span>
             </div>
           </div>
         </header>
 
         {/* Dashboard Content */}
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-4 md:p-6">
           {activeTab === 'dashboard' && (
             <div className="space-y-6">
               {/* Stats Cards */}

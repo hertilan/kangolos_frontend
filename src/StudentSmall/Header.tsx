@@ -1,50 +1,66 @@
 import React, { useState } from 'react'
-import { IoIosSearch } from "react-icons/io";
+import { IoIosSearch, IoIosMenu, IoIosClose } from "react-icons/io";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { Link } from 'react-router-dom';
 
 const Header: React.FC = () => {
-    const [searchText, setSearchText] = useState<string>('')
+    const [searchText, setSearchText] = useState<string>('');
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     
     return (
         <header className='w-full bg-[#00628B] text-gray-200 p-4 sticky top-0 z-50 shadow-md'>
             <div className='max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4'>
-                {/* Logo */}
-                <Link to='/' className='text-xl font-bold hover:text-white transition-colors'>
-                    FYPMS
-                </Link>
+                <div className='flex items-center justify-between w-full md:w-auto'>
+                    {/* Logo */}
+                    <Link to='/' className='text-xl font-bold hover:text-white transition-colors'>
+                        FYPMS
+                    </Link>
+
+                    {/* Mobile menu button */}
+                    <button 
+                        className='md:hidden p-2 text-gray-200 hover:text-white focus:outline-none'
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        aria-label="Toggle menu"
+                    >
+                        {mobileMenuOpen ? <IoIosClose size={24} /> : <IoIosMenu size={24} />}
+                    </button>
+                </div>
 
                 {/* Navigation */}
-                <nav className='flex-1'>
-                    <ul className='flex flex-wrap justify-center gap-4 md:gap-6 lg:gap-8'>
-                        <li>
+                <nav className={`${mobileMenuOpen ? 'block' : 'hidden'} md:block flex-1 w-full md:w-auto`}>
+                    <ul className='flex flex-col md:flex-row items-center gap-2 md:gap-4 lg:gap-6'>
+                        <li className='w-full md:w-auto'>
                             <Link 
                                 to='/admin' 
-                                className='hover:text-green-400 transition-colors px-2 py-1 rounded hover:bg-white/10'
+                                className='block hover:text-green-400 transition-colors px-3 py-2 rounded hover:bg-white/10 text-center md:text-left'
+                                onClick={() => setMobileMenuOpen(false)}
                             >
                                 Dashboard
                             </Link>
                         </li>
-                        <li>
+                        <li className='w-full md:w-auto'>
                             <Link 
                                 to='/student/projects' 
-                                className='hover:text-green-400 transition-colors px-2 py-1 rounded hover:bg-white/10'
+                                className='block hover:text-green-400 transition-colors px-3 py-2 rounded hover:bg-white/10 text-center md:text-left'
+                                onClick={() => setMobileMenuOpen(false)}
                             >
                                 Browse Projects
                             </Link>
                         </li>
-                        <li>
+                        <li className='w-full md:w-auto'>
                             <Link 
                                 to='/student' 
-                                className='hover:text-green-400 transition-colors px-2 py-1 rounded hover:bg-white/10'
+                                className='block hover:text-green-400 transition-colors px-3 py-2 rounded hover:bg-white/10 text-center md:text-left'
+                                onClick={() => setMobileMenuOpen(false)}
                             >
                                 Students
                             </Link>
                         </li>
-                        <li>
+                        <li className='w-full md:w-auto'>
                             <Link 
                                 to='/student/team' 
-                                className='hover:text-green-400 transition-colors px-2 py-1 rounded hover:bg-white/10'
+                                className='block hover:text-green-400 transition-colors px-3 py-2 rounded hover:bg-white/10 text-center md:text-left'
+                                onClick={() => setMobileMenuOpen(false)}
                             >
                                 My Team
                             </Link>
@@ -53,16 +69,16 @@ const Header: React.FC = () => {
                 </nav>
 
                 {/* Search and User Area */}
-                <div className='flex items-center gap-4'>
+                <div className={`${mobileMenuOpen ? 'flex' : 'hidden'} md:flex items-center gap-3 w-full md:w-auto mt-4 md:mt-0`}>
                     {/* Search Bar */}
-                    <div className='relative'>
+                    <div className='relative flex-1 md:flex-none'>
                         <input 
                             type='text' 
                             name='search' 
                             value={searchText} 
                             placeholder='Search Projects...' 
                             onChange={(e) => setSearchText(e.target.value.trim())}
-                            className='border border-gray-400 pl-10 pr-4 py-2 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 placeholder:text-gray-300 w-40 sm:w-48 md:w-56'
+                            className='border border-gray-400 pl-10 pr-4 py-2 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-400 placeholder:text-gray-300 w-full md:w-48 lg:w-56'
                             aria-label='Search projects'
                         />
                         <IoIosSearch 
@@ -93,4 +109,4 @@ const Header: React.FC = () => {
     )
 }
 
-export default Header
+export default Header;
