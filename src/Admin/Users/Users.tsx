@@ -96,6 +96,21 @@ const Users: React.FC = () => {
         >
           Staffs
         </button>
+        <button
+          className={`px-4 ${activePage === 'hods' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md' : ''} cursor-pointer transition-colors duration-300 ease-in-out`}
+          onClick={() => handleSetActive('hods')}>
+          Hod
+        </button>
+        <button
+          className={`px-4 ${activePage === 'deens' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md' : ''} cursor-pointer transition-colors duration-300 ease-in-out`}
+          onClick={() => handleSetActive('deens')}>
+          Deens
+        </button>
+        <button
+          className={`px-4 ${activePage === 'principal' ? 'text-[#2C4FFF] bg-[#d2d8f7] rounded-md' : ''} cursor-pointer transition-colors duration-300 ease-in-out`}
+          onClick={() => handleSetActive('principal')}>
+          Principals
+        </button>
       </div>
       <button onClick={toggleAddUser} className='flex flex-row items-center px-5 py-1 h-fit text-white bg-[#00628B] rounded-md cursor-pointer hover:bg-[#3d94bd] transition-colors duration-500 ease-in-out'>
       <FaPlus size={20} className='mr-1' />

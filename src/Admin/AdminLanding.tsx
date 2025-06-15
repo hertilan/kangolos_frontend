@@ -13,6 +13,7 @@ import Users from './Users/Users';
 import Teams from './Teams/Teams';
 import Projects from './Projects/Projects';
 import AdminSettings from './AdminSettings';
+import Colleges from './Colleges/College';
 
 const AdminLanding: React.FC = () => {
   const [activePage, setActivePage] = useState<string>('Dashboard');
@@ -24,7 +25,7 @@ const AdminLanding: React.FC = () => {
     { name: 'Users', icon: <FaUsers size={20} /> },
     { name: 'Projects', icon: <LuProjector size={20} /> },
     { name: 'Teams', icon: <TbBrandTeams size={20} /> },
-    { name: 'Structure', icon: <FcTreeStructure size={20} /> },
+    { name: 'College', icon: <FcTreeStructure size={20} /> },
     { name: 'Logs', icon: <LuLogs size={20} /> },
     { name: 'Security', icon: <MdSecurity size={20} /> },
     { name: 'Settings', icon: <CiSettings size={20} /> },
@@ -37,12 +38,13 @@ const AdminLanding: React.FC = () => {
       case 'Teams': return <Teams />;
       case 'Projects': return <Projects />;
       case 'Settings': return <AdminSettings />;
+      case 'College': return <Colleges/>;
       default: return <Dashboard />;
     }
   };
 
   return (
-    <div className='min-h-screen w-full flex flex-col lg:flex-row bg-gray-50'>
+    <div className='min-h-screen  h-screen w-full flex flex-col lg:flex-row bg-gray-50'>
       {/* Mobile Menu Button */}
       <div className='lg:hidden flex justify-between items-center  p-4 bg-indigo-700 text-white'>
         <img src={universityLogo} alt='logo' className='w-24 h-auto rounded-full' />
@@ -56,7 +58,7 @@ const AdminLanding: React.FC = () => {
 
       {/* Left Navigation */}
       <div 
-        className={`${mobileMenuOpen ? 'block' : 'hidden'} lg:block min-h-screen lg:h-screen w-full lg:w-64 text-gray-200 flex flex-col gap-3 bg-indigo-700 p-4 lg:p-6 transition-all duration-300`}
+        className={`${mobileMenuOpen ? 'block' : 'hidden'} lg:block min-h-screen lg:h-screen w-full lg:w-64 overflow-y-auto text-gray-200 flex flex-col gap-3 bg-indigo-700 p-4 lg:p-6 transition-all duration-300`}
       >
         <img src={universityLogo} alt='logo' className='hidden rounded-full lg:block mb-8 w-full h-auto max-h-20 object-contain' />
         
