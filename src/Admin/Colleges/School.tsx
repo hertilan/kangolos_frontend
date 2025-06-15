@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaUserEdit, FaSearch, FaUniversity, FaUserTie, FaUsers, FaProjectDiagram } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import Department from './Department';
@@ -20,9 +20,8 @@ interface MySchool {
 }
 
 const School: React.FC<SchoolProps> = ({ collegeName, schoolsList }) => {
-  // Sample school data that matches the schoolsList
-  const allSchools: MySchool[] = [
-    // College of Science and Technology
+  // Sample school data to use if API fetch fails
+  const sampleSchools: MySchool[] = [
     {
       _id: 1,
       name: "School of Engineering",
@@ -43,7 +42,6 @@ const School: React.FC<SchoolProps> = ({ collegeName, schoolsList }) => {
       projects: 120,
       description: "Center of excellence in information and communication technology"
     },
-    // College of Business and Economics
     {
       _id: 3,
       name: "School of Business",
@@ -54,7 +52,6 @@ const School: React.FC<SchoolProps> = ({ collegeName, schoolsList }) => {
       projects: 65,
       description: "Developing business leaders for Rwanda's growing economy"
     },
-    // College of Medicine and Health Sciences
     {
       _id: 4,
       name: "School of Medicine",
@@ -65,7 +62,6 @@ const School: React.FC<SchoolProps> = ({ collegeName, schoolsList }) => {
       projects: 95,
       description: "Training Rwanda's next generation of medical professionals"
     },
-    // College of Education
     {
       _id: 5,
       name: "School of Education",
@@ -78,9 +74,49 @@ const School: React.FC<SchoolProps> = ({ collegeName, schoolsList }) => {
     }
   ];
 
+  const [allSchools, setAllSchools] = useState<MySchool[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSchool, setSelectedSchool] = useState<MySchool | null>(null);
   const [showDepartments, setShowDepartments] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchSchools = async () => {
+      try {
+        const response = await fetch(`https://www.projectmanagement.urcom/admin/schools?college=${encodeURIComponent(collegeName)}`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data && data.length > 0) {
+          setAllSchools(data);
+        } else {
+          // Filter sample schools to only include those in the schoolsList
+          const filteredSampleSchools = sampleSchools.filter(school => 
+            school.college === collegeName && schoolsList.includes(school.name)
+          );
+          setAllSchools(filteredSampleSchools);
+          setError('No data available from server, using sample data');
+        }
+      } catch (err) {
+        console.error('Error fetching schools:', err);
+        // Filter sample schools to only include those in the schoolsList
+        const filteredSampleSchools = sampleSchools.filter(school => 
+          school.college === collegeName && schoolsList.includes(school.name)
+        );
+        setAllSchools(filteredSampleSchools);
+        setError('Failed to fetch data, using sample data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSchools();
+  }, [collegeName, schoolsList]);
 
   // Filter schools to only include those in the schoolsList and match the collegeName
   const schools = allSchools.filter(school => 
@@ -103,8 +139,22 @@ const School: React.FC<SchoolProps> = ({ collegeName, schoolsList }) => {
     setSelectedSchool(null);
   };
 
+  if (loading) {
+    return (
+      <div className="w-full p-6 flex justify-center items-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#00628B]"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full p-6 space-y-6 bg-white rounded-lg shadow-sm">
+      {error && (
+        <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4" role="alert">
+          <p>{error}</p>
+        </div>
+      )}
+
       {showDepartments && selectedSchool ? (
         <div>
           <button 

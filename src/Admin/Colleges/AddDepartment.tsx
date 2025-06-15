@@ -3,30 +3,27 @@ import { useNavigate } from 'react-router-dom';
 import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 
-const AddCollege: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+const AddDepartment: React.FC<{ onClose: () => void; schoolName: string }> = ({ onClose, schoolName }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const initialValues = {
     name: '',
-    location: '',
-    principal: '',
+    head: '',
+    programs: '',
     students: '',
-    projects: '',
-    schools: '',
+    faculty: '',
     description: '',
-    established: ''
+    school: schoolName
   };
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required('College name is required'),
-    location: Yup.string().required('Location is required'),
-    principal: Yup.string().required('Principal name is required'),
+    name: Yup.string().required('Department name is required'),
+    head: Yup.string().required('Department head is required'),
+    programs: Yup.string().required('Programs list is required'),
     students: Yup.number().required('Number of students is required').positive(),
-    projects: Yup.number().required('Number of projects is required').positive(),
-    schools: Yup.string().required('Schools list is required'),
-    established: Yup.string().required('Established year is required')
+    faculty: Yup.number().required('Number of faculty is required').positive()
   });
 
   const handleSubmit = async (values: typeof initialValues) => {
@@ -34,7 +31,7 @@ const AddCollege: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     setError('');
     
     try {
-      const response = await fetch('https://www.projectmanagement.urcom/admin/colleges', {
+      const response = await fetch('https://www.projectmanagement.urcom/admin/departments', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,12 +39,12 @@ const AddCollege: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         body: JSON.stringify({
           ...values,
           students: parseInt(values.students),
-          projects: parseInt(values.projects)
+          faculty: parseInt(values.faculty)
         })
       });
 
       if (!response.ok) {
-        throw new Error('Failed to add college');
+        throw new Error('Failed to add department');
       }
 
       onClose();
@@ -61,7 +58,7 @@ const AddCollege: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">Add New College</h2>
+      <h2 className="text-2xl font-bold mb-4 text-gray-800">Add New Department to {schoolName}</h2>
       
       {error && (
         <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
@@ -78,7 +75,7 @@ const AddCollege: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           <Form className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">College Name</label>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Department Name</label>
                 <Field
                   type="text"
                   id="name"
@@ -91,41 +88,15 @@ const AddCollege: React.FC<{ onClose: () => void }> = ({ onClose }) => {
               </div>
 
               <div>
-                <label htmlFor="location" className="block text-sm font-medium text-gray-700">Location</label>
+                <label htmlFor="head" className="block text-sm font-medium text-gray-700">Department Head</label>
                 <Field
                   type="text"
-                  id="location"
-                  name="location"
+                  id="head"
+                  name="head"
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />
-                {errors.location && touched.location && (
-                  <p className="mt-1 text-sm text-red-600">{errors.location}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="principal" className="block text-sm font-medium text-gray-700">Principal</label>
-                <Field
-                  type="text"
-                  id="principal"
-                  name="principal"
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                />
-                {errors.principal && touched.principal && (
-                  <p className="mt-1 text-sm text-red-600">{errors.principal}</p>
-                )}
-              </div>
-
-              <div>
-                <label htmlFor="established" className="block text-sm font-medium text-gray-700">Established Year</label>
-                <Field
-                  type="text"
-                  id="established"
-                  name="established"
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                />
-                {errors.established && touched.established && (
-                  <p className="mt-1 text-sm text-red-600">{errors.established}</p>
+                {errors.head && touched.head && (
+                  <p className="mt-1 text-sm text-red-600">{errors.head}</p>
                 )}
               </div>
 
@@ -143,30 +114,30 @@ const AddCollege: React.FC<{ onClose: () => void }> = ({ onClose }) => {
               </div>
 
               <div>
-                <label htmlFor="projects" className="block text-sm font-medium text-gray-700">Number of Projects</label>
+                <label htmlFor="faculty" className="block text-sm font-medium text-gray-700">Number of Faculty</label>
                 <Field
                   type="number"
-                  id="projects"
-                  name="projects"
+                  id="faculty"
+                  name="faculty"
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />
-                {errors.projects && touched.projects && (
-                  <p className="mt-1 text-sm text-red-600">{errors.projects}</p>
+                {errors.faculty && touched.faculty && (
+                  <p className="mt-1 text-sm text-red-600">{errors.faculty}</p>
                 )}
               </div>
             </div>
 
             <div>
-              <label htmlFor="schools" className="block text-sm font-medium text-gray-700">Schools (comma separated)</label>
+              <label htmlFor="programs" className="block text-sm font-medium text-gray-700">Programs (comma separated)</label>
               <Field
                 as="textarea"
-                id="schools"
-                name="schools"
+                id="programs"
+                name="programs"
                 rows={3}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
-              {errors.schools && touched.schools && (
-                <p className="mt-1 text-sm text-red-600">{errors.schools}</p>
+              {errors.programs && touched.programs && (
+                <p className="mt-1 text-sm text-red-600">{errors.programs}</p>
               )}
             </div>
 
@@ -194,7 +165,7 @@ const AddCollege: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                 disabled={isSubmitting}
                 className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#00628B] hover:bg-[#3d94bd] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
               >
-                {isSubmitting ? 'Adding...' : 'Add College'}
+                {isSubmitting ? 'Adding...' : 'Add Department'}
               </button>
             </div>
           </Form>
@@ -204,4 +175,4 @@ const AddCollege: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   );
 };
 
-export default AddCollege;
+export default AddDepartment;

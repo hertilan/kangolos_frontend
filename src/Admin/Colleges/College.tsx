@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaUserEdit, FaSearch } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import School from './School';
@@ -16,7 +16,8 @@ interface College {
 }
 
 const Colleges: React.FC = () => {
-  const [colleges, setColleges] = useState<College[]>([
+  // Sample data to use if API fetch fails
+  const sampleColleges: College[] = [
     {
       _id: 1,
       name: "College of Science and Technology",
@@ -83,11 +84,43 @@ const Colleges: React.FC = () => {
       description: "Training Rwanda's future educators and teachers",
       established: "2013"
     }
-  ]);
+  ];
 
+  const [colleges, setColleges] = useState<College[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showSchools, setShowSchools] = useState(false);
   const [selectedCollege, setSelectedCollege] = useState<College | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchColleges = async () => {
+      try {
+        const response = await fetch('https://www.projectmanagement.urcom/admin/colleges');
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data && data.length > 0) {
+          setColleges(data);
+        } else {
+          setColleges(sampleColleges);
+          setError('No data available from server, using sample data');
+        }
+      } catch (err) {
+        console.error('Error fetching colleges:', err);
+        setColleges(sampleColleges);
+        setError('Failed to fetch data, using sample data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchColleges();
+  }, []);
 
   const filteredColleges = colleges.filter(college =>
     college.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -105,8 +138,22 @@ const Colleges: React.FC = () => {
     setSelectedCollege(null);
   };
 
+  if (loading) {
+    return (
+      <div className="w-full p-6 flex justify-center items-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#00628B]"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full py-6 space-y-6 bg-white rounded-lg shadow-sm">
+      {error && (
+        <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4" role="alert">
+          <p>{error}</p>
+        </div>
+      )}
+
       {showSchools && selectedCollege ? (
         <div>
           <button 
