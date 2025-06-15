@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FaUserEdit, FaSearch, FaBuilding, FaUserGraduate, FaChalkboardTeacher } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import AddDepartment from './AddDepartment';
 
 interface DepartmentProps {
   schoolName: string;
@@ -85,6 +86,7 @@ const Department: React.FC<DepartmentProps> = ({ schoolName, departmentsList }) 
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDepartment, setSelectedDepartment] = useState<MyDepartment | null>(null);
+  const [addDepartment,setAddDepartment] = useState<boolean>(false)
 
   // Filter departments to only include those in the departmentsList and match the schoolName
   const departments = allDepartments.filter(dept => 
@@ -102,7 +104,17 @@ const Department: React.FC<DepartmentProps> = ({ schoolName, departmentsList }) 
   };
 
   return (
-    <div className="w-full p-6 space-y-6 bg-white rounded-lg shadow-sm">
+    <div className="w-full p-6 space-y-6 bg-white rounded-lg shadow-sm relative">
+              {addDepartment && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-600/60 bg-opacity-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl">
+            <AddDepartment 
+              onClose={() => setAddDepartment(false)} 
+              // onSuccess={handleAddCollegeSuccess}
+            />
+          </div>
+        </div>
+      )}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <h1 className="text-2xl font-bold text-gray-800">{schoolName} - Departments</h1>
         <div className="relative w-full md:w-64">
@@ -116,7 +128,9 @@ const Department: React.FC<DepartmentProps> = ({ schoolName, departmentsList }) 
           />
         </div>
         <div>
-          <button className='flex flex-row items-center px-5 py-1 h-fit text-white bg-[#00628B] rounded-md cursor-pointer hover:bg-[#3d94bd] transition-colors duration-500 ease-in-out'>
+          <button onClick={()=>{
+            setAddDepartment(true)
+          }} className='flex flex-row items-center px-5 py-1 h-fit text-white bg-[#00628B] rounded-md cursor-pointer hover:bg-[#3d94bd] transition-colors duration-500 ease-in-out'>
             Add Department
           </button>
         </div>

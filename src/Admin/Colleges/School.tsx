@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaUserEdit, FaSearch, FaUniversity, FaUserTie, FaUsers, FaProjectDiagram } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import Department from './Department';
+import AddSchool from './AddSchool';
 
 interface SchoolProps {
   collegeName: string;
@@ -80,6 +81,7 @@ const School: React.FC<SchoolProps> = ({ collegeName, schoolsList }) => {
   const [showDepartments, setShowDepartments] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [addSchool, setAddSchool] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchSchools = async () => {
@@ -148,10 +150,20 @@ const School: React.FC<SchoolProps> = ({ collegeName, schoolsList }) => {
   }
 
   return (
-    <div className="w-full p-6 space-y-6 bg-white rounded-lg shadow-sm">
+    <div className="w-full p-6 space-y-6 bg-white rounded-lg shadow-sm relative">
       {error && (
         <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4" role="alert">
           <p>{error}</p>
+        </div>
+      )}
+            {addSchool && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-600/60 bg-opacity-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl">
+            <AddSchool 
+              onClose={() => setAddSchool(false)} 
+              // onSuccess={handleAddCollegeSuccess}
+            />
+          </div>
         </div>
       )}
 
@@ -186,7 +198,9 @@ const School: React.FC<SchoolProps> = ({ collegeName, schoolsList }) => {
               />
             </div>
             <div>
-              <button className='flex flex-row items-center px-5 py-1 h-fit text-white bg-[#00628B] rounded-md cursor-pointer hover:bg-[#3d94bd] transition-colors duration-500 ease-in-out'>
+              <button onClick={()=>{
+                setAddSchool(true)
+              }} className='flex flex-row items-center px-5 py-1 h-fit text-white bg-[#00628B] rounded-md cursor-pointer hover:bg-[#3d94bd] transition-colors duration-500 ease-in-out'>
                 Add School
               </button>
             </div>

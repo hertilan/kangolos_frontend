@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaUserEdit, FaSearch } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import School from './School';
+import AddCollege from './AddCollege';
 
 interface College {
   _id: number;
@@ -92,6 +93,7 @@ const Colleges: React.FC = () => {
   const [selectedCollege, setSelectedCollege] = useState<College | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [addCollege, setAddCollege] =useState<boolean>(false)
 
   useEffect(() => {
     const fetchColleges = async () => {
@@ -147,10 +149,20 @@ const Colleges: React.FC = () => {
   }
 
   return (
-    <div className="w-full py-6 space-y-6 bg-white rounded-lg shadow-sm">
+    <div className="w-full py-6 space-y-6 bg-white rounded-lg shadow-sm relative">
       {error && (
         <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4" role="alert">
           <p>{error}</p>
+        </div>
+      )}
+      {addCollege && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-600/60 bg-opacity-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl">
+            <AddCollege 
+              onClose={() => setAddCollege(false)} 
+              // onSuccess={handleAddCollegeSuccess}
+            />
+          </div>
         </div>
       )}
 
@@ -182,7 +194,9 @@ const Colleges: React.FC = () => {
               />
             </div>
             <div>
-              <button className='flex flex-row items-center px-5 py-1 h-fit text-white bg-[#00628B] rounded-md cursor-pointer hover:bg-[#3d94bd] transition-colors duration-500 ease-in-out'>
+              <button className='flex flex-row items-center px-5 py-1 h-fit text-white bg-[#00628B] rounded-md cursor-pointer hover:bg-[#3d94bd] transition-colors duration-500 ease-in-out' onClick={()=>{
+                setAddCollege(true)
+              }}>
                 Add College
               </button>
             </div>
