@@ -259,62 +259,6 @@ const Department: React.FC<DepartmentProps> = ({ schoolName, departmentsList }) 
         </tbody>
       </table>
 
-      {/* Department Detail View */}
-      {selectedDepartment && (
-        <div className="w-full bg-white rounded-lg shadow-md p-6 mt-4 border border-gray-100">
-          <div className="flex flex-col md:flex-row gap-6">
-            <div className="md:w-1/3">
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-800 rounded-lg p-6 text-white">
-                <h2 className="text-2xl font-bold mb-2">{selectedDepartment.name}</h2>
-                <p className="flex items-center gap-2 mb-1">
-                  <FaBuilding className="inline" />
-                  {selectedDepartment.school}
-                </p>
-                <div className="grid grid-cols-2 gap-4 mt-4">
-                  <div>
-                    <p className="text-sm text-blue-200">Students</p>
-                    <p className="text-xl font-bold">{selectedDepartment.students.toLocaleString()}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-blue-200">Faculty</p>
-                    <p className="text-xl font-bold">{selectedDepartment.faculty}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="md:w-2/3">
-              <h3 className="text-xl font-semibold mb-4">About</h3>
-              <p className="text-gray-600 mb-6">{selectedDepartment.description || "No description available."}</p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h3 className="text-xl font-semibold mb-4">Department Head</h3>
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center text-2xl font-bold text-gray-600">
-                      {selectedDepartment.head.split(' ').map(n => n[0]).join('')}
-                    </div>
-                    <div>
-                      <p className="font-semibold">{selectedDepartment.head}</p>
-                      <p className="text-gray-500">Department Head</p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div>
-                  <h3 className="text-xl font-semibold mb-4">Programs</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedDepartment.programs.split(',').map((program, index) => (
-                      <span key={index} className="bg-gray-100 px-3 py-1 rounded-full text-sm">
-                        {program.trim()}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
