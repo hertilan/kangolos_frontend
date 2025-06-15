@@ -7,6 +7,7 @@ import Projects from '../Admin/Projects/Projects';
 import Team from '../StudentPages/Team';
 import SupervisorCalendar from './SupervisorCalender';
 import Messaging from './Messaging';
+import SupervisorSettings from './SupervisorSettings';
 
 interface Tab {
   icon: React.ReactNode;
@@ -46,7 +47,7 @@ const SupervisorLanding: React.FC = () => {
       case 'messages':
         return <Messaging/>;
       case 'settings':
-        return <SupervisorSettings />;
+        return <SupervisorDashboard />;
       default:
         return <SupervisorDashboard />;
     }
