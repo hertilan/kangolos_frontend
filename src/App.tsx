@@ -6,6 +6,8 @@ import Signup from './Components/Signup';
 import Student from './StudentPages/Student';
 import Supervisor from './SupervisorPages/Supervisor';
 import Admin from './Admin/Admin';
+import Hod from './HOD/Hod';
+import Deen from './Deen/Deen';
 
 const App: React.FC = () => {
   return (
@@ -17,6 +19,8 @@ const App: React.FC = () => {
       <Route path='/student/*' element = {<Student/>}/>
       <Route path='/supervisor/*' element={<Supervisor/>}/>
       <Route path='/admin/*' element={<Admin/>}/>
+      <Route path='/hod/*' element={<Hod/>}/>
+      <Route path='/deen/*' element={<Deen/>}/>
     </Routes> 
     </Router>
   )
