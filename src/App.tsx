@@ -8,6 +8,7 @@ import Supervisor from './SupervisorPages/Supervisor';
 import Admin from './Admin/Admin';
 import Hod from './HOD/Hod';
 import Deen from './Deen/Deen';
+import Principal from './Principal/Principal';
 
 const App: React.FC = () => {
   return (
@@ -21,6 +22,7 @@ const App: React.FC = () => {
       <Route path='/admin/*' element={<Admin/>}/>
       <Route path='/hod/*' element={<Hod/>}/>
       <Route path='/deen/*' element={<Deen/>}/>
+      <Route path='/principal/*' element={<Principal/>}/>
     </Routes> 
     </Router>
   )

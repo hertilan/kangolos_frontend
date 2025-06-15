@@ -23,6 +23,11 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({ isScrolledDown }) => {
         
         <div className="hidden md:flex items-center space-x-8">
           <Link 
+            to="/principal/" 
+            className={`${isScrolledDown ? 'text-white' : 'text-gray-600 hover:text-indigo-600'} transition-colors duration-300`}>
+            Principal
+          </Link>
+          <Link 
             to="/deen/" 
             className={`${isScrolledDown ? 'text-white' : 'text-gray-600 hover:text-indigo-600'} transition-colors duration-300`}>
             Deen
