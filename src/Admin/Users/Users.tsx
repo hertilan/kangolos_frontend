@@ -22,7 +22,7 @@ const Users: React.FC = () => {
   <h1 className="text-2xl font-bold">User Management</h1>
 
   {addUser && (
-    <div className="absolute top-0 left-0 w-full h-screen z-50 grid place-items-center bg-gray-500/60 bg-opacity-30">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-600/60 bg-opacity-50 p-4">
       <div className="bg-white p-4 rounded shadow-md relative w-full max-w-3xl mx-auto ">
         <button
           onClick={toggleAddUser}
