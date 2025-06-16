@@ -5,8 +5,6 @@ import {
   FiHome,
   FiUsers,
   FiFileText,
-  FiCalendar,
-  FiMessageSquare,
   FiSettings,
   FiLogOut,
   FiChevronDown,

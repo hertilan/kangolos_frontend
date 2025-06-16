@@ -4,6 +4,10 @@ import { FaChalkboardTeacher, FaUniversity } from 'react-icons/fa';
 import { BsGraphUp, BsBuilding } from 'react-icons/bs';
 import { RiTeamFill } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
+import Projects from '../Admin/Projects/Projects';
+import Colleges from '../Admin/Colleges/College';
+import Users from '../Admin/Users/Users';
+import SupervisorCalendar from '../SupervisorPages/SupervisorCalender';
 
 const DeanDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -336,24 +340,15 @@ const DeanDashboard: React.FC = () => {
           )}
 
           {activeTab === 'departments' && (
-            <div className="bg-white rounded-lg shadow p-4 md:p-6">
-              <h3 className="text-lg font-semibold mb-6">Department Management</h3>
-              <p className="text-gray-500">Department management interface will be displayed here</p>
-            </div>
+            <Colleges/>
           )}
 
           {activeTab === 'projects' && (
-            <div className="bg-white rounded-lg shadow p-4 md:p-6">
-              <h3 className="text-lg font-semibold mb-6">All Final Year Projects</h3>
-              <p className="text-gray-500">School-wide projects interface will be displayed here</p>
-            </div>
+            <Projects/>
           )}
 
           {activeTab === 'supervisors' && (
-            <div className="bg-white rounded-lg shadow p-4 md:p-6">
-              <h3 className="text-lg font-semibold mb-6">Supervisors Overview</h3>
-              <p className="text-gray-500">Supervisor management interface will be displayed here</p>
-            </div>
+            <Users/>
           )}
 
           {activeTab === 'reports' && (
@@ -364,10 +359,7 @@ const DeanDashboard: React.FC = () => {
           )}
 
           {activeTab === 'calendar' && (
-            <div className="bg-white rounded-lg shadow p-4 md:p-6">
-              <h3 className="text-lg font-semibold mb-6">Academic Calendar</h3>
-              <p className="text-gray-500">School calendar interface will be displayed here</p>
-            </div>
+            <SupervisorCalendar/>
           )}
         </main>
       </div>
