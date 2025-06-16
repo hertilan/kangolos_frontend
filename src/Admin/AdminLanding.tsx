@@ -67,7 +67,7 @@ const AdminLanding: React.FC = () => {
       case 'teams': return <Teams />;
       case 'projects': return <Projects />;
       case 'settings': return <AdminSettings />;
-      case 'college': return <Colleges />;
+      case 'college': return <Colleges displayed={true} viewAddSchool={true} />;
       case 'logs': return <div className="p-6">System Logs</div>;
       case 'security': return <div className="p-6">Security Settings</div>;
       default: return <Dashboard />;

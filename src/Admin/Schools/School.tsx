@@ -9,6 +9,7 @@ import AddSchool from './AddSchool';
 interface SchoolProps {
   collegeName: string;
   schoolsList: string[];
+  viewAddSchool: boolean;
 }
 
 interface MySchool {
@@ -21,8 +22,7 @@ interface MySchool {
   projects: number;
   description?: string;
 }
-
-const School: React.FC<SchoolProps> = ({ collegeName, schoolsList }) => {
+const School: React.FC<SchoolProps> = ({ collegeName, schoolsList, viewAddSchool }) => {
   const sampleSchools: MySchool[] = [
     {
       _id: 1,
@@ -248,7 +248,7 @@ const School: React.FC<SchoolProps> = ({ collegeName, schoolsList }) => {
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setAddSchool(true)}
-                className="flex items-center justify-center gap-2 px-4 py-2 bg-[#00628B] text-white rounded-lg hover:bg-[#3d94bd] transition-colors shadow-sm"
+                className={`${viewAddSchool ? 'flex' : 'hidden'} items-center justify-center gap-2 px-4 py-2 bg-[#00628B] text-white rounded-lg hover:bg-[#3d94bd] transition-colors shadow-sm`}
               >
                 <FaPlus /> Add School
               </motion.button>

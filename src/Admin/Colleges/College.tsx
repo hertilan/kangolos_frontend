@@ -18,8 +18,12 @@ interface College {
   description?: string;
   established?: string;
 }
+interface addCollegeProp{
+  displayed: boolean;
+  viewAddSchool: boolean;
+}
 
-const Colleges: React.FC = () => {
+const Colleges: React.FC <addCollegeProp>= ({displayed,viewAddSchool}) => {
   const sampleColleges: College[] = [
     {
       _id: 1,
@@ -219,6 +223,7 @@ const Colleges: React.FC = () => {
           <School 
             collegeName={selectedCollege.name} 
             schoolsList={selectedCollege.schools.split(',')} 
+            viewAddSchool={viewAddSchool}
           />
         </motion.div>
       ) : (
@@ -250,7 +255,7 @@ const Colleges: React.FC = () => {
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setAddCollege(true)}
-                className="flex items-center justify-center gap-2 px-4 py-2 bg-[#00628B] text-white rounded-lg hover:bg-[#3d94bd] transition-colors shadow-sm"
+                className={`${displayed ? 'flex' : 'hidden'} items-center justify-center gap-2 px-4 py-2 bg-[#00628B] text-white rounded-lg hover:bg-[#3d94bd] transition-colors shadow-sm`}
               >
                 <FaPlus /> Add College
               </motion.button>

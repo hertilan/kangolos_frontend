@@ -8,8 +8,9 @@ import Projects from '../Admin/Projects/Projects';
 import Users from '../Admin/Users/Users';
 import ViewStaffs from '../Admin/Users/ViewStaffs';
 import HodOverview from './HodOverview';
-import { MdDashboard } from 'react-icons/md';
+import { MdDashboard, MdSchool } from 'react-icons/md';
 import HodHeader from './HodHeader';
+import Colleges from '../Admin/Colleges/College';
 
 const HODDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -65,6 +66,16 @@ const HODDashboard: React.FC = () => {
           >
             <FiBook className="mr-3" />
             Projects
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab('departments');
+              setMobileMenuOpen(false);
+            }}
+            className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'projects' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
+          >
+            <MdSchool className="mr-3" />
+            Departments
           </button>
           <button
             onClick={() => {
@@ -154,6 +165,9 @@ const HODDashboard: React.FC = () => {
 
           {activeTab === 'projects' && (
             <Projects/>
+          )}
+          {activeTab === 'departments' && (
+            <Colleges displayed={false} viewAddSchool={false} />
           )}
 
           {activeTab === 'students' && (

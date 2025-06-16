@@ -1,69 +1,21 @@
 import React, { useState } from 'react';
-import { FiHome, FiUsers, FiCalendar, FiFileText, FiPieChart, FiBell, FiSettings, FiLogOut, FiCheckCircle } from 'react-icons/fi';
-import { FaChalkboardTeacher, FaUniversity } from 'react-icons/fa';
-import { BsGraphUp, BsBuilding } from 'react-icons/bs';
-import { RiTeamFill } from 'react-icons/ri';
+import { FiHome, FiCalendar, FiFileText, FiPieChart, FiSettings, FiLogOut } from 'react-icons/fi';
+import { FaChalkboardTeacher } from 'react-icons/fa';
+import { BsBuilding } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import Projects from '../Admin/Projects/Projects';
 import Colleges from '../Admin/Colleges/College';
 import Users from '../Admin/Users/Users';
 import SupervisorCalendar from '../SupervisorPages/SupervisorCalender';
+import DeanHeader from './DeanHeader';
+import DeanOverview from './DeanOverview';
 
 const DeanDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [notifications, setNotifications] = useState([
-    { 
-      id: 1, 
-      title: 'New Department Report', 
-      message: 'Computer Science submitted quarterly projects report', 
-      time: '1 hour ago', 
-      read: false 
-    },
-    { 
-      id: 2, 
-      title: 'Approval Required', 
-      message: '5 projects need final dean approval', 
-      time: '3 hours ago', 
-      read: true 
-    },
-  ]);
 
-  // Sample data for University of Rwanda
-  const schoolStats = {
-    departments: 6,
-    totalProjects: 286,
-    completed: 192,
-    inProgress: 84,
-    supervisors: 68,
-    students: 572
-  };
 
-  const departments = [
-    { name: "Computer Science", projects: 48, completed: 32, color: "bg-blue-100 text-blue-800" },
-    { name: "Electrical Engineering", projects: 42, completed: 28, color: "bg-green-100 text-green-800" },
-    { name: "Civil Engineering", projects: 38, completed: 25, color: "bg-yellow-100 text-yellow-800" },
-    { name: "Mechanical Engineering", projects: 35, completed: 22, color: "bg-red-100 text-red-800" },
-    { name: "Biomedical Engineering", projects: 32, completed: 20, color: "bg-purple-100 text-purple-800" },
-    { name: "Architecture", projects: 30, completed: 18, color: "bg-indigo-100 text-indigo-800" },
-  ];
 
-  const recentActivities = [
-    { id: 1, action: 'Approved department budget', user: 'Finance Committee', time: '2 hours ago' },
-    { id: 2, action: 'Reviewed projects report', user: 'Quality Assurance', time: '1 day ago' },
-    { id: 3, action: 'Scheduled school-wide defenses', user: 'Academic Committee', time: '2 days ago' },
-  ];
-
-  const upcomingEvents = [
-    { id: 1, title: 'School Board Meeting', date: '2023-06-20', time: '9:00 AM', venue: 'Main Campus Senate Hall' },
-    { id: 2, title: 'Final Projects Exhibition', date: '2023-06-25', time: '8:00 AM', venue: 'ICT Innovation Hub' },
-  ];
-
-  const markAsRead = (id: number) => {
-    setNotifications(notifications.map(n => 
-      n.id === id ? { ...n, read: true } : n
-    ));
-  };
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -178,169 +130,15 @@ const DeanDashboard: React.FC = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Topbar */}
-        <header className="bg-white shadow-sm p-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-800">
-            {activeTab === 'dashboard' && 'School Overview'}
-            {activeTab === 'departments' && 'Department Management'}
-            {activeTab === 'projects' && 'All Final Year Projects'}
-            {activeTab === 'supervisors' && 'Supervisors Overview'}
-            {activeTab === 'reports' && 'School Reports'}
-            {activeTab === 'calendar' && 'Academic Calendar'}
-            {activeTab === 'settings' && 'School Settings'}
-          </h2>
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <button className="p-2 rounded-full hover:bg-gray-100 relative">
-                <FiBell className="text-gray-600" />
-                {notifications.some(n => !n.read) && (
-                  <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-                )}
-              </button>
-              
-              {/* Notifications dropdown */}
-              <div className="hidden absolute right-0 mt-2 w-72 bg-white rounded-md shadow-lg py-1 z-50">
-                {notifications.map(notification => (
-                  <div 
-                    key={notification.id} 
-                    className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${!notification.read ? 'bg-blue-50' : ''}`}
-                    onClick={() => markAsRead(notification.id)}
-                  >
-                    <p className="text-sm font-medium">{notification.title}</p>
-                    <p className="text-sm text-gray-600">{notification.message}</p>
-                    <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
-                  </div>
-                ))}
-                <div className="border-t border-gray-200 px-4 py-2 text-center">
-                  <button className="text-sm text-blue-600 hover:text-blue-800">
-                    View all notifications
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <div className="w-8 h-8 rounded-full bg-blue-800 flex items-center justify-center text-white font-medium">
-                D
-              </div>
-              <span className="ml-2 text-sm font-medium hidden md:inline">Prof. Dean Name</span>
-            </div>
-          </div>
-        </header>
-
+        <DeanHeader/>
         {/* Dashboard Content */}
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
           {activeTab === 'dashboard' && (
-            <div className="space-y-6">
-              {/* School Stats Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                <div className="bg-white rounded-lg shadow p-4 md:p-6 border-l-4 border-blue-600">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">Departments</p>
-                      <h3 className="text-xl md:text-2xl font-bold">{schoolStats.departments}</h3>
-                    </div>
-                    <div className="p-2 md:p-3 rounded-full bg-blue-100 text-blue-600">
-                      <FaUniversity size={18} />
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-white rounded-lg shadow p-4 md:p-6 border-l-4 border-green-600">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">Total Projects</p>
-                      <h3 className="text-xl md:text-2xl font-bold">{schoolStats.totalProjects}</h3>
-                    </div>
-                    <div className="p-2 md:p-3 rounded-full bg-green-100 text-green-600">
-                      <FiFileText size={18} />
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-white rounded-lg shadow p-4 md:p-6 border-l-4 border-purple-600">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">Completed</p>
-                      <h3 className="text-xl md:text-2xl font-bold text-purple-600">{schoolStats.completed}</h3>
-                    </div>
-                    <div className="p-2 md:p-3 rounded-full bg-purple-100 text-purple-600">
-                      <FiCheckCircle size={18} />
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-white rounded-lg shadow p-4 md:p-6 border-l-4 border-yellow-600">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">Supervisors</p>
-                      <h3 className="text-xl md:text-2xl font-bold">{schoolStats.supervisors}</h3>
-                    </div>
-                    <div className="p-2 md:p-3 rounded-full bg-yellow-100 text-yellow-600">
-                      <FaChalkboardTeacher size={18} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Departments Progress */}
-              <div className="bg-white rounded-lg shadow p-4 md:p-6">
-                <h3 className="text-lg font-semibold mb-4">Departments Progress</h3>
-                <div className="space-y-4">
-                  {departments.map(dept => (
-                    <div key={dept.name} className="mb-3">
-                      <div className="flex justify-between mb-1 text-sm md:text-base">
-                        <span className="font-medium">{dept.name}</span>
-                        <span>{dept.completed}/{dept.projects} projects</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2.5">
-                        <div 
-                          className={`h-2.5 rounded-full ${dept.color.split(' ')[0]}`} 
-                          style={{ width: `${(dept.completed/dept.projects)*100}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Recent Activities and Upcoming Events */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
-                <div className="lg:col-span-2 bg-white rounded-lg shadow p-4 md:p-6">
-                  <h3 className="text-lg font-semibold mb-4">Recent Activities</h3>
-                  <div className="space-y-4">
-                    {recentActivities.map(activity => (
-                      <div key={activity.id} className="flex items-start pb-4 border-b border-gray-100 last:border-0">
-                        <div className="p-2 rounded-full bg-blue-100 text-blue-600 mr-3">
-                          <FiFileText size={16} />
-                        </div>
-                        <div>
-                          <p className="font-medium text-sm md:text-base">{activity.action}</p>
-                          <p className="text-xs md:text-sm text-gray-600">
-                            {activity.user} • {activity.time}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="bg-white rounded-lg shadow p-4 md:p-6">
-                  <h3 className="text-lg font-semibold mb-4">Upcoming School Events</h3>
-                  <div className="space-y-4">
-                    {upcomingEvents.map(event => (
-                      <div key={event.id} className="pb-4 border-b border-gray-100 last:border-0">
-                        <h4 className="font-medium text-sm md:text-base">{event.title}</h4>
-                        <p className="text-xs md:text-sm text-gray-600 mt-1">
-                          <span className="font-medium">{event.date}</span> at {event.time}
-                        </p>
-                        <p className="text-xs md:text-sm text-gray-600">
-                          <span className="font-medium">Venue:</span> {event.venue}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
+            <DeanOverview/>
           )}
 
           {activeTab === 'departments' && (
-            <Colleges/>
+            <Colleges displayed={false} viewAddSchool={true}/>
           )}
 
           {activeTab === 'projects' && (
