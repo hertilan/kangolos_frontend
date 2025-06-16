@@ -20,7 +20,6 @@ const PrincipalHeader :React.FC= () => {
     { name: "College of Arts and Social Sciences", location: "Nyagatare", code: "CASS" },
   ];
     const handleLogout = () => {
-    localStorage.removeItem('principalToken');
     navigate('/');
   };
   return (

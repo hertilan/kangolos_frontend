@@ -85,8 +85,8 @@ const AdminLanding: React.FC = () => {
       {/* Mobile Menu Button */}
       <button 
         onClick={() => setShowMobileMenu(!showMobileMenu)}
-        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-md"
-      >
+        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-md">
+
         <FiChevronDown className={`transition-transform ${showMobileMenu ? 'rotate-180' : ''}`} />
       </button>
 
@@ -132,8 +132,7 @@ const AdminLanding: React.FC = () => {
           {/* Logout button */}
           <button
             onClick={() => handleTabChange('logout')}
-            className="w-full flex items-center px-6 py-3 text-left text-indigo-200 hover:bg-indigo-600 mt-4"
-          >
+            className="w-full flex items-center px-6 py-3 text-left text-indigo-200 hover:bg-indigo-600 mt-4">
             <span className="mr-3"><FiLogOut size={18} /></span>
             Logout
           </button>
