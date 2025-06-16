@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { FaUserEdit, FaSearch, FaSort } from "react-icons/fa";
+import React, { useEffect, useState, useMemo } from 'react';
+import { FaUserEdit, FaSearch, FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { motion } from 'framer-motion';
 
 interface User {
   _id: number;
@@ -16,32 +17,50 @@ interface User {
 
 const AllUsers: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<{ key: keyof User; direction: 'ascending' | 'descending' } | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const usersPerPage = 10;
 
   useEffect(() => {
-    fetch('https://www.kangalos.com/users/users')
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchUsers = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('https://www.kangalos.com/users/users');
+        const data = await response.json();
         setUsers(data);
-        setFilteredUsers(data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Failed to fetch users', error);
-      });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
   }, []);
 
-useEffect(() => {
-  const results = users.filter(user =>
-    Object.values(user).some(val =>
-      String(val).toLowerCase().includes(searchTerm.toLowerCase())
-  ));
-  setFilteredUsers(results);
-  setCurrentPage(1);
-}, [searchTerm, users]);
+  const filteredUsers = useMemo(() => {
+    return users.filter(user =>
+      Object.values(user).some(val =>
+        String(val).toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [searchTerm, users]);
+
+  const sortedUsers = useMemo(() => {
+    if (!sortConfig) return filteredUsers;
+    
+    return [...filteredUsers].sort((a, b) => {
+      if (a[sortConfig.key] < b[sortConfig.key]) {
+        return sortConfig.direction === 'ascending' ? -1 : 1;
+      }
+      if (a[sortConfig.key] > b[sortConfig.key]) {
+        return sortConfig.direction === 'ascending' ? 1 : -1;
+      }
+      return 0;
+    });
+  }, [filteredUsers, sortConfig]);
 
   const handleSort = (key: keyof User) => {
     let direction: 'ascending' | 'descending' = 'ascending';
@@ -49,55 +68,81 @@ useEffect(() => {
       direction = 'descending';
     }
     setSortConfig({ key, direction });
-
-    const sortedUsers = [...filteredUsers].sort((a, b) => {
-      if (a[key] < b[key]) return direction === 'ascending' ? -1 : 1;
-      if (a[key] > b[key]) return direction === 'ascending' ? 1 : -1;
-      return 0;
-    });
-
-    setFilteredUsers(sortedUsers);
   };
 
   // Pagination logic
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
-  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+  const currentUsers = sortedUsers.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(sortedUsers.length / usersPerPage);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
+  const tableHeaders = [
+    { key: '_id', label: 'ID' },
+    { key: 'name', label: 'Name' },
+    { key: 'email', label: 'Email' },
+    { key: 'gender', label: 'Gender' },
+    { key: 'role', label: 'Role' },
+    { key: 'college', label: 'College' },
+    { key: 'school', label: 'School' },
+    { key: 'department', label: 'Department' },
+    { key: 'action', label: 'Actions' }
+  ];
+
   return (
-    <div className="w-full p-6 space-y-6 bg-white rounded-lg shadow-sm">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="w-full p-4 md:p-6 lg:p-8 bg-white rounded-xl shadow-sm"
+    >
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <h1 className="text-2xl font-bold text-gray-800">User Management</h1>
         <div className="relative w-full md:w-64">
-          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <FaSearch className="text-gray-400" />
+          </div>
           <input
             type="text"
             placeholder="Search users..."
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
           />
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto rounded-lg border border-gray-200">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              {['_id', 'name', 'email', 'gender', 'role', 'college', 'school', 'department', 'action'].map((header) => (
+              {tableHeaders.map((header) => (
                 <th
-                  key={header}
+                  key={header.key}
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                  onClick={() => header !== 'action' ? handleSort(header as keyof User) : null}
+                  className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${
+                    header.key !== 'action' ? 'cursor-pointer hover:bg-gray-100' : ''
+                  }`}
+                  onClick={() => header.key !== 'action' && handleSort(header.key as keyof User)}
                 >
                   <div className="flex items-center">
-                    {header.replace('_', ' ')}
-                    {header !== 'action' && (
-                      <FaSort className="ml-1 text-gray-400 hover:text-gray-600" size={12} />
+                    {header.label}
+                    {header.key !== 'action' && (
+                      <span className="ml-1">
+                        {sortConfig?.key === header.key ? (
+                          sortConfig.direction === 'ascending' ? (
+                            <FaSortUp className="text-gray-600" size={12} />
+                          ) : (
+                            <FaSortDown className="text-gray-600" size={12} />
+                          )
+                        ) : (
+                          <FaSort className="text-gray-400 hover:text-gray-600" size={12} />
+                        )}
+                      </span>
                     )}
                   </div>
                 </th>
@@ -105,15 +150,29 @@ useEffect(() => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {currentUsers.length === 0 ? (
+            {isLoading ? (
               <tr>
-                <td colSpan={9} className="px-6 py-4 text-center text-gray-500">
+                <td colSpan={9} className="px-6 py-8 text-center">
+                  <div className="flex justify-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
+                  </div>
+                </td>
+              </tr>
+            ) : currentUsers.length === 0 ? (
+              <tr>
+                <td colSpan={9} className="px-6 py-8 text-center text-gray-500">
                   No users found
                 </td>
               </tr>
             ) : (
-              currentUsers.map((user) => (
-                <tr key={user._id} className="hover:bg-gray-50">
+              currentUsers.map((user, index) => (
+                <motion.tr
+                  key={user._id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2, delay: index * 0.02 }}
+                  className="hover:bg-gray-50"
+                >
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user._id}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{user.name}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.email}</td>
@@ -122,15 +181,17 @@ useEffect(() => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.college}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.school}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.department}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex space-x-2">
-                    <button className="text-indigo-600 hover:text-indigo-900 p-1 rounded-md hover:bg-indigo-50">
-                      <FaUserEdit size={18} />
-                    </button>
-                    <button className="text-red-600 hover:text-red-900 p-1 rounded-md hover:bg-red-50">
-                      <MdDelete size={18} />
-                    </button>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <div className="flex space-x-2">
+                      <button className="text-indigo-600 hover:text-indigo-900 p-1 rounded-md hover:bg-indigo-50 transition-colors">
+                        <FaUserEdit size={18} />
+                      </button>
+                      <button className="text-red-600 hover:text-red-900 p-1 rounded-md hover:bg-red-50 transition-colors">
+                        <MdDelete size={18} />
+                      </button>
+                    </div>
                   </td>
-                </tr>
+                </motion.tr>
               ))
             )}
           </tbody>
@@ -138,41 +199,77 @@ useEffect(() => {
       </div>
 
       {/* Pagination */}
-      {filteredUsers.length > usersPerPage && (
-        <div className="flex items-center justify-between mt-4">
+      {!isLoading && sortedUsers.length > usersPerPage && (
+        <div className="flex flex-col sm:flex-row items-center justify-between mt-6 gap-4">
           <div className="text-sm text-gray-500">
-            Showing {indexOfFirstUser + 1} to {Math.min(indexOfLastUser, filteredUsers.length)} of {filteredUsers.length} users
+            Showing <span className="font-medium">{indexOfFirstUser + 1}</span> to{' '}
+            <span className="font-medium">{Math.min(indexOfLastUser, sortedUsers.length)}</span> of{' '}
+            <span className="font-medium">{sortedUsers.length}</span> results
           </div>
-          <div className="flex space-x-2">
-            <button
+          <div className="flex items-center space-x-1">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
-              className={`px-3 py-1 rounded-md ${currentPage === 1 ? 'bg-gray-100 text-gray-400' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+              className={`p-2 rounded-md ${currentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
             >
               <FiChevronLeft />
-            </button>
+            </motion.button>
             
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
-              <button
-                key={number}
-                onClick={() => paginate(number)}
-                className={`px-3 py-1 rounded-md ${currentPage === number ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+              let pageNumber;
+              if (totalPages <= 5) {
+                pageNumber = i + 1;
+              } else if (currentPage <= 3) {
+                pageNumber = i + 1;
+              } else if (currentPage >= totalPages - 2) {
+                pageNumber = totalPages - 4 + i;
+              } else {
+                pageNumber = currentPage - 2 + i;
+              }
+
+              return (
+                <motion.button
+                  key={pageNumber}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => paginate(pageNumber)}
+                  className={`px-3 py-1 rounded-md ${currentPage === pageNumber ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                >
+                  {pageNumber}
+                </motion.button>
+              );
+            })}
+
+            {totalPages > 5 && currentPage < totalPages - 2 && (
+              <span className="px-2 text-gray-500">...</span>
+            )}
+
+            {totalPages > 5 && currentPage < totalPages - 2 && (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => paginate(totalPages)}
+                className={`px-3 py-1 rounded-md ${currentPage === totalPages ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
               >
-                {number}
-              </button>
-            ))}
+                {totalPages}
+              </motion.button>
+            )}
             
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className={`px-3 py-1 rounded-md ${currentPage === totalPages ? 'bg-gray-100 text-gray-400' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+              className={`p-2 rounded-md ${currentPage === totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
             >
               <FiChevronRight />
-            </button>
+            </motion.button>
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

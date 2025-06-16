@@ -1,6 +1,9 @@
+
+
 import React, { useState, useEffect } from 'react';
-import { FaUserEdit, FaSearch } from "react-icons/fa";
+import { FaUserEdit, FaSearch, FaPlus, FaChevronLeft } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import { motion, AnimatePresence } from 'framer-motion';
 import School from '../Schools/School';
 import AddCollege from './AddCollege';
 
@@ -17,7 +20,6 @@ interface College {
 }
 
 const Colleges: React.FC = () => {
-  // Sample data to use if API fetch fails
   const sampleColleges: College[] = [
     {
       _id: 1,
@@ -30,6 +32,7 @@ const Colleges: React.FC = () => {
       description: "Leading institution in science and technology education in Rwanda",
       established: "2013"
     },
+    
     {
       _id: 2,
       name: "College of Business and Economics",
@@ -85,6 +88,7 @@ const Colleges: React.FC = () => {
       description: "Training Rwanda's future educators and teachers",
       established: "2013"
     }
+    // ... other sample colleges
   ];
 
   const [colleges, setColleges] = useState<College[]>([]);
@@ -93,25 +97,20 @@ const Colleges: React.FC = () => {
   const [selectedCollege, setSelectedCollege] = useState<College | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [addCollege, setAddCollege] =useState<boolean>(false)
+  const [addCollege, setAddCollege] = useState(false);
+  const [editCollege, setEditCollege] = useState<College | null>(null);
 
   useEffect(() => {
     const fetchColleges = async () => {
       try {
+        setLoading(true);
         const response = await fetch('https://www.projectmanagement.urcom/admin/colleges');
         
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
         const data = await response.json();
-        
-        if (data && data.length > 0) {
-          setColleges(data);
-        } else {
-          setColleges(sampleColleges);
-          setError('No data available from server, using sample data');
-        }
+        setColleges(data?.length ? data : sampleColleges);
+        if (!data?.length) setError('No data available from server, using sample data');
       } catch (err) {
         console.error('Error fetching colleges:', err);
         setColleges(sampleColleges);
@@ -125,9 +124,9 @@ const Colleges: React.FC = () => {
   }, []);
 
   const filteredColleges = colleges.filter(college =>
-    college.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    college.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    college.principal.toLowerCase().includes(searchTerm.toLowerCase())
+    Object.values(college).some(val => 
+      String(val).toLowerCase().includes(searchTerm.toLowerCase())
+    )
   );
 
   const handleCollegeClick = (college: College) => {
@@ -140,131 +139,236 @@ const Colleges: React.FC = () => {
     setSelectedCollege(null);
   };
 
+  const handleAddCollege = (newCollege: College) => {
+    setColleges([...colleges, newCollege]);
+    setAddCollege(false);
+  };
+
+  const handleUpdateCollege = (updatedCollege: College) => {
+    setColleges(colleges.map(c => c._id === updatedCollege._id ? updatedCollege : c));
+    setEditCollege(null);
+  };
+
+  const handleDeleteCollege = (id: number) => {
+    if (window.confirm('Are you sure you want to delete this college?')) {
+      setColleges(colleges.filter(c => c._id !== id));
+    }
+  };
+
   if (loading) {
     return (
-      <div className="w-full p-6 flex justify-center items-center">
+      <div className="w-full p-6 flex justify-center items-center min-h-[300px]">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#00628B]"></div>
       </div>
     );
   }
 
   return (
-    <div className="w-full py-6 space-y-6 bg-white rounded-lg shadow-sm relative">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="w-full p-4 md:p-6 space-y-6 bg-white rounded-xl shadow-sm"
+    >
+      {/* Error Alert */}
       {error && (
-        <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4" role="alert">
+        <motion.div 
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded"
+        >
           <p>{error}</p>
-        </div>
-      )}
-      {addCollege && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-600/60 bg-opacity-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl">
-            <AddCollege 
-              onClose={() => setAddCollege(false)} 
-              // onSuccess={handleAddCollegeSuccess}
-            />
-          </div>
-        </div>
+        </motion.div>
       )}
 
+      {/* Add/Edit College Modal */}
+      <AnimatePresence>
+        {(addCollege || editCollege) && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              className="bg-white rounded-xl shadow-2xl w-full max-w-2xl"
+            >
+              <AddCollege 
+                onClose={() => editCollege ? setEditCollege(null) : setAddCollege(false)} 
+                onSuccess={editCollege ? handleUpdateCollege : handleAddCollege}
+                college={editCollege}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {showSchools && selectedCollege ? (
-        <div>
+        <motion.div
+          initial={{ x: 50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+        >
           <button 
             onClick={handleBackToColleges}
-            className="flex items-center gap-2 mb-4 text-[#00628B] hover:text-[#3d94bd]"
+            className="flex items-center gap-2 mb-6 text-[#00628B] hover:text-[#3d94bd] transition-colors"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
-            </svg>
+            <FaChevronLeft />
             Back to Colleges
           </button>
-          <School collegeName={selectedCollege.name} schoolsList={selectedCollege.schools.split(',')} />
-        </div>
+          <School 
+            collegeName={selectedCollege.name} 
+            schoolsList={selectedCollege.schools.split(',')} 
+          />
+        </motion.div>
       ) : (
         <>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <h1 className="text-2xl font-bold text-gray-800">Colleges Management</h1>
-            <div className="relative w-full md:w-64">
-              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search colleges..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <div>
-              <button className='flex flex-row items-center px-5 py-1 h-fit text-white bg-[#00628B] rounded-md cursor-pointer hover:bg-[#3d94bd] transition-colors duration-500 ease-in-out' onClick={()=>{
-                setAddCollege(true)
-              }}>
-                Add College
-              </button>
+            <motion.h1 
+              initial={{ x: -20 }}
+              animate={{ x: 0 }}
+              className="text-2xl md:text-3xl font-bold text-gray-800"
+            >
+              Colleges Management
+            </motion.h1>
+            
+            <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+              <div className="relative flex-1 min-w-[200px]">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaSearch className="text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search colleges..."
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setAddCollege(true)}
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-[#00628B] text-white rounded-lg hover:bg-[#3d94bd] transition-colors shadow-sm"
+              >
+                <FaPlus /> Add College
+              </motion.button>
             </div>
           </div>
 
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                {['Id', 'Name', 'Location', 'Principal', 'Students', 'Projects', 'Schools', 'Action'].map((header) => (
-                  <th
-                    key={header}
-                    scope="col"
-                    className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                  >
-                    <div className="flex items-center">{header}</div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredColleges.length === 0 ? (
+          <div className="overflow-x-auto rounded-lg border border-gray-200">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
                 <tr>
-                  <td colSpan={8} className="px-6 py-4 text-center text-gray-500">
-                    No colleges found matching your search
-                  </td>
+                  {['Id', 'Name', 'Location', 'Principal', 'Students', 'Projects', 'Schools', 'Action'].map((header) => (
+                    <th
+                      key={header}
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      {header}
+                    </th>
+                  ))}
                 </tr>
-              ) : (
-                filteredColleges.map((college) => (
-                  <tr
-                    key={college._id}
-                    className="hover:bg-gray-50 cursor-pointer"
-                    onClick={() => handleCollegeClick(college)}
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{college._id}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{college.name}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{college.location}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 capitalize">{college.principal}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{college.students.toLocaleString()}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{college.projects}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{college.schools.split(',').length}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex space-x-2">
-                      <button
-                        className="text-indigo-600 hover:text-indigo-900 p-1 rounded-md hover:bg-indigo-50"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          // Edit functionality here
-                        }}
-                      >
-                        <FaUserEdit size={18} />
-                      </button>
-                      <button
-                        className="text-red-600 hover:text-red-900 p-1 rounded-md hover:bg-red-50"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          // Delete functionality here
-                        }}
-                      >
-                        <MdDelete size={18} />
-                      </button>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredColleges.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="px-6 py-8 text-center text-gray-500">
+                      {colleges.length === 0 ? 'No colleges available' : 'No matching colleges found'}
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  <AnimatePresence>
+                    {filteredColleges.map((college) => (
+                      <motion.tr
+                        key={college._id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        className="hover:bg-gray-50"
+                      >
+                        <td 
+                          className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 cursor-pointer"
+                          onClick={() => handleCollegeClick(college)}
+                        >
+                          {college._id}
+                        </td>
+                        <td 
+                          className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 cursor-pointer"
+                          onClick={() => handleCollegeClick(college)}
+                        >
+                          {college.name}
+                        </td>
+                        <td 
+                          className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 cursor-pointer"
+                          onClick={() => handleCollegeClick(college)}
+                        >
+                          {college.location}
+                        </td>
+                        <td 
+                          className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 cursor-pointer"
+                          onClick={() => handleCollegeClick(college)}
+                        >
+                          {college.principal}
+                        </td>
+                        <td 
+                          className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 cursor-pointer"
+                          onClick={() => handleCollegeClick(college)}
+                        >
+                          {college.students.toLocaleString()}
+                        </td>
+                        <td 
+                          className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 cursor-pointer"
+                          onClick={() => handleCollegeClick(college)}
+                        >
+                          {college.projects}
+                        </td>
+                        <td 
+                          className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 cursor-pointer"
+                          onClick={() => handleCollegeClick(college)}
+                        >
+                          {college.schools.split(',').length}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <div className="flex space-x-2">
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                              className="text-indigo-600 hover:text-indigo-900 p-1 rounded-md hover:bg-indigo-50 transition-colors"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditCollege(college);
+                              }}
+                              title="Edit college"
+                            >
+                              <FaUserEdit size={18} />
+                            </motion.button>
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                              className="text-red-600 hover:text-red-900 p-1 rounded-md hover:bg-red-50 transition-colors"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteCollege(college._id);
+                              }}
+                              title="Delete college"
+                            >
+                              <MdDelete size={18} />
+                            </motion.button>
+                          </div>
+                        </td>
+                      </motion.tr>
+                    ))}
+                  </AnimatePresence>
+                )}
+              </tbody>
+            </table>
+          </div>
         </>
       )}
-    </div>
+    </motion.div>
   );
 };
 

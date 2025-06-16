@@ -1,6 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
-import { FaUserEdit, FaSearch } from "react-icons/fa";
+import { FaUserEdit, FaSearch, FaPlus, FaChevronLeft } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import { motion, AnimatePresence } from 'framer-motion';
 import Department from '../Departments/Department';
 import AddSchool from './AddSchool';
 
@@ -21,7 +23,6 @@ interface MySchool {
 }
 
 const School: React.FC<SchoolProps> = ({ collegeName, schoolsList }) => {
-  // Sample school data to use if API fetch fails
   const sampleSchools: MySchool[] = [
     {
       _id: 1,
@@ -33,6 +34,7 @@ const School: React.FC<SchoolProps> = ({ collegeName, schoolsList }) => {
       projects: 85,
       description: "Leading engineering school with state-of-the-art facilities"
     },
+    
     {
       _id: 2,
       name: "School of ICT",
@@ -73,6 +75,7 @@ const School: React.FC<SchoolProps> = ({ collegeName, schoolsList }) => {
       projects: 40,
       description: "Shaping the future of education in Rwanda"
     }
+    // ... other sample schools
   ];
 
   const [allSchools, setAllSchools] = useState<MySchool[]>([]);
@@ -81,36 +84,34 @@ const School: React.FC<SchoolProps> = ({ collegeName, schoolsList }) => {
   const [showDepartments, setShowDepartments] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [addSchool, setAddSchool] = useState<boolean>(false)
+  const [addSchool, setAddSchool] = useState(false);
+  const [editSchool, setEditSchool] = useState<MySchool | null>(null);
 
   useEffect(() => {
     const fetchSchools = async () => {
       try {
+        setLoading(true);
         const response = await fetch(`https://www.projectmanagement.urcom/admin/schools?college=${encodeURIComponent(collegeName)}`);
         
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
         const data = await response.json();
-        
-        if (data && data.length > 0) {
-          setAllSchools(data);
-        } else {
-          // Filter sample schools to only include those in the schoolsList
-          const filteredSampleSchools = sampleSchools.filter(school => 
-            school.college === collegeName && schoolsList.includes(school.name)
-          );
-          setAllSchools(filteredSampleSchools);
-          setError('No data available from server, using sample data');
-        }
-      } catch (err) {
-        console.error('Error fetching schools:', err);
-        // Filter sample schools to only include those in the schoolsList
-        const filteredSampleSchools = sampleSchools.filter(school => 
+        const filteredData = data?.filter((school: MySchool) => 
           school.college === collegeName && schoolsList.includes(school.name)
         );
-        setAllSchools(filteredSampleSchools);
+        
+        setAllSchools(filteredData?.length ? filteredData : 
+          sampleSchools.filter(school => 
+            school.college === collegeName && schoolsList.includes(school.name)
+          )
+        );
+        
+        if (!filteredData?.length) setError('No data available from server, using sample data');
+      } catch (err) {
+        console.error('Error fetching schools:', err);
+        setAllSchools(sampleSchools.filter(school => 
+          school.college === collegeName && schoolsList.includes(school.name)
+        ));
         setError('Failed to fetch data, using sample data');
       } finally {
         setLoading(false);
@@ -120,16 +121,10 @@ const School: React.FC<SchoolProps> = ({ collegeName, schoolsList }) => {
     fetchSchools();
   }, [collegeName, schoolsList]);
 
-  // Filter schools to only include those in the schoolsList and match the collegeName
-  const schools = allSchools.filter(school => 
-    school.college === collegeName && schoolsList.includes(school.name)
-  );
-
-  const filteredSchools = schools.filter(school =>
-    school.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    school.Deen.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    school.departments.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredSchools = allSchools.filter(school =>
+    Object.values(school).some(val => 
+      String(val).toLowerCase().includes(searchTerm.toLowerCase())
+  ));
 
   const handleSchoolClick = (school: MySchool) => {
     setSelectedSchool(school);
@@ -141,133 +136,231 @@ const School: React.FC<SchoolProps> = ({ collegeName, schoolsList }) => {
     setSelectedSchool(null);
   };
 
+  const handleAddSchool = (newSchool: MySchool) => {
+    setAllSchools([...allSchools, newSchool]);
+    setAddSchool(false);
+  };
+
+  const handleUpdateSchool = (updatedSchool: MySchool) => {
+    setAllSchools(allSchools.map(s => s._id === updatedSchool._id ? updatedSchool : s));
+    setEditSchool(null);
+  };
+
+  const handleDeleteSchool = (id: number) => {
+    if (window.confirm('Are you sure you want to delete this school?')) {
+      setAllSchools(allSchools.filter(s => s._id !== id));
+    }
+  };
+
   if (loading) {
     return (
-      <div className="w-full p-6 flex justify-center items-center">
+      <div className="w-full p-6 flex justify-center items-center min-h-[300px]">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#00628B]"></div>
       </div>
     );
   }
 
   return (
-    <div className="w-full p-6 space-y-6 bg-white rounded-lg shadow-sm relative">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="w-full p-4 md:p-6 space-y-6 bg-white rounded-xl shadow-sm"
+    >
+      {/* Error Alert */}
       {error && (
-        <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4" role="alert">
+        <motion.div 
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded"
+        >
           <p>{error}</p>
-        </div>
-      )}
-            {addSchool && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-600/60 bg-opacity-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl">
-            <AddSchool 
-              onClose={() => setAddSchool(false)} 
-              // onSuccess={handleAddCollegeSuccess}
-            />
-          </div>
-        </div>
+        </motion.div>
       )}
 
+      {/* Add/Edit School Modal */}
+      <AnimatePresence>
+        {(addSchool || editSchool) && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              className="bg-white rounded-xl shadow-2xl w-full max-w-2xl"
+            >
+              <AddSchool 
+                onClose={() => editSchool ? setEditSchool(null) : setAddSchool(false)} 
+                onSuccess={editSchool ? handleUpdateSchool : handleAddSchool}
+                school={editSchool}
+                collegeName={collegeName}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {showDepartments && selectedSchool ? (
-        <div>
+        <motion.div
+          initial={{ x: 50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+        >
           <button 
             onClick={handleBackToSchools}
-            className="flex items-center gap-2 mb-4 text-[#00628B] hover:text-[#3d94bd]"
+            className="flex items-center gap-2 mb-6 text-[#00628B] hover:text-[#3d94bd] transition-colors"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
-            </svg>
+            <FaChevronLeft />
             Back to Schools
           </button>
           <Department 
             schoolName={selectedSchool.name} 
             departmentsList={selectedSchool.departments.split(',')} 
           />
-        </div>
+        </motion.div>
       ) : (
         <>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <h1 className="text-2xl font-bold text-gray-800">{collegeName} - Schools</h1>
-            <div className="relative w-full md:w-64">
-              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search schools..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <div>
-              <button onClick={()=>{
-                setAddSchool(true)
-              }} className='flex flex-row items-center px-5 py-1 h-fit text-white bg-[#00628B] rounded-md cursor-pointer hover:bg-[#3d94bd] transition-colors duration-500 ease-in-out'>
-                Add School
-              </button>
+            <motion.h1 
+              initial={{ x: -20 }}
+              animate={{ x: 0 }}
+              className="text-2xl md:text-3xl font-bold text-gray-800"
+            >
+              {collegeName} - Schools
+            </motion.h1>
+            
+            <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+              <div className="relative flex-1 min-w-[200px]">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaSearch className="text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search schools..."
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setAddSchool(true)}
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-[#00628B] text-white rounded-lg hover:bg-[#3d94bd] transition-colors shadow-sm"
+              >
+                <FaPlus /> Add School
+              </motion.button>
             </div>
           </div>
 
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                {['Id', 'Name', 'Deen', 'Students', 'Projects', 'Departments', 'Action'].map((header) => (
-                  <th
-                    key={header}
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    <div className="flex items-center">{header}</div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {filteredSchools.length === 0 ? (
+          <div className="overflow-x-auto rounded-lg border border-gray-200">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
                 <tr>
-                  <td colSpan={7} className="px-6 py-4 text-center text-gray-500">
-                    No schools found matching your search
-                  </td>
+                  {['Id', 'Name', 'Deen', 'Students', 'Projects', 'Departments', 'Action'].map((header) => (
+                    <th
+                      key={header}
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      {header}
+                    </th>
+                  ))}
                 </tr>
-              ) : (
-                filteredSchools.map((school) => (
-                  <tr
-                    key={school._id}
-                    className="hover:bg-gray-50 cursor-pointer"
-                    onClick={() => handleSchoolClick(school)}
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{school._id}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{school.name}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{school.Deen}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{school.students.toLocaleString()}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{school.projects}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{school.departments.split(',').length}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex space-x-2">
-                      <button
-                        className="text-indigo-600 hover:text-indigo-900 p-1 rounded-md hover:bg-indigo-50"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          // Edit functionality here
-                        }}
-                      >
-                        <FaUserEdit size={18} />
-                      </button>
-                      <button
-                        className="text-red-600 hover:text-red-900 p-1 rounded-md hover:bg-red-50"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          // Delete functionality here
-                        }}
-                      >
-                        <MdDelete size={18} />
-                      </button>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredSchools.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
+                      {allSchools.length === 0 ? 'No schools available' : 'No matching schools found'}
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  <AnimatePresence>
+                    {filteredSchools.map((school) => (
+                      <motion.tr
+                        key={school._id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        className="hover:bg-gray-50"
+                      >
+                        <td 
+                          className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 cursor-pointer"
+                          onClick={() => handleSchoolClick(school)}
+                        >
+                          {school._id}
+                        </td>
+                        <td 
+                          className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 cursor-pointer"
+                          onClick={() => handleSchoolClick(school)}
+                        >
+                          {school.name}
+                        </td>
+                        <td 
+                          className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 cursor-pointer"
+                          onClick={() => handleSchoolClick(school)}
+                        >
+                          {school.Deen}
+                        </td>
+                        <td 
+                          className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 cursor-pointer"
+                          onClick={() => handleSchoolClick(school)}
+                        >
+                          {school.students.toLocaleString()}
+                        </td>
+                        <td 
+                          className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 cursor-pointer"
+                          onClick={() => handleSchoolClick(school)}
+                        >
+                          {school.projects}
+                        </td>
+                        <td 
+                          className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 cursor-pointer"
+                          onClick={() => handleSchoolClick(school)}
+                        >
+                          {school.departments.split(',').length}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <div className="flex space-x-2">
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                              className="text-indigo-600 hover:text-indigo-900 p-1 rounded-md hover:bg-indigo-50 transition-colors"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setEditSchool(school);
+                              }}
+                              title="Edit school"
+                            >
+                              <FaUserEdit size={18} />
+                            </motion.button>
+                            <motion.button
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                              className="text-red-600 hover:text-red-900 p-1 rounded-md hover:bg-red-50 transition-colors"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteSchool(school._id);
+                              }}
+                              title="Delete school"
+                            >
+                              <MdDelete size={18} />
+                            </motion.button>
+                          </div>
+                        </td>
+                      </motion.tr>
+                    ))}
+                  </AnimatePresence>
+                )}
+              </tbody>
+            </table>
+          </div>
         </>
       )}
-    </div>
+    </motion.div>
   );
 };
 

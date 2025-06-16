@@ -28,7 +28,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({ isScrolledDown }) => {
 
   const navLinks = [
     { name: 'Principal', path: '/principal/' },
-    { name: 'Dean', path: '/dean/' },
+    { name: 'Dean', path: '/deen/' },
     { name: 'HOD', path: '/hod/' },
     { name: 'Supervisor', path: '/supervisor/' },
     { name: 'Student', path: '/student/' },
@@ -58,7 +58,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({ isScrolledDown }) => {
             <span className={`text-xl sm:text-2xl font-bold transition-colors duration-300 ${
               isScrolledDown ? 'text-white' : 'text-indigo-800'
             }`}>
-              ProjectFlow
+              Kangalos
             </span>
           </motion.div>
 

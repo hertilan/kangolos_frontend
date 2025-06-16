@@ -93,7 +93,7 @@ const AdminLanding: React.FC = () => {
       </button>
 
       {/* Sidebar */}
-      <div className={`w-64 bg-indigo-700 shadow-md transform transition-all duration-300 fixed md:static z-40 h-full
+      <div className={`w-64 bg-indigo-700 shadow-md transform transition-all  duration-300 fixed md:static z-40 h-screen
         ${showMobileMenu ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
         <div className="p-6 border-b border-indigo-600">
           <img src={universityLogo} alt='logo' className='w-16 h-16 rounded-full mx-auto mb-2' />
@@ -128,6 +128,7 @@ const AdminLanding: React.FC = () => {
               <span className="mr-3">{item.icon}</span>
               {item.name}
             </button>
+            
           ))}
           
           {/* Logout button */}
@@ -141,6 +142,7 @@ const AdminLanding: React.FC = () => {
         </nav>
         
         <div className="absolute bottom-0 w-full p-4 border-t border-indigo-600 bg-indigo-700">
+          
           <div className="flex items-center">
             <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white">
               <FiUser />
