@@ -13,7 +13,8 @@ import {
   FiUser,
   FiShield,
   FiBook,
-  FiActivity
+  FiActivity,
+  FiMessageSquare
 } from 'react-icons/fi';
 import { RiTeamFill } from 'react-icons/ri';
 import Dashboard from './Dashboard';
@@ -22,6 +23,7 @@ import Teams from './Teams/Teams';
 import Projects from './Projects/Projects';
 import AdminSettings from './AdminSettings';
 import Colleges from './Colleges/College';
+import Feedback from '../Principal/Feedback';
 
 interface Tab {
   icon: React.ReactNode;
@@ -38,6 +40,7 @@ const AdminLanding: React.FC = () => {
     { id: 1, message: 'New user registration', time: '10 mins ago', read: false },
     { id: 2, message: 'System maintenance scheduled', time: '1 hour ago', read: true }
   ]);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 
   const tabs: Tab[] = [
     { icon: <FiHome size={18} />, name: 'Dashboard', id: 'dashboard' },
@@ -82,6 +85,9 @@ const AdminLanding: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-gray-50">
+        {showFeedbackModal && (
+        <Feedback onClose={()=>{setShowFeedbackModal(false)}}/>
+      )}
       {/* Mobile Menu Button */}
       <button 
         onClick={() => setShowMobileMenu(!showMobileMenu)}
@@ -128,6 +134,15 @@ const AdminLanding: React.FC = () => {
             </button>
             
           ))}
+                    <button
+                      onClick={() => {
+                        setShowFeedbackModal(true);
+                      }}
+                      className="flex items-center w-full px-4 py-2 text-blue-200 hover:text-white mb-2"
+                    >
+                      <FiMessageSquare className="mr-3" />
+                      Send Feedback
+                    </button>
           
           {/* Logout button */}
           <button

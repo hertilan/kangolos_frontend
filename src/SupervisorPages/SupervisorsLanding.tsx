@@ -20,6 +20,7 @@ import Projects from '../Admin/Projects/Projects';
 import SupervisorCalendar from './SupervisorCalender';
 import Messaging from './Messaging';
 import SupervisorSettings from './SupervisorSettings';
+import Feedback from '../Principal/Feedback';
 
 interface Tab {
   icon: React.ReactNode;
@@ -55,6 +56,7 @@ const SupervisorLanding: React.FC = () => {
     setActiveTab(tabId);
     setShowMobileMenu(false);
   };
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 
   const renderActiveTab = () => {
     switch (activeTab) {
@@ -77,6 +79,9 @@ const SupervisorLanding: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-gray-50">
+        {showFeedbackModal && (
+        <Feedback onClose={()=>{setShowFeedbackModal(false)}}/>
+      )}
       {/* Mobile Menu Button */}
       <button 
         onClick={() => setShowMobileMenu(!showMobileMenu)}
@@ -119,6 +124,15 @@ const SupervisorLanding: React.FC = () => {
               {item.name}
             </button>
           ))}
+          <button
+            onClick={() => {
+              setShowFeedbackModal(true);
+            }}
+            className="flex items-center w-full px-4 py-2 text-gray-600 hover:text-gray-500 mb-2"
+          >
+            <FiMessageSquare className="mr-3" />
+            Send Feedback
+          </button>
           
           {/* Logout button */}
           <button

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FiHome, FiCalendar, FiFileText, FiPieChart, FiSettings, FiLogOut } from 'react-icons/fi';
+import { FiHome, FiCalendar, FiFileText, FiPieChart, FiSettings, FiLogOut, FiMessageSquare } from 'react-icons/fi';
 import { FaChalkboardTeacher } from 'react-icons/fa';
 import { BsBuilding } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
@@ -9,16 +9,21 @@ import Users from '../Admin/Users/Users';
 import SupervisorCalendar from '../SupervisorPages/SupervisorCalender';
 import DeanHeader from './DeanHeader';
 import DeanOverview from './DeanOverview';
+import Feedback from '../Principal/Feedback';
 
 const DeanDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 
 
 
 
   return (
     <div className="flex h-screen bg-gray-50">
+              {showFeedbackModal && (
+        <Feedback onClose={()=>{setShowFeedbackModal(false)}}/>
+      )}
       {/* Mobile Menu Button */}
       <button 
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -115,6 +120,15 @@ const DeanDashboard: React.FC = () => {
               <FiSettings className="mr-3" />
               School Settings
             </button>
+                                <button
+                                  onClick={() => {
+                                    setShowFeedbackModal(true);
+                                  }}
+                                  className="flex items-center w-full px-4 py-2 text-blue-200 hover:text-white mb-2"
+                                >
+                                  <FiMessageSquare className="mr-3" />
+                                  Send Feedback
+                                </button>
             <Link 
               to='/' 
               className="flex items-center w-full px-6 py-3 text-left hover:bg-blue-700"

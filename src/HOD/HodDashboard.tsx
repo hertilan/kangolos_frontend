@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {FiSettings, FiLogOut, FiBook } from 'react-icons/fi';
+import {FiSettings, FiLogOut, FiBook, FiMessageSquare } from 'react-icons/fi';
 import { FaChalkboardTeacher, FaUserGraduate } from 'react-icons/fa';
 import { BsCalendarCheck } from 'react-icons/bs';
 import { RiTeamFill } from 'react-icons/ri';
@@ -11,10 +11,12 @@ import HodOverview from './HodOverview';
 import { MdDashboard, MdSchool } from 'react-icons/md';
 import HodHeader from './HodHeader';
 import Colleges from '../Admin/Colleges/College';
+import Feedback from '../Principal/Feedback';
 
 const HODDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 
   // Sample data for University of Rwanda final year projects
 
@@ -22,6 +24,9 @@ const HODDashboard: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-gray-50">
+        {showFeedbackModal && (
+        <Feedback onClose={()=>{setShowFeedbackModal(false)}}/>
+      )}
       {/* Mobile Menu Button */}
       <button 
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -128,6 +133,15 @@ const HODDashboard: React.FC = () => {
               <FiSettings className="mr-3" />
               Settings
             </button>
+                                <button
+                                  onClick={() => {
+                                    setShowFeedbackModal(true);
+                                  }}
+                                  className="flex items-center w-full px-4 py-2 text-blue-200 hover:text-white mb-2"
+                                >
+                                  <FiMessageSquare className="mr-3" />
+                                  Send Feedback
+                                </button>
             <Link 
               to='/' 
               className="flex items-center w-full px-6 py-3 text-left hover:bg-blue-700"
