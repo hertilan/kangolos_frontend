@@ -13,7 +13,7 @@ const Header: React.FC = () => {
                 <div className='flex items-center justify-between w-full md:w-auto'>
                     {/* Logo */}
                     <Link to='/' className='text-xl font-bold hover:text-white transition-colors'>
-                        FYPMS
+                        Kangalos
                     </Link>
 
                     {/* Mobile menu button */}
