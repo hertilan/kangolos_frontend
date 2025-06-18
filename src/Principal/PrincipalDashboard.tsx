@@ -10,18 +10,22 @@ import {
   FiFileText
 } from 'react-icons/fi';
 import { FaUniversity } from 'react-icons/fa';
-import { BsGraphUp } from 'react-icons/bs';
+import { BsFillProjectorFill, BsGraphUp } from 'react-icons/bs';
 import PrincipalOverview from './PrincipalOverview';
 import Colleges from '../Admin/Colleges/College';
 import SupervisorCalendar from '../SupervisorPages/SupervisorCalender';
 import PrincipalHeader from './PrincipalHeader';
 import Feedback from './Feedback';
+import { BiUser } from 'react-icons/bi';
+import Users from '../Admin/Users/Users';
+import Projects from '../Admin/Projects/Projects';
 
 const PrincipalDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+
   
   // UR Campuses data
 
@@ -93,6 +97,26 @@ const PrincipalDashboard: React.FC = () => {
           </button>
           <button
             onClick={() => {
+              setActiveTab('projects');
+              setMobileMenuOpen(false);
+            }}
+            className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'projects' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
+          >
+            <BsFillProjectorFill className="mr-3" />
+            Projects
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab('users');
+              setMobileMenuOpen(false);
+            }}
+            className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'users' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
+          >
+            <BiUser className="mr-3" />
+            Users
+          </button>
+          <button
+            onClick={() => {
               setActiveTab('progress');
               setMobileMenuOpen(false);
             }}
@@ -159,6 +183,12 @@ const PrincipalDashboard: React.FC = () => {
 
           {activeTab === 'campuses' && (
             <Colleges displayed={false} viewAddSchool={false}/>
+          )}
+          {activeTab === 'users' && (
+            <Users/>
+          )}
+          {activeTab === 'projects' && (
+            <Projects/>
           )}
 
           {activeTab === 'progress' && (

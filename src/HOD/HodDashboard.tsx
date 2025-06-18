@@ -18,6 +18,7 @@ const HODDashboard: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 
+
   // Sample data for University of Rwanda final year projects
 
 
@@ -77,7 +78,7 @@ const HODDashboard: React.FC = () => {
               setActiveTab('departments');
               setMobileMenuOpen(false);
             }}
-            className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'projects' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
+            className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'departments' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
           >
             <MdSchool className="mr-3" />
             Departments
@@ -133,15 +134,15 @@ const HODDashboard: React.FC = () => {
               <FiSettings className="mr-3" />
               Settings
             </button>
-                                <button
-                                  onClick={() => {
-                                    setShowFeedbackModal(true);
-                                  }}
-                                  className="flex items-center w-full px-4 py-2 text-blue-200 hover:text-white mb-2"
-                                >
-                                  <FiMessageSquare className="mr-3" />
-                                  Send Feedback
-                                </button>
+            <button
+              onClick={() => {
+                setShowFeedbackModal(true);
+              }}
+              className="flex items-center w-full px-4 py-2 text-blue-200 hover:text-white mb-2"
+            >
+              <FiMessageSquare className="mr-3" />
+              Send Feedback
+            </button>
             <Link 
               to='/' 
               className="flex items-center w-full px-6 py-3 text-left hover:bg-blue-700"

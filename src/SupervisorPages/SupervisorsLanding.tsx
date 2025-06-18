@@ -7,20 +7,20 @@ import {
   FiMessageSquare,
   FiSettings,
   FiLogOut,
-  FiUsers,
   FiChevronDown,
   FiBell,
   FiSearch,
   FiUser
 } from 'react-icons/fi';
-import { BsGraphUp, BsThreeDotsVertical } from 'react-icons/bs';
+import { BsGraphUp} from 'react-icons/bs';
 import { RiTeamFill } from 'react-icons/ri';
 import SupervisorDashboard from '../SupervisorSmall/SupervisorDashboard';
 import Projects from '../Admin/Projects/Projects';
 import SupervisorCalendar from './SupervisorCalender';
 import Messaging from './Messaging';
-import SupervisorSettings from './SupervisorSettings';
+// import SupervisorSettings from './SupervisorSettings';
 import Feedback from '../Principal/Feedback';
+import { useAuth } from '../context/AuthContext';
 
 interface Tab {
   icon: React.ReactNode;
@@ -30,6 +30,7 @@ interface Tab {
 
 const SupervisorLanding: React.FC = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth(); // Using auth context for logout
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [notifications, setNotifications] = useState([
@@ -49,13 +50,13 @@ const SupervisorLanding: React.FC = () => {
 
   const handleTabChange = (tabId: string) => {
     if (tabId === 'logout') {
-      localStorage.removeItem('supervisorToken');
-      navigate('/login');
+      logout(); // Using auth context logout instead of direct localStorage manipulation
       return;
     }
     setActiveTab(tabId);
     setShowMobileMenu(false);
   };
+
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 
   const renderActiveTab = () => {
@@ -222,5 +223,6 @@ const SupervisorLanding: React.FC = () => {
     </div>
   );
 };
+
 
 export default SupervisorLanding;

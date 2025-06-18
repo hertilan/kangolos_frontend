@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaUserEdit, FaSearch } from "react-icons/fa";
+import { FaUserEdit, FaSearch, FaChevronLeft } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import AddDepartment from './AddDepartment';
 
@@ -155,7 +155,12 @@ const Department: React.FC<DepartmentProps> = ({ schoolName, departmentsList }) 
           <p>{error}</p>
         </div>
       )}
-
+              {/* <button 
+            className={`flex items-center gap-2 mb-6 text-[#00628B] hover:text-[#3d94bd] transition-colors`}
+          >
+            <FaChevronLeft />
+            Back to Eric
+          </button> */}
       {/* Add Department Modal */}
       {showAddDepartment && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-600/60 bg-opacity-50 p-4">

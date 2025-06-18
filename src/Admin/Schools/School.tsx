@@ -171,11 +171,12 @@ const School: React.FC<SchoolProps> = ({ collegeName, schoolsList, viewAddSchool
         <motion.div 
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded"
+          className={`${showDepartments ? 'hidden' : 'flex'} bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded`}
         >
           <p>{error}</p>
         </motion.div>
       )}
+
 
       {/* Add/Edit School Modal */}
       <AnimatePresence>
@@ -209,11 +210,12 @@ const School: React.FC<SchoolProps> = ({ collegeName, schoolsList, viewAddSchool
         >
           <button 
             onClick={handleBackToSchools}
-            className="flex items-center gap-2 mb-6 text-[#00628B] hover:text-[#3d94bd] transition-colors"
+            className={`${showDepartments ? 'flex' : 'flex'} items-center gap-2 mb-6 text-[#00628B] hover:text-[#3d94bd] transition-colors`}
           >
             <FaChevronLeft />
-            Back to Schools
+            Back to schools
           </button>
+          
           <Department 
             schoolName={selectedSchool.name} 
             departmentsList={selectedSchool.departments.split(',')} 

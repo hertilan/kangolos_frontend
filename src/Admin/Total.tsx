@@ -159,7 +159,7 @@ const Total: React.FC = () => {
         >
           <div className="flex items-center justify-between">
             <p className="text-gray-300 text-sm md:text-base">{stat.title}</p>
-            <div className="text-white bg-white bg-opacity-20 p-2 rounded-full">
+            <div className=" bg-white bg-opacity-20 p-2 rounded-full">
               {stat.icon}
             </div>
           </div>

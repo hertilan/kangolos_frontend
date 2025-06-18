@@ -6,6 +6,7 @@ import { MdDelete } from "react-icons/md";
 import { motion, AnimatePresence } from 'framer-motion';
 import School from '../Schools/School';
 import AddCollege from './AddCollege';
+import EditCollege from './EditCollege';
 
 interface College {
   _id: number;
@@ -138,7 +139,7 @@ const Colleges: React.FC <addCollegeProp>= ({displayed,viewAddSchool}) => {
     setShowSchools(true);
   };
 
-  const handleBackToColleges = () => {
+   const handleBackToColleges = () => {
     setShowSchools(false);
     setSelectedCollege(null);
   };
@@ -178,7 +179,7 @@ const Colleges: React.FC <addCollegeProp>= ({displayed,viewAddSchool}) => {
         <motion.div 
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded"
+          className={`${showSchools ? 'hidden': 'flex'} bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded`}
         >
           <p>{error}</p>
         </motion.div>
@@ -186,7 +187,7 @@ const Colleges: React.FC <addCollegeProp>= ({displayed,viewAddSchool}) => {
 
       {/* Add/Edit College Modal */}
       <AnimatePresence>
-        {(addCollege || editCollege) && (
+        {(editCollege || addCollege) && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -198,11 +199,22 @@ const Colleges: React.FC <addCollegeProp>= ({displayed,viewAddSchool}) => {
               animate={{ scale: 1, y: 0 }}
               className="bg-white rounded-xl shadow-2xl w-full max-w-2xl"
             >
-              <AddCollege 
+              { editCollege ? 
+              <EditCollege 
                 onClose={() => editCollege ? setEditCollege(null) : setAddCollege(false)} 
+                name={editCollege.name}
+                location={editCollege.location}
+                principal={editCollege.principal}
+                schools={editCollege.schools}
+                students={editCollege.students}
+                projects={editCollege.projects}
+                description={editCollege.description}
+                established={editCollege.established}
                 onSuccess={editCollege ? handleUpdateCollege : handleAddCollege}
                 college={editCollege}
-              />
+              /> : addCollege ?
+              <AddCollege onClose={()=>{setAddCollege(false)}}/>
+            :''}
             </motion.div>
           </motion.div>
         )}
@@ -215,8 +227,7 @@ const Colleges: React.FC <addCollegeProp>= ({displayed,viewAddSchool}) => {
         >
           <button 
             onClick={handleBackToColleges}
-            className="flex items-center gap-2 mb-6 text-[#00628B] hover:text-[#3d94bd] transition-colors"
-          >
+            className="flex items-center gap-2 mb-6 text-[#00628B] hover:text-[#3d94bd] transition-colors">
             <FaChevronLeft />
             Back to Colleges
           </button>
@@ -270,7 +281,7 @@ const Colleges: React.FC <addCollegeProp>= ({displayed,viewAddSchool}) => {
                     <th
                       key={header}
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       {header}
                     </th>
@@ -295,7 +306,7 @@ const Colleges: React.FC <addCollegeProp>= ({displayed,viewAddSchool}) => {
                         className="hover:bg-gray-50"
                       >
                         <td 
-                          className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 cursor-pointer"
+                          className="px-3 py-4 whitespace-nowrap text-sm text-gray-900 cursor-pointer"
                           onClick={() => handleCollegeClick(college)}
                         >
                           {college._id}

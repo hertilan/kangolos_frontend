@@ -2,7 +2,8 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { FaUserEdit, FaSearch, FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import EditUser from './EditUser';
 
 interface User {
   _id: number;
@@ -10,6 +11,7 @@ interface User {
   email: string;
   gender: string;
   role: string;
+  referenceNumber: string;
   college: string;
   school: string;
   department: string;
@@ -23,17 +25,96 @@ const AllUsers: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const usersPerPage = 10;
 
+    const sampleUsers: User[] = [
+    {
+      _id: 1,
+      name: "Eric TUYISHIME",
+      email: 'erictuyishime574@gmail.com',
+      referenceNumber:'226444567',
+      gender: "Male",
+      role: 'Student',
+      college: 'CST-Nyarugenge',
+      school: "School of ICT",
+      department: "Computer science",
+    },
+    
+    {
+      _id: 2,
+      name: "Merci RUYANGA",
+      email: 'ruyangam15@gmail.com',
+      referenceNumber:'226444567',
+      gender: "Male",
+      role: 'Student',
+      college: 'CST-Nyarugenge',
+      school: "School of Engineering",
+      department: "ETE",
+    },
+    {
+      _id: 3,
+      name: "Kayitsinga TUYISHIME",
+      email: 'erictuyishime574@gmail.com',
+      referenceNumber:'226444567',
+      gender: "Male",
+      role: 'Student',
+      college: 'CST-Nyarugenge',
+      school: "School of ICT",
+      department: "Computer science",
+    },
+    {
+      _id: 4,
+      name: "Eric TUYISHIME",
+      email: 'erictuyishime574@gmail.com',
+      referenceNumber:'226444567',
+      gender: "Male",
+      role: 'Student',
+      college: 'CST-Nyarugenge',
+      school: "School of ICT",
+      department: "Computer science",
+    },
+    {
+      _id: 5,
+      name: "Eric TUYISHIME",
+      email: 'erictuyishime574@gmail.com',
+      referenceNumber:'226444567',
+      gender: "Male",
+      role: 'Student',
+      college: 'CST-Nyarugenge',
+      school: "School of ICT",
+      department: "Computer science",
+    },
+    {
+      _id: 6,
+      name: "Eric TUYISHIME",
+      email: 'erictuyishime574@gmail.com',
+      referenceNumber:'226444567',
+      gender: "Male",
+      role: 'Student',
+      college: 'CST-Nyarugenge',
+      school: "School of ICT",
+      department: "Computer science",
+    },
+    // ... other sample colleges
+  ];
+   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [editUser, setEditUser] = useState<User | null>(null);
+
+    const handleCollegeClick = (user: User) => {
+    setSelectedUser(user);
+  };
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         setIsLoading(true);
         const response = await fetch('https://www.kangalos.com/users/users');
         const data = await response.json();
-        setUsers(data);
+        setUsers(users.length >0 ? data : sampleUsers);
       } catch (error) {
         console.error('Failed to fetch users', error);
+        setUsers(sampleUsers)
       } finally {
         setIsLoading(false);
+        setUsers(sampleUsers)
       }
     };
 
@@ -95,8 +176,37 @@ const AllUsers: React.FC = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="w-full p-4 md:p-6 lg:p-8 bg-white rounded-xl shadow-sm"
-    >
+      className="w-full p-4 md:p-6 lg:p-8 bg-white rounded-xl shadow-sm">
+
+        <AnimatePresence>
+        {(editUser) && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-gray-600/60 bg-opacity-50 p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              className="bg-white rounded-xl shadow-2xl w-full max-w-2xl"
+            >
+              <EditUser 
+                onClose={() => editUser ? setEditUser(null) : ''} 
+                id={editUser._id}
+                name={editUser.name}
+                email={editUser.email}
+                referenceNumber={editUser.referenceNumber}
+                gender={editUser.gender}
+                role={editUser.role}
+                college={editUser.college}
+                school={editUser.school}
+                department={editUser.department}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <h1 className="text-2xl font-bold text-gray-800">User Management</h1>
         <div className="relative w-full md:w-64">
@@ -158,14 +268,14 @@ const AllUsers: React.FC = () => {
                   </div>
                 </td>
               </tr>
-            ) : currentUsers.length === 0 ? (
+            ) : users.length === 0 ? (
               <tr>
                 <td colSpan={9} className="px-6 py-8 text-center text-gray-500">
                   No users found
                 </td>
               </tr>
             ) : (
-              currentUsers.map((user, index) => (
+              users.map((user, index) => (
                 <motion.tr
                   key={user._id}
                   initial={{ opacity: 0, y: 10 }}
@@ -183,7 +293,10 @@ const AllUsers: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.department}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <div className="flex space-x-2">
-                      <button className="text-indigo-600 hover:text-indigo-900 p-1 rounded-md hover:bg-indigo-50 transition-colors">
+                      <button className="text-indigo-600 hover:text-indigo-900 p-1 rounded-md hover:bg-indigo-50 transition-colors"                               onClick={(e) => {
+                                e.stopPropagation();
+                                setEditUser(user);
+                              }}>
                         <FaUserEdit size={18} />
                       </button>
                       <button className="text-red-600 hover:text-red-900 p-1 rounded-md hover:bg-red-50 transition-colors">
