@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import Myprojects from '../StudentSmall/Myprojects';
 import Notifications from './Notifications';
 import DeadLines from '../StudentSmall/DeadLines';
+import PageLayout from '../Components/PageLayout';
 
 interface DashboardCardProps {
   icon: React.ReactNode;
@@ -90,25 +91,25 @@ const StudentDashboard: React.FC = () => {
       icon: <FaProjectDiagram size={18} className='text-indigo-600' />,
       label: 'Active Projects',
       value: stats.activeProjects,
-      trend: stats.activeProjects > 0 ? 'up' : 'neutral'
+      trend: stats.activeProjects > 0 ? 'up' as const : 'neutral' as const
     },
     {
       icon: <CiFileOn size={18} className='text-red-600' />,
       label: 'Rejected Projects',
       value: stats.rejectedProjects,
-      trend: stats.rejectedProjects > 0 ? 'down' : 'neutral'
+      trend: stats.rejectedProjects > 0 ? 'down' as const : 'neutral' as const
     },
     {
       icon: <CiFileOn size={18} className='text-yellow-600' />,
       label: 'Pending Review',
       value: stats.pendingProjects,
-      trend: 'neutral'
+      trend: 'neutral' as const
     },
     {
       icon: <FaBell size={18} className='text-blue-600' />,
       label: 'Unread Notifications',
       value: stats.notifications,
-      trend: stats.notifications > 0 ? 'up' : 'neutral'
+      trend: stats.notifications > 0 ? 'up' as const : 'neutral' as const
     }
   ];
 
@@ -129,100 +130,98 @@ const StudentDashboard: React.FC = () => {
     <div className='min-h-screen w-full flex flex-col bg-gray-50'>
       <Header />
       
-      <div className='p-4 sm:p-6 w-full max-w-7xl mx-auto'>
-        <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 sm:mb-8'>
-          <div>
-            <h1 className='text-xl sm:text-2xl md:text-3xl font-bold text-gray-800'>Student Dashboard</h1>
-            <p className='text-gray-500 text-sm sm:text-base mt-1'>Welcome back! Here's your academic overview</p>
+      <PageLayout>
+        <div className='py-6 sm:py-8'>
+          <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 sm:mb-8'>
+            <div>
+              <h1 className='text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800'>Student Dashboard</h1>
+              <p className='text-gray-500 text-sm sm:text-base mt-2'>Welcome back! Here's your academic overview</p>
+            </div>
+            <Link 
+              to='create-project' 
+              className='flex items-center gap-2 bg-indigo-600 px-4 sm:px-5 py-2.5 sm:py-3 rounded-lg text-white hover:bg-indigo-700 transition-colors shadow-md hover:shadow-lg whitespace-nowrap text-sm sm:text-base'
+            >
+              <FaPlus size={16} />
+              <span className='font-medium'>Submit New Project</span>
+            </Link>
           </div>
-          <Link 
-            to='create-project' 
-            className='flex items-center gap-2 bg-indigo-600 px-4 sm:px-5 py-2 sm:py-3 rounded-lg text-white hover:bg-indigo-700 transition-colors shadow-md whitespace-nowrap text-sm sm:text-base'
+
+          {/* Mobile Navigation Toggle */}
+          <button 
+            className='md:hidden mb-4 p-2 bg-gray-200 rounded-lg'
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            <FaPlus size={16} />
-            <span className='font-medium'>Submit New Project</span>
-          </Link>
-        </div>
+            {mobileMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+          </button>
 
-        {/* Mobile Navigation Toggle */}
-        <button 
-          className='md:hidden mb-4 p-2 bg-gray-200 rounded-lg'
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          {mobileMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
-        </button>
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+              {[...Array(4)].map((_, index) => (
+                <div key={index} className="bg-white rounded-lg shadow-sm p-4 sm:p-6 h-28 sm:h-36 animate-pulse">
+                  <div className="h-5 sm:h-6 w-5 sm:w-6 bg-gray-200 rounded-full mb-3 sm:mb-4"></div>
+                  <div className="h-3 sm:h-4 w-3/4 bg-gray-200 rounded mb-2 sm:mb-3"></div>
+                  <div className="h-6 sm:h-8 w-1/2 bg-gray-200 rounded"></div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8'>
+              {dashboardCards.map((card, index) => (
+                <DashboardCard 
+                  key={index}
+                  icon={card.icon}
+                  label={card.label}
+                  value={card.value}
+                  trend={card.trend}
+                />
+              ))}
+            </div>
+          )}
 
-        {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-            {[...Array(4)].map((_, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-sm p-4 sm:p-6 h-28 sm:h-36 animate-pulse">
-                <div className="h-5 sm:h-6 w-5 sm:w-6 bg-gray-200 rounded-full mb-3 sm:mb-4"></div>
-                <div className="h-3 sm:h-4 w-3/4 bg-gray-200 rounded mb-2 sm:mb-3"></div>
-                <div className="h-6 sm:h-8 w-1/2 bg-gray-200 rounded"></div>
+          <div className={`flex flex-wrap gap-2 p-2 bg-gray-100 rounded-xl w-full mb-6 sm:mb-8 ${mobileMenuOpen ? 'flex' : 'hidden md:flex'}`}>
+            <NavButton 
+              active={activePage === 'myProjects'} 
+              onClick={() => {
+                setActivePage('myProjects');
+                setMobileMenuOpen(false);
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <FaProjectDiagram size={14} />
+                <span>My Projects</span>
               </div>
-            ))}
+            </NavButton>
+            <NavButton 
+              active={activePage === 'notifications'} 
+              onClick={() => {
+                setActivePage('notifications');
+                setMobileMenuOpen(false);
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <FaBell size={14} />
+                <span>Notifications</span>
+              </div>
+            </NavButton>
+            <NavButton 
+              active={activePage === 'deadlines'} 
+              onClick={() => {
+                setActivePage('deadlines');
+                setMobileMenuOpen(false);
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <FaCalendarAlt size={14} />
+                <span>Deadlines</span>
+              </div>
+            </NavButton>
           </div>
-        ) : (
-          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8'>
-            {dashboardCards.map((card, index) => (
-              <DashboardCard 
-                key={index}
-                icon={card.icon}
-                label={card.label}
-                value={card.value}
-                trend={card.trend}
-              />
-            ))}
+
+          <div className="bg-white rounded-xl shadow-sm">
+            {renderActivePage()}
           </div>
-        )}
-
-        <div className={`flex flex-wrap gap-2 p-2 bg-gray-100 rounded-xl w-full mb-6 sm:mb-8 ${mobileMenuOpen ? 'flex' : 'hidden md:flex'}`}>
-          <NavButton 
-            active={activePage === 'myProjects'} 
-            onClick={() => {
-              setActivePage('myProjects');
-              setMobileMenuOpen(false);
-            }}
-          >
-            <div className="flex items-center gap-2">
-              <FaProjectDiagram size={14} />
-              <span>My Projects</span>
-            </div>
-          </NavButton>
-          <NavButton 
-            active={activePage === 'notifications'} 
-            onClick={() => {
-              setActivePage('notifications');
-              setMobileMenuOpen(false);
-            }}
-          >
-            <div className="flex items-center gap-2">
-              <FaBell size={14} />
-              <span>Notifications {stats.notifications > 0 && (
-                <span className="bg-red-500 text-white text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full">
-                  {stats.notifications}
-                </span>
-              )}</span>
-            </div>
-          </NavButton>
-          <NavButton 
-            active={activePage === 'deadlines'} 
-            onClick={() => {
-              setActivePage('deadlines');
-              setMobileMenuOpen(false);
-            }}
-          >
-            <div className="flex items-center gap-2">
-              <FaCalendarAlt size={14} />
-              <span>Deadlines</span>
-            </div>
-          </NavButton>
         </div>
-
-        <div className='bg-white rounded-xl shadow-sm overflow-hidden'>
-          {renderActivePage()}
-        </div>
-      </div>
+      </PageLayout>
     </div>
   );
 };

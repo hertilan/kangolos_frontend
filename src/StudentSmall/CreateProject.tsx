@@ -3,6 +3,7 @@ import Header from './Header'
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { Link } from 'react-router-dom';
 import { FiUpload, FiInfo } from 'react-icons/fi';
+import PageLayout from '../Components/PageLayout';
 
 interface Project {
   title: string;
@@ -140,167 +141,161 @@ const CreateProject: React.FC = () => {
   };
 
   return (
-    <div className='min-h-screen max-w-screen text-gray-600 flex flex-col'>
+    <div className='min-h-screen w-full flex flex-col bg-gray-50'>
       <Header />
-      <div className='p-4 py-2 max-w-4xl mx-auto w-full'>
-        <div className='flex items-center gap-4 mb-6'>
-          <Link to='/student' className='text-gray-700 hover:text-gray-900 transition-colors'>
-            <FaArrowLeftLong size={25} />
-          </Link>
-          <h1 className='text-2xl font-bold text-gray-900'>Project Submission</h1>
-        </div>
-
-        <div className='bg-blue-50 p-4 rounded-lg mb-6 flex items-start gap-3'>
-          <FiInfo className='text-blue-500 mt-1 flex-shrink-0' />
-          <div>
-            <h2 className='font-medium text-blue-800 mb-1'>Submission Guidelines</h2>
-            <p className='text-sm text-gray-700'>
-              Please complete all required fields to submit your project. Your abstract should clearly describe 
-              your project's objectives, methodology, and expected outcomes. All documents must be in PDF or 
-              Microsoft Office format and under {maxFileSizeMB}MB in size.
-            </p>
-          </div>
-        </div>
-
-        {error && (
-          <div className='mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm'>
-            {error}
-          </div>
-        )}
-
-        {success && (
-          <div className='mb-4 p-3 bg-green-100 text-green-700 rounded-md text-sm'>
-            {success}
-          </div>
-        )}
-
-        {currentError && (
-          <div className='mb-4 p-3 bg-yellow-100 text-yellow-700 rounded-md text-sm'>
-            {currentError}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className='bg-white p-6 rounded-lg shadow-sm border border-gray-200'>
-          <div className='space-y-6'>
-            {/* Title Field */}
+      <PageLayout>
+        <div className='py-6 sm:py-8'>
+          <div className='flex items-center gap-4 mb-8'>
+            <Link to='/student' className='text-gray-700 hover:text-gray-900 transition-colors'>
+              <FaArrowLeftLong size={25} />
+            </Link>
             <div>
-              <label htmlFor='title' className='block text-sm font-medium text-gray-700 mb-1'>
-                Project Title <span className='text-red-500'>*</span>
-              </label>
-              <p className='text-xs text-gray-500 mb-2'>
-                A clear, concise title that reflects your project's focus
-              </p>
-              <input
-                id='title'
-                type='text'
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                onBlur={() => handleBlur('title')}
-                placeholder='e.g., "Sustainable Irrigation System for Small Farms"'
-                className='w-full p-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500'
-              />
+              <h1 className='text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800'>Project Submission</h1>
+              <p className='text-gray-500 text-sm sm:text-base mt-2'>Submit your project proposal for review</p>
             </div>
+          </div>
 
-            {/* Category Field */}
+          <div className='bg-blue-50 p-4 sm:p-6 rounded-lg mb-8 flex items-start gap-3'>
+            <FiInfo className='text-blue-500 mt-1 flex-shrink-0 text-lg' />
             <div>
-              <label htmlFor='category' className='block text-sm font-medium text-gray-700 mb-1'>
-                Project Category <span className='text-red-500'>*</span>
-              </label>
-              <p className='text-xs text-gray-500 mb-2'>
-                Select the field that best matches your project
-              </p>
-              <select
-                id='category'
-                value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                onBlur={() => handleBlur('category')}
-                className='w-full p-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500'
-              >
-                {categories.map((option) => (
-                  <option key={option.value} value={option.value} disabled={option.disabled}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Abstract Field */}
-            <div>
-              <label htmlFor='abstract' className='block text-sm font-medium text-gray-700 mb-1'>
-                Project Abstract <span className='text-red-500'>*</span>
-              </label>
-              <p className='text-xs text-gray-500 mb-2'>
-                Briefly describe your project (250-500 words). Include objectives, methods, and potential impact.
-              </p>
-              <textarea
-                id='abstract'
-                value={formData.abstract}
-                onChange={(e) => setFormData({ ...formData, abstract: e.target.value })}
-                onBlur={() => handleBlur('abstract')}
-                placeholder='Describe your project in detail...'
-                rows={6}
-                maxLength={500}
-                className='w-full p-2 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500'
-              />
-              <p className='text-xs text-gray-500 mt-1 text-right'>
-                {formData.abstract.length}/500 characters
+              <h2 className='font-medium text-blue-800 mb-2'>Submission Guidelines</h2>
+              <p className='text-sm text-gray-700'>
+                Please complete all required fields to submit your project. Your abstract should clearly describe 
+                your project's objectives, methodology, and expected outcomes. All documents must be in PDF or 
+                Microsoft Office format and under {maxFileSizeMB}MB in size.
               </p>
             </div>
+          </div>
 
-            {/* Document Upload */}
-            <div>
-              <label className='block text-sm font-medium text-gray-700 mb-1'>
-                Project Document <span className='text-red-500'>*</span>
-              </label>
-              <p className='text-xs text-gray-500 mb-2'>
-                Upload your complete project document (Max {maxFileSizeMB}MB)
-              </p>
-              <label htmlFor='document' className='flex flex-col items-center px-4 py-6 bg-white rounded-md border-2 border-dashed border-gray-300 cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-colors'>
-                <FiUpload className='w-6 h-6 text-gray-400 mb-2' />
-                <p className='text-sm text-gray-600 text-center'>
-                  {formData.document 
-                    ? `Selected: ${formData.document.name}` 
-                    : 'Click to upload or drag and drop'}
-                </p>
-                <p className='text-xs text-gray-500 mt-1'>
-                  Supported formats: {acceptedFileTypes}
+          {error && (
+            <div className='mb-8 p-4 sm:p-6 bg-red-50 text-red-700 rounded-lg border border-red-100 text-sm'>
+              {error}
+            </div>
+          )}
+
+          {success && (
+            <div className='mb-8 p-4 sm:p-6 bg-green-50 text-green-700 rounded-lg border border-green-100 text-sm'>
+              {success}
+            </div>
+          )}
+
+          {currentError && (
+            <div className='mb-8 p-4 sm:p-6 bg-yellow-50 text-yellow-700 rounded-lg border border-yellow-100 text-sm'>
+              {currentError}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className='bg-white p-6 sm:p-8 rounded-xl shadow-sm border border-gray-200'>
+            <div className='space-y-8'>
+              {/* Title Field */}
+              <div>
+                <label htmlFor='title' className='block text-sm font-medium text-gray-700 mb-1'>
+                  Project Title <span className='text-red-500'>*</span>
+                </label>
+                <p className='text-xs text-gray-500 mb-2'>
+                  A clear, concise title that reflects your project's focus
                 </p>
                 <input
-                  id='document'
-                  type='file'
-                  onChange={handleFileChange}
-                  className='hidden'
-                  accept={acceptedFileTypes}
+                  id='title'
+                  type='text'
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  onBlur={() => handleBlur('title')}
+                  placeholder='e.g., "Sustainable Irrigation System for Small Farms"'
+                  className='w-full p-3 text-sm rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow duration-200'
                 />
-              </label>
-            </div>
+              </div>
 
-            {/* Form Actions */}
-            <div className='flex flex-col sm:flex-row justify-between gap-3 pt-6 border-t border-gray-200'>
-              <Link
-                to='/student'
-                className='px-6 py-2 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200 transition-colors font-medium text-sm text-center'
-              >
-                Cancel Submission
-              </Link>
-              <button
-                type='submit'
-                disabled={!isFormValid() || loading}
-                className={`px-6 py-2 rounded-md font-medium text-white text-sm ${!isFormValid() || loading 
-                  ? 'bg-blue-300 cursor-not-allowed' 
-                  : 'bg-blue-600 hover:bg-blue-700'} transition-colors`}
-              >
-                {loading ? (
-                  <span className='flex items-center justify-center gap-2'>
-                    <span className='inline-block h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin'></span>
-                    Submitting...
-                  </span>
-                ) : 'Submit Project'}
-              </button>
+              {/* Category Field */}
+              <div>
+                <label htmlFor='category' className='block text-sm font-medium text-gray-700 mb-1'>
+                  Project Category <span className='text-red-500'>*</span>
+                </label>
+                <p className='text-xs text-gray-500 mb-2'>
+                  Select the category that best fits your project
+                </p>
+                <select
+                  id='category'
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  onBlur={() => handleBlur('category')}
+                  className='w-full p-3 text-sm rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow duration-200'
+                >
+                  {categories.map((category) => (
+                    <option key={category.value} value={category.value} disabled={category.disabled}>
+                      {category.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Abstract Field */}
+              <div>
+                <label htmlFor='abstract' className='block text-sm font-medium text-gray-700 mb-1'>
+                  Project Abstract <span className='text-red-500'>*</span>
+                </label>
+                <p className='text-xs text-gray-500 mb-2'>
+                  Provide a detailed description of your project (minimum 200 words)
+                </p>
+                <textarea
+                  id='abstract'
+                  value={formData.abstract}
+                  onChange={(e) => setFormData({ ...formData, abstract: e.target.value })}
+                  onBlur={() => handleBlur('abstract')}
+                  rows={6}
+                  placeholder='Describe your project objectives, methodology, and expected outcomes...'
+                  className='w-full p-3 text-sm rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow duration-200'
+                />
+              </div>
+
+              {/* Document Upload Field */}
+              <div>
+                <label htmlFor='document' className='block text-sm font-medium text-gray-700 mb-1'>
+                  Project Document <span className='text-red-500'>*</span>
+                </label>
+                <p className='text-xs text-gray-500 mb-2'>
+                  Upload your project document ({acceptedFileTypes.split(',').join(', ')}, max {maxFileSizeMB}MB)
+                </p>
+                <div className='relative'>
+                  <input
+                    id='document'
+                    type='file'
+                    onChange={handleFileChange}
+                    accept={acceptedFileTypes}
+                    className='hidden'
+                  />
+                  <label
+                    htmlFor='document'
+                    className='flex items-center justify-center w-full p-4 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors duration-200'
+                  >
+                    <div className='flex flex-col items-center space-y-2'>
+                      <FiUpload className='text-gray-400 text-2xl' />
+                      <span className='text-sm text-gray-500'>
+                        {formData.document ? formData.document.name : 'Click to upload or drag and drop'}
+                      </span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <div className='pt-4'>
+                <button
+                  type='submit'
+                  disabled={!isFormValid() || loading}
+                  className={`w-full py-3 px-4 rounded-lg text-white font-medium transition-all duration-300 ${
+                    !isFormValid() || loading
+                      ? 'bg-gray-400 cursor-not-allowed'
+                      : 'bg-indigo-600 hover:bg-indigo-700 shadow-md hover:shadow-lg'
+                  }`}
+                >
+                  {loading ? 'Submitting...' : 'Submit Project'}
+                </button>
+              </div>
             </div>
-          </div>
-        </form>
-      </div>
+          </form>
+        </div>
+      </PageLayout>
     </div>
   );
 };
