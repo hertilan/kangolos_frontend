@@ -122,6 +122,7 @@ const [edited] = useState<editUser[]>([])
                   type="text"
                   id="reference"
                   name="reference"
+                  placeholder='reference'
                   value={userReference}
                   onChange={(e)=>{
                     setUserReference(e.target.value)
@@ -184,12 +185,12 @@ const [edited] = useState<editUser[]>([])
               <input
               type='text'
                 id="department"
+                placeholder='departmenr'
                 name="department"
                 value={userDepartment}
                 onChange={(e)=>{
                     setUserDepartment(e.target.value)
                   }}
-                rows={2}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               />
             </div>

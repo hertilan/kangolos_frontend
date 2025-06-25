@@ -28,8 +28,8 @@ const Teamspiechart :React.FC= () => {
             fill="#8884d8"
             label
           >
-            {data.map((entry, index) => (
-              <Cell key={index} fill={COLORS[index % COLORS.length]} />
+            {data.map((_, index) => (
+              <Cell key={index} fill={COLORS[index % COLORS.length] } />
             ))}
           </Pie>
           <Tooltip />

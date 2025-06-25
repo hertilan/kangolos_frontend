@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import universityLogo from '../assets/project.png';
+import universityLogo from '../assets/white.png';
 
 const Footer :React.FC= () => {
   return (
@@ -10,7 +10,7 @@ const Footer :React.FC= () => {
             <div>
               <div className="flex items-center space-x-2 mb-4">
                 <img src={universityLogo} alt="University Logo" className="h-8" />
-                <span className="text-xl font-bold">ProjectFlow</span>
+                <span className="text-xl font-bold">Kangalos</span>
               </div>
               <p className="text-gray-400">
                 The official project management system for University of Rwanda students.

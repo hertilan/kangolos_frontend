@@ -1,47 +1,46 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { 
   FiHome, 
-  FiTrendingUp, 
   FiCalendar, 
   FiPieChart, 
   FiLogOut, 
   FiMessageSquare,
-  FiFileText
 } from 'react-icons/fi';
 import { FaUniversity } from 'react-icons/fa';
-import { BsFillProjectorFill, BsGraphUp } from 'react-icons/bs';
+import { BsFillProjectorFill } from 'react-icons/bs';
 import PrincipalOverview from './PrincipalOverview';
-import Colleges from '../Admin/Colleges/College';
 import SupervisorCalendar from '../SupervisorPages/SupervisorCalender';
 import PrincipalHeader from './PrincipalHeader';
 import Feedback from './Feedback';
 import { BiUser } from 'react-icons/bi';
 import Users from '../Admin/Users/Users';
 import Projects from '../Admin/Projects/Projects';
+// import { useAuth } from '../context/AuthContext';
+import University from '../Institutions/University/University';
+import { useNavigate } from 'react-router-dom';
+import ReportsPage from '../SupervisorSmall/Reports';
 
 const PrincipalDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const navigate = useNavigate();
+      const navigate=useNavigate()
+    const logout=()=>{
+        navigate('/')
+    }
+     // const { logout } = useAuth();;
 
   
   // UR Campuses data
 
   // Sample data
-  const campusStats = {
-    totalProjects: 1248,
-    completed: 872,
-    inProgress: 376,
-    supervisors: 284,
-    students: 2496
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('principalToken');
-    navigate('/');
-  };
+  // const campusStats = {
+  //   totalProjects: 1248,
+  //   completed: 872,
+  //   inProgress: 376,
+  //   supervisors: 284,
+  //   students: 2496
+  // };
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -115,7 +114,7 @@ const PrincipalDashboard: React.FC = () => {
             <BiUser className="mr-3" />
             Users
           </button>
-          <button
+          {/* <button
             onClick={() => {
               setActiveTab('progress');
               setMobileMenuOpen(false);
@@ -124,7 +123,7 @@ const PrincipalDashboard: React.FC = () => {
           >
             <FiTrendingUp className="mr-3" />
             Academic Progress
-          </button>
+          </button> */}
           <button
             onClick={() => {
               setActiveTab('calendar');
@@ -158,7 +157,7 @@ const PrincipalDashboard: React.FC = () => {
             Send Feedback
           </button>
           <button
-            onClick={handleLogout}
+            onClick={logout}
             className="flex items-center w-full px-4 py-2 text-blue-200 hover:text-white"
           >
             <FiLogOut className="mr-3" />
@@ -182,7 +181,7 @@ const PrincipalDashboard: React.FC = () => {
           )}
 
           {activeTab === 'campuses' && (
-            <Colleges displayed={false} viewAddSchool={false}/>
+            <University displayed={false} viewAddSchool={false}/>
           )}
           {activeTab === 'users' && (
             <Users/>
@@ -191,7 +190,7 @@ const PrincipalDashboard: React.FC = () => {
             <Projects/>
           )}
 
-          {activeTab === 'progress' && (
+          {/* {activeTab === 'progress' && (
             <div className="bg-white rounded-lg shadow p-4 md:p-6">
               <h3 className="text-lg font-semibold mb-6">Academic Progress Monitoring</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
@@ -218,60 +217,14 @@ const PrincipalDashboard: React.FC = () => {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
 
           {activeTab === 'calendar' && (
             <SupervisorCalendar/>
           )}
 
           {activeTab === 'reports' && (
-            <div className="bg-white rounded-lg shadow p-4 md:p-6">
-              <h3 className="text-lg font-semibold mb-6">Institutional Reports</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                <div className="border border-gray-200 rounded-lg p-4 md:p-6 hover:shadow-md transition-shadow">
-                  <div className="flex items-start">
-                    <div className="p-2 md:p-3 rounded-full bg-blue-100 text-blue-600 mr-3 md:mr-4">
-                      <FiFileText size={16} />
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-sm md:text-base">Annual Projects Report</h4>
-                      <p className="text-xs md:text-sm text-gray-600 mt-1">2022-2023 Academic Year</p>
-                      <button className="mt-2 md:mt-3 text-xs md:text-sm text-blue-600 hover:text-blue-800">
-                        Download PDF
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="border border-gray-200 rounded-lg p-4 md:p-6 hover:shadow-md transition-shadow">
-                  <div className="flex items-start">
-                    <div className="p-2 md:p-3 rounded-full bg-green-100 text-green-600 mr-3 md:mr-4">
-                      <BsGraphUp size={16} />
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-sm md:text-base">Performance Metrics</h4>
-                      <p className="text-xs md:text-sm text-gray-600 mt-1">All Campuses Comparison</p>
-                      <button className="mt-2 md:mt-3 text-xs md:text-sm text-blue-600 hover:text-blue-800">
-                        Download PDF
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="border border-gray-200 rounded-lg p-4 md:p-6 hover:shadow-md transition-shadow">
-                  <div className="flex items-start">
-                    <div className="p-2 md:p-3 rounded-full bg-purple-100 text-purple-600 mr-3 md:mr-4">
-                      <FaUniversity size={16} />
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-sm md:text-base">Campus-wise Summary</h4>
-                      <p className="text-xs md:text-sm text-gray-600 mt-1">Individual campus reports</p>
-                      <button className="mt-2 md:mt-3 text-xs md:text-sm text-blue-600 hover:text-blue-800">
-                        View Reports
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <ReportsPage/>
           )}
         </main>
       </div>

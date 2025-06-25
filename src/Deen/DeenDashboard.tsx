@@ -2,25 +2,30 @@ import React, { useState } from 'react';
 import { FiHome, FiCalendar, FiFileText, FiPieChart, FiSettings, FiLogOut, FiMessageSquare } from 'react-icons/fi';
 import { FaChalkboardTeacher } from 'react-icons/fa';
 import { BsBuilding } from 'react-icons/bs';
-import { Link } from 'react-router-dom';
 import Projects from '../Admin/Projects/Projects';
-import Colleges from '../Admin/Colleges/College';
 import Users from '../Admin/Users/Users';
 import SupervisorCalendar from '../SupervisorPages/SupervisorCalender';
 import DeanHeader from './DeanHeader';
 import DeanOverview from './DeanOverview';
 import Feedback from '../Principal/Feedback';
+import University from '../Institutions/University/University';
+import { useNavigate } from 'react-router-dom';
+// import { useAuth } from '../context/AuthContext';
 
 const DeanDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
-
+  const navigate=useNavigate()
+    const logout=()=>{
+        navigate('/')
+    }
+     // const { logout } = useAuth();;
 
 
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-fit bg-gray-50">
               {showFeedbackModal && (
         <Feedback onClose={()=>{setShowFeedbackModal(false)}}/>
       )}
@@ -41,7 +46,7 @@ const DeanDashboard: React.FC = () => {
       </button>
 
       {/* Sidebar - UR Colors */}
-      <div className={`w-64 bg-blue-900 text-white shadow-lg transform transition-all duration-300 fixed md:static z-40 h-full
+      <div className={`w-64 bg-blue-900 text-white shadow-lg transform transition-all h-screen overflow-y-auto duration-300 fixed md:static z-40 
         ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
         <div className="p-6">
           <h1 className="text-xl font-bold">Dean's Dashboard</h1>
@@ -120,29 +125,28 @@ const DeanDashboard: React.FC = () => {
               <FiSettings className="mr-3" />
               School Settings
             </button>
-                                <button
-                                  onClick={() => {
-                                    setShowFeedbackModal(true);
-                                  }}
-                                  className="flex items-center w-full px-4 py-2 text-blue-200 hover:text-white mb-2"
-                                >
-                                  <FiMessageSquare className="mr-3" />
-                                  Send Feedback
-                                </button>
-            <Link 
-              to='/' 
+            <button
+              onClick={() => {
+                setShowFeedbackModal(true);
+              }}
+              className="flex items-center w-full px-4 py-2 text-blue-200 hover:text-white mb-2"
+            >
+              <FiMessageSquare className="mr-3" />
+              Send Feedback
+            </button>
+            <button
               className="flex items-center w-full px-6 py-3 text-left hover:bg-blue-700"
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={logout}
             >
               <FiLogOut className="mr-3" />
               Logout
-            </Link>
+            </button>
           </div>
         </nav>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-y-auto h-screen">
         {/* Topbar */}
         <DeanHeader/>
         {/* Dashboard Content */}
@@ -152,7 +156,7 @@ const DeanDashboard: React.FC = () => {
           )}
 
           {activeTab === 'departments' && (
-            <Colleges displayed={false} viewAddSchool={true}/>
+            <University displayed={false} viewAddSchool={true}/>
           )}
 
           {activeTab === 'projects' && (

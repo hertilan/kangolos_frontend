@@ -93,7 +93,7 @@ const Teams: React.FC = () => {
 
   const handleRefresh = () => {
     setRefreshing(true);
-    fetchTeams();
+    // fetchTeams();
   };
 
   // Pagination logic

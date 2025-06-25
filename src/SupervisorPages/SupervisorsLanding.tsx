@@ -20,7 +20,9 @@ import SupervisorCalendar from './SupervisorCalender';
 import Messaging from './Messaging';
 // import SupervisorSettings from './SupervisorSettings';
 import Feedback from '../Principal/Feedback';
-import { useAuth } from '../context/AuthContext';
+import AllTeams from '../Admin/Teams/AllTeams';
+import ReportsPage from '../SupervisorSmall/Reports';
+// import { useAuth } from '../context/AuthContext';
 
 interface Tab {
   icon: React.ReactNode;
@@ -30,7 +32,11 @@ interface Tab {
 
 const SupervisorLanding: React.FC = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth(); // Using auth context for logout
+      // const navigate=useNavigate()
+    const logout=()=>{
+        navigate('/')
+    }
+     // const { logout } = useAuth();; // Using auth context for logout
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [notifications, setNotifications] = useState([
@@ -63,10 +69,10 @@ const SupervisorLanding: React.FC = () => {
     switch (activeTab) {
       case 'dashboard': return <SupervisorDashboard />;
       case 'projects': return <Projects />;
-      case 'teams': return <div className="p-6">Teams Management</div>;
+      case 'teams': return <AllTeams/>;
       case 'calendar': return <SupervisorCalendar />;
       case 'messages': return <Messaging />;
-      case 'reports': return <div className="p-6">Reports Analytics</div>;
+      case 'reports': return <ReportsPage/>;
       case 'settings': return <SupervisorDashboard />;
       default: return <SupervisorDashboard />;
     }

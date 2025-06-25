@@ -95,12 +95,12 @@ const AllUsers: React.FC = () => {
     },
     // ... other sample colleges
   ];
-   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  //  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [editUser, setEditUser] = useState<User | null>(null);
 
-    const handleCollegeClick = (user: User) => {
-    setSelectedUser(user);
-  };
+  //   const handleCollegeClick = (user: User) => {
+  //   setSelectedUser(user);
+  // };
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -154,7 +154,7 @@ const AllUsers: React.FC = () => {
   // Pagination logic
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = sortedUsers.slice(indexOfFirstUser, indexOfLastUser);
+  // const currentUsers = sortedUsers.slice(indexOfFirstUser, indexOfLastUser);
   const totalPages = Math.ceil(sortedUsers.length / usersPerPage);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);

@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaWindowClose } from 'react-icons/fa';
+import { API_URL } from '../config/api';
 
 interface VerifyProps {
   email: string;
@@ -28,21 +29,23 @@ const Otp: React.FC<VerifyProps> = ({ email, onClose }) => {
     }
 
     setIsLoading(true);
-    fetch('https://kangalos-intern.onrender.com/user/verifyOtp', {
+    fetch(`${API_URL}/user/verifyOtp`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ otp: enteredOtp, email }),
     })
       .then((res) => res.json())
-      .then((data) => {
+      .then(() => {
           setMessage('Email verified successfully!');
           setMessageColor('green');
           setTimeout(() => {
-            navigate('/student/');
+            navigate(0);
             setMessage('');
           }, 3000);
         setIsLoading(false);
+        
       })
+
       .catch((err) => {
         console.error(err);
         setMessage('Failed to verify email.');
@@ -69,13 +72,13 @@ const Otp: React.FC<VerifyProps> = ({ email, onClose }) => {
   const handleResend = (e: React.FormEvent) => {
     e.preventDefault();
     setResending(true);
-    fetch('https://kangalos-intern.onrender.com/user/resendOtp', {
+    fetch(`${API_URL}/user/resendOtp`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email }),
     })
       .then((res) => res.json())
-      .then((data) => {
+      .then(() => {
         
           setResendMessage('Verification code resent successfully!');
           setMessageColor('green');
@@ -108,18 +111,22 @@ const Otp: React.FC<VerifyProps> = ({ email, onClose }) => {
         <p>We have sent a verification code to your email <strong>{email}</strong>. Enter it here.</p>
         <div className="w-fit flex gap-2">
           {otp.map((digit, index) => (
-            <input
-              key={index}
-              id={`otp-${index}`}
-              type="text"
-              name="otp"
-              value={digit}
-              ref={(el) => (inputRefs.current[index] = el)}
-              onChange={(e) => handleOtpChange(index, e.target.value)}
-              className="w-12 h-12 p-3 text-center text-gray-700 border rounded"
-              maxLength={1}
-              disabled={isLoading}
-            />
+        <input
+          key={index}
+          id={`otp-${index}`}
+          type="text"
+          placeholder="y"
+          name="otp"
+          value={digit}
+          ref={(el: HTMLInputElement | null) => {
+            inputRefs.current[index] = el;
+          }}
+          onChange={(e) => handleOtpChange(index, e.target.value)}
+          className="w-12 h-12 p-3 text-center text-gray-700 border rounded"
+          maxLength={1}
+          disabled={isLoading}
+        />
+
           ))}
         </div>
         <button

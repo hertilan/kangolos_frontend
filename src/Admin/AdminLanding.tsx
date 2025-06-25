@@ -1,29 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import universityLogo from '../assets/project.png';
-import { 
-  FiHome,
-  FiUsers,
-  FiFileText,
-  FiSettings,
-  FiLogOut,
-  FiChevronDown,
-  FiBell,
-  FiSearch,
-  FiUser,
-  FiShield,
-  FiBook,
-  FiActivity,
-  FiMessageSquare
+import universityLogo from '../assets/white.png';
+import {  FiHome, FiUsers, FiFileText, FiLogOut, FiChevronDown, FiBell, FiSearch, FiUser, FiBook, FiActivity, FiMessageSquare
 } from 'react-icons/fi';
 import { RiTeamFill } from 'react-icons/ri';
 import Dashboard from './Dashboard';
 import Users from './Users/Users';
-import Teams from './Teams/Teams';
 import Projects from './Projects/Projects';
-import AdminSettings from './AdminSettings';
-import Colleges from './Colleges/College';
 import Feedback from '../Principal/Feedback';
+import University from '../Institutions/University/University';
+import ReportsPage from '../SupervisorSmall/Reports';
+import AllTeams from './Teams/AllTeams';
+// import { useAuth } from '../context/AuthContext';
 
 interface Tab {
   icon: React.ReactNode;
@@ -41,22 +29,25 @@ const AdminLanding: React.FC = () => {
     { id: 2, message: 'System maintenance scheduled', time: '1 hour ago', read: true }
   ]);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+          // const navigate=useNavigate()
+    const logout=()=>{
+        navigate('/')
+    }
+     // const { logout } = useAuth();;
 
   const tabs: Tab[] = [
     { icon: <FiHome size={18} />, name: 'Dashboard', id: 'dashboard' },
     { icon: <FiUsers size={18} />, name: 'Users', id: 'users' },
     { icon: <FiFileText size={18} />, name: 'Projects', id: 'projects' },
     { icon: <RiTeamFill size={18} />, name: 'Teams', id: 'teams' },
-    { icon: <FiBook size={18} />, name: 'College', id: 'college' },
+    { icon: <FiBook size={18} />, name: 'University', id: 'university' },
     { icon: <FiActivity size={18} />, name: 'Logs', id: 'logs' },
-    { icon: <FiShield size={18} />, name: 'Security', id: 'security' },
-    { icon: <FiSettings size={18} />, name: 'Settings', id: 'settings' }
   ];
 
   const handleTabChange = (tabId: string) => {
     if (tabId === 'logout') {
       localStorage.removeItem('adminToken');
-      navigate('/login');
+      navigate('/');
       return;
     }
     setActiveTab(tabId);
@@ -67,12 +58,10 @@ const AdminLanding: React.FC = () => {
     switch (activeTab) {
       case 'dashboard': return <Dashboard />;
       case 'users': return <Users />;
-      case 'teams': return <Teams />;
+      case 'teams': return <AllTeams />;
       case 'projects': return <Projects />;
-      case 'settings': return <AdminSettings />;
-      case 'college': return <Colleges displayed={true} viewAddSchool={true} />;
-      case 'logs': return <div className="p-6">System Logs</div>;
-      case 'security': return <div className="p-6">Security Settings</div>;
+      case 'university': return <University displayed={true} viewAddSchool={true} />;
+      case 'logs': return <ReportsPage/>;
       default: return <Dashboard />;
     }
   };
@@ -84,12 +73,12 @@ const AdminLanding: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-fit bg-gray-50">
         {showFeedbackModal && (
         <Feedback onClose={()=>{setShowFeedbackModal(false)}}/>
       )}
       {/* Mobile Menu Button */}
-      <button 
+      <button  type='button'
         onClick={() => setShowMobileMenu(!showMobileMenu)}
         className="md:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-md">
 
@@ -97,7 +86,7 @@ const AdminLanding: React.FC = () => {
       </button>
 
       {/* Sidebar */}
-      <div className={`w-64 bg-indigo-700 shadow-md transform transition-all  duration-300 fixed md:static z-40 h-screen
+      <div className={`w-64 bg-indigo-700 shadow-md overflow-y-auto transform transition-all gap-5  flex flex-col  duration-300 fixed md:static z-40 h-screen
         ${showMobileMenu ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
         <div className="p-6 border-b border-indigo-600">
           <img src={universityLogo} alt='logo' className='w-16 h-16 rounded-full mx-auto mb-2' />
@@ -119,12 +108,12 @@ const AdminLanding: React.FC = () => {
           </div>
         </div>
         
-        <nav className="mt-4 overflow-y-auto h-[calc(100%-180px)]">
+        <nav className="mt-4 h-[calc(100%-180px)] flex flex-col gap-3">
           {tabs.map((item) => (
             <button
               key={item.id}
               onClick={() => handleTabChange(item.id)}
-              className={`w-full flex items-center px-6 py-3 text-left transition-colors
+              className={`w-full flex items-center px-6 py-1 text-left transition-colors
                 ${activeTab === item.id 
                   ? 'bg-white text-indigo-600 border-r-4 border-white' 
                   : 'text-indigo-200 hover:bg-indigo-600'}`}
@@ -146,7 +135,7 @@ const AdminLanding: React.FC = () => {
           
           {/* Logout button */}
           <button
-            onClick={() => handleTabChange('logout')}
+            onClick={logout}
             className="w-full flex items-center px-6 py-3 text-left text-indigo-200 hover:bg-indigo-600 mt-4">
             <span className="mr-3"><FiLogOut size={18} /></span>
             Logout
@@ -168,7 +157,7 @@ const AdminLanding: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col h-screen overflow-y-auto ">
         {/* Topbar */}
         <header className="bg-white shadow-sm p-4 flex items-center justify-between">
           <h2 className="text-xl font-semibold text-gray-800 capitalize">

@@ -1,13 +1,9 @@
-import React, { useState, ReactElement } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import { FaRegEye, FaRegEyeSlash, FaPhone, FaRegUser } from "react-icons/fa6";
 import { MdOutlineEmail } from "react-icons/md";
-import { IoClose } from "react-icons/io5";
-import axios from 'axios';
-import * as Yup from 'yup';
-import { useFormik } from 'formik';
-import project from '../assets/project.png';
+import { IoClose } from 'react-icons/io5';
 import Otp from './Otp';
+import { API_URL } from '../config/api';
 
 interface FormValues {
   firstName: string;
@@ -17,20 +13,42 @@ interface FormValues {
   password: string;
   confirmPassword: string;
   gender: string;
-  regnumber: string;
+  dateOfBirth: string;
 }
 
-interface SignupProps {
-  isOpen: boolean;
+interface FormErrors {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  password?: string;
+  confirmPassword?: string;
+  gender?: string;
+  dateOfBirth?: string;
+}
+
+interface showLoginProp {
   onClose: () => void;
-  onLoginClick?: () => void;
+  showLogin: () => void;
 }
 
 type FormField = keyof Pick<FormValues, 'email' | 'phone' | 'firstName' | 'lastName'>;
 type PasswordField = 'password' | 'confirmPassword';
 
-const Signup: React.FC<SignupProps> = ({ isOpen, onClose, onLoginClick }) => {
-  const navigate = useNavigate();
+const Signup: React.FC<showLoginProp> = ({ onClose, showLogin }) => {
+  const [formData, setFormData] = useState<FormValues>({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    password: '',
+    confirmPassword: '',
+    gender: '',
+    dateOfBirth: ''
+  });
+  
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [showPassword, setShowPassword] = useState({
     password: false,
     confirmPassword: false
@@ -42,105 +60,191 @@ const Signup: React.FC<SignupProps> = ({ isOpen, onClose, onLoginClick }) => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+  // Updated to match backend validation
+  const phoneRegExp = /^\+?\d{6,15}$/;
+  const passwordRegExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/;
+  const genderOptions = ['Male', 'Female']; // Removed 'other' to match backend
 
-  const formik = useFormik<FormValues>({
-    initialValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      password: '',
-      confirmPassword: '',
-      gender: '',
-      regnumber: '',
-    },
-    validationSchema: Yup.object({
-      firstName: Yup.string()
-        .max(15, 'Must be 15 characters or less')
-        .required('Required'),
-      lastName: Yup.string()
-        .max(20, 'Must be 20 characters or less')
-        .required('Required'),
-      email: Yup.string()
-        .email('Invalid email address')
-        .required('Required'),
-      gender: Yup.string()
-        .oneOf(['male', 'female', 'other'], 'Invalid gender')
-        .required('Required'),
-      regnumber: Yup.string()
-        .matches(/^[A-Za-z0-9]{9}$/, 'Must be exactly 9 alphanumeric characters')
-        .required('Required'),
-      phone: Yup.string()
-        .matches(phoneRegExp, 'Phone number is not valid')
-        .required('Required'),
-      password: Yup.string()
-        .min(8, 'Must be at least 8 characters')
-        .matches(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
-          'Must contain uppercase, lowercase, number, and special character'
-        )
-        .required('Required'),
-      confirmPassword: Yup.string()
-        .oneOf([Yup.ref('password')], 'Passwords must match')
-        .required('Required')
-    }),
-    onSubmit: async (values) => {
-      setIsLoading(true);
-      setApiStatus({ message: '', type: '' });
+  const validateField = (name: string, value: string): string | undefined => {
+    switch (name) {
+      case 'firstName':
+        if (!value) return 'First name is required';
+        if (value.length < 3) return 'Must be at least 3 characters';
+        if (value.length > 15) return 'Must be 15 characters or less';
+        break;
+      case 'lastName':
+        if (!value) return 'Last name is required';
+        if (value.length < 3) return 'Must be at least 3 characters';
+        if (value.length > 20) return 'Must be 20 characters or less';
+        break;
+      case 'email':
+        if (!value) return 'Email is required';
+        if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)) return 'Invalid email address';
+        break;
+      case 'phone':
+        if (!value) return 'Phone number is required';
+        if (!phoneRegExp.test(value)) return 'Must be 6-15 digits with optional + prefix';
+        break;
+      case 'password':
+        if (!value) return 'Password is required';
+        if (value.length < 8) return 'Must be at least 8 characters';
+        if (!passwordRegExp.test(value)) return 'Must contain uppercase, lowercase, number, and special character';
+        break;
+      case 'confirmPassword':
+        if (!value) return 'Please confirm your password';
+        if (value !== formData.password) return 'Passwords must match';
+        break;
+      case 'gender':
+        if (!value) return 'Gender is required';
+        if (!genderOptions.includes(value)) return 'Please select a valid gender';
+        break;
+      case 'dateOfBirth':
+        if (!value) return 'Date of birth is required';
+        const dob = new Date(value);
+        if (dob > new Date()) return 'Date cannot be in the future';
+        // Additional validation for reasonable age range
+        const minDate = new Date();
+        minDate.setFullYear(minDate.getFullYear() - 120);
+        if (dob < minDate) return 'Please enter a valid date';
+        break;
+      default:
+        return undefined;
+    }
+    return undefined;
+  };
 
-      try {
-        const response = await axios.post(
-          'https://kangalos-intern.onrender.com/user/register',
-          {
-            name: `${values.firstName} ${values.lastName}`,
-            email: values.email,
-            // phone: values.phone,
-            password: values.password,
-            gender: values.gender,
-            reg_no: values.regnumber,
-          },
-          { 
-            headers: { 'Content-Type': 'application/json' }
-          }
-        );
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
+    let isValid = true;
 
-        setApiStatus({
-          message: `Account created successfully!`,
-          type: 'success'
-        });
-        
-        setTimeout(() =>{ 
-          setShowOtp(true)
-          // navigate('/login')
-        }, 2000);
-        
-      } catch (error: any) {
-        let errorMessage = `Signup failed. Please try again.`;
-        
-        if (error.response) {
-          switch (error.response.status) {
-            case 400:
-              errorMessage = `Invalid input data. Please check your information.`;
-              break;
-            case 409:
-              errorMessage = `Email already exists. Please login instead.`;
-              break;
-            case 500:
-              errorMessage = `Server error. Please try again later.`;
-              break;
-          }
-        }
+    Object.keys(formData).forEach((key) => {
+      const error = validateField(key, formData[key as keyof FormValues]);
+      if (error) {
+        newErrors[key as keyof FormErrors] = error;
+        isValid = false;
+      }
+    });
 
-        setApiStatus({
-          message: errorMessage,
-          type: 'error'
-        });
-      } finally {
-        setIsLoading(false);
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    if (touched[name]) {
+      const error = validateField(name, value);
+      setErrors(prev => ({
+        ...prev,
+        [name]: error
+      }));
+    }
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name } = e.target;
+    setTouched(prev => ({
+      ...prev,
+      [name]: true
+    }));
+
+    const error = validateField(name, formData[name as keyof FormValues]);
+    setErrors(prev => ({
+      ...prev,
+      [name]: error
+    }));
+  };
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  const allTouched = Object.keys(formData).reduce((acc, key) => {
+    acc[key] = true;
+    return acc;
+  }, {} as Record<string, boolean>);
+  setTouched(allTouched);
+
+  if (!validateForm()) {
+    return;
+  }
+
+  setIsLoading(true);
+  setApiStatus({ message: '', type: '' });
+
+  try {
+    // Format date as YYYY-MM-DD without time
+    const formattedDate = formData.dateOfBirth.split('T')[0];
+    
+    console.log('Submitting:', {
+      ...formData,
+      dateOfBirth: formattedDate  // Now just the date part
+    });
+
+    const response = await fetch(`${API_URL}/user/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+        gender: formData.gender,
+        dateOfBirth: formattedDate  // Send just the date part
+      })
+    });
+
+const data = await response.json();
+
+// If the response is not successful
+if (!response.ok) {
+  // Check if there are validation errors from backend
+  if (data.error) {
+    // Convert backend errors to our form errors format
+    const backendErrors: FormErrors = {};
+    
+    for (const fieldName in data.error) {
+      if (fieldName in formData) {
+        // Join multiple error messages with comma if they exist
+        const errorMessages = data.error[fieldName]._errors || ['Invalid value'];
+        backendErrors[fieldName as keyof FormErrors] = errorMessages.join(', ');
       }
     }
-  });
+    
+    // Update form errors with backend validation errors
+    setErrors(backendErrors);
+    throw new Error('Please fix the errors in the form');
+  }
+  
+  // If no specific validation errors, show general error message
+  throw new Error(data.Message || 'Registration failed. Please try again.');
+}
+
+// If registration was successful
+setApiStatus({
+  message: 'Registration successful! Please check your email for verification.',
+  type: 'success'
+});
+    setTimeout(() => {
+      setShowOtp(true);
+    }, 2000);
+
+  } catch (error: any) {
+    console.error('Registration error:', error);
+    setApiStatus({ 
+      message: error.message || 'An error occurred during registration', 
+      type: 'error' 
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const togglePasswordVisibility = (field: PasswordField) => {
     setShowPassword(prev => ({
@@ -149,8 +253,8 @@ const Signup: React.FC<SignupProps> = ({ isOpen, onClose, onLoginClick }) => {
     }));
   };
 
-  const renderFieldIcon = (field: FormField): ReactElement => {
-    const icons: Record<FormField, ReactElement> = {
+  const renderFieldIcon = (field: FormField) => {
+    const icons: Record<FormField, React.ReactNode> = {
       email: <MdOutlineEmail className="text-gray-400" />,
       phone: <FaPhone className="text-gray-400" />,
       firstName: <FaRegUser className="text-gray-400" />,
@@ -168,280 +272,252 @@ const Signup: React.FC<SignupProps> = ({ isOpen, onClose, onLoginClick }) => {
     );
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      {/* Semi-transparent backdrop */}
-      <div className="fixed inset-0 bg-black/75 transition-opacity duration-300" onClick={onClose}></div>
-
-      {/* Modal */}
-      <div className="relative min-h-screen flex items-center justify-center p-4">
-        <div className="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 sm:p-8 mx-auto transform transition-all duration-300">
-          {/* Close Button */}
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors duration-200"
-          >
-            <IoClose size={24} />
-          </button>
-
-          <div className="w-full">
-            <div className="text-center space-y-2 mb-8">
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                FYPMS
-              </h1>
-              <h2 className="text-2xl font-semibold text-gray-800">Create your account</h2>
-              <p className="text-gray-500 text-sm">Join FYPMS to manage your final year project</p>
-            </div>
-
-            {apiStatus.message && (
-              <div className={`mb-6 p-4 rounded-lg text-sm ${
-                apiStatus.type === 'success' 
-                  ? 'bg-green-50 text-green-800 border border-green-100' 
-                  : 'bg-red-50 text-red-800 border border-red-100'
-              } animate-fade-in`}>
-                {apiStatus.message}
+    <div className="lg:w-1/3 w-full lg:h-fit flex flex-col rounded-lg h-7/8 overflow-y-auto">
+      {/* Form Section */}
+      <div className="flex items-center justify-center p-6 sm:p-12 relative bg-white rounded-lg">
+        {/* OTP Modal Backdrop and Container */}
+        {showOtp && (
+          <>
+            <div className="fixed inset-0 bg-gray-500/30 bg-opacity-50 z-40"></div>
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 mx-4">
+                <Otp 
+                  email={formData.email} 
+                  onClose={() => setShowOtp(false)}
+                />
               </div>
-            )}
+            </div>
+          </>
+        )}
+        <div className="w-full max-w-md">
+          <IoClose 
+            size={30} 
+            onClick={onClose} 
+            className='flex self-end top-0 right-0 justify-self-end cursor-pointer hover:text-red-400 transition-colors duration-200 ease-in-out'
+          />
+          
+          <div className="mb-2 text-center">
+            <h1 className="text-3xl font-bold text-[#2C4FFF] mb-2">FYPMS</h1>
+            <h2 className="text-xl font-semibold text-gray-800">Create your account</h2>
+          </div>
 
-            <form onSubmit={formik.handleSubmit} className="space-y-4">
-              {/* Name Fields */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {apiStatus.message && (
+            <div className={`mb-6 p-3 rounded-md text-sm ${
+              apiStatus.type === 'success' 
+                ? 'bg-green-100 text-green-800' 
+                : 'bg-red-100 text-red-800'
+            }`}>
+              {apiStatus.message}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit}>
+            <fieldset disabled={isLoading} className="space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {['firstName', 'lastName'].map((field) => (
-                  <div key={field}>
+                  <div key={field} className="relative">
                     <label htmlFor={field} className="block text-sm font-medium text-gray-700 mb-1">
                       {field === 'firstName' ? 'First Name' : 'Last Name'}
                     </label>
-                    <div className="relative group">
+                    <div className="relative">
                       <input
                         id={field}
                         name={field}
                         type="text"
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        value={formik.values[field as keyof FormValues]}
-                        className={`block w-full rounded-lg py-2.5 px-4 pl-10 border ${
-                          formik.touched[field as keyof FormValues] && formik.errors[field as keyof FormValues]
-                            ? 'border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500'
-                            : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
-                        } transition-all duration-300 group-hover:border-blue-400`}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={formData[field as keyof FormValues]}
+                        className={`block w-full rounded-md py-3 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 pl-10 ${
+                          touched[field] && errors[field as keyof FormErrors] ? 'border-red-500' : 'border'
+                        }`}
                         placeholder={`Enter your ${field === 'firstName' ? 'first' : 'last'} name`}
+                        aria-required="true"
                       />
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         {renderFieldIcon(field as FormField)}
                       </div>
-                      {formik.touched[field as keyof FormValues] && formik.errors[field as keyof FormValues] && (
-                        <p className="mt-1 text-sm text-red-600">{formik.errors[field as keyof FormValues]}</p>
-                      )}
                     </div>
+                    {touched[field] && errors[field as keyof FormErrors] && (
+                      <p className="mt-1 text-sm text-red-600">{errors[field as keyof FormErrors]}</p>
+                    )}
                   </div>
                 ))}
               </div>
 
-              {/* Email and Phone Fields */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                    Email Address
-                  </label>
-                  <div className="relative group">
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.email}
-                      className={`block w-full rounded-lg py-2.5 px-4 pl-10 border ${
-                        formik.touched.email && formik.errors.email
-                          ? 'border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500'
-                          : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
-                      } transition-all duration-300 group-hover:border-blue-400`}
-                      placeholder="Enter your email"
-                    />
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      {renderFieldIcon('email')}
-                    </div>
-                    {formik.touched.email && formik.errors.email && (
-                      <p className="mt-1 text-sm text-red-600">{formik.errors.email}</p>
-                    )}
+              <div className="relative">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={formData.email}
+                    className={`block w-full rounded-md border-gray-300 shadow-sm py-2 focus:border-blue-500 focus:ring-blue-500 pl-10 ${
+                      touched.email && errors.email ? 'border-red-500' : 'border'
+                    }`}
+                    placeholder="Enter your email"
+                    aria-required="true"
+                  />
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    {renderFieldIcon('email')}
                   </div>
                 </div>
-
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone Number
-                  </label>
-                  <div className="relative group">
-                    <input
-                      id="phone"
-                      name="phone"
-                      type="tel"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.phone}
-                      className={`block w-full rounded-lg py-2.5 px-4 pl-10 border ${
-                        formik.touched.phone && formik.errors.phone
-                          ? 'border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500'
-                          : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
-                      } transition-all duration-300 group-hover:border-blue-400`}
-                      placeholder="Enter your phone number"
-                    />
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      {renderFieldIcon('phone')}
-                    </div>
-                    {formik.touched.phone && formik.errors.phone && (
-                      <p className="mt-1 text-sm text-red-600">{formik.errors.phone}</p>
-                    )}
-                  </div>
-                </div>
+                {touched.email && errors.email && (
+                  <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                )}
               </div>
 
-              {/* Registration Number and Gender */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="regnumber" className="block text-sm font-medium text-gray-700 mb-1">
-                    Registration Number
-                  </label>
+              <div className="relative">
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone Number
+                </label>
+                <div className="relative">
                   <input
-                    id="regnumber"
-                    name="regnumber"
-                    type="text"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.regnumber}
-                    className={`block w-full rounded-lg py-2.5 px-4 border ${
-                      formik.touched.regnumber && formik.errors.regnumber
-                        ? 'border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500'
-                        : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
-                    } transition-all duration-300 hover:border-blue-400`}
-                    placeholder="Enter registration number"
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={formData.phone}
+                    className={`block w-full rounded-md border-gray-300 shadow-sm py-2 focus:border-blue-500 focus:ring-blue-500 pl-10 ${
+                      touched.phone && errors.phone ? 'border-red-500' : 'border'
+                    }`}
+                    placeholder="e.g. +250780905910 or 0780905910"
+                    aria-required="true"
                   />
-                  {formik.touched.regnumber && formik.errors.regnumber && (
-                    <p className="mt-1 text-sm text-red-600">{formik.errors.regnumber}</p>
-                  )}
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    {renderFieldIcon('phone')}
+                  </div>
                 </div>
+                {touched.phone && errors.phone && (
+                  <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
+                )}
+              </div>
 
-                <div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="relative">
                   <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">
                     Gender
                   </label>
                   <select
                     id="gender"
                     name="gender"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.gender}
-                    className={`block w-full rounded-lg py-2.5 px-4 border ${
-                      formik.touched.gender && formik.errors.gender
-                        ? 'border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500'
-                        : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
-                    } transition-all duration-300 hover:border-blue-400`}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={formData.gender}
+                    className={`block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 py-2 px-2 focus:ring-blue-500 ${
+                      touched.gender && errors.gender ? 'border-red-500' : 'border'
+                    }`}
+                    aria-required="true"
                   >
                     <option value="">Select gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
+                    {genderOptions.map(gender => (
+                      <option key={gender} value={gender}>{gender}</option>
+                    ))}
                   </select>
-                  {formik.touched.gender && formik.errors.gender && (
-                    <p className="mt-1 text-sm text-red-600">{formik.errors.gender}</p>
+                  {touched.gender && errors.gender && (
+                    <p className="mt-1 text-sm text-red-600">{errors.gender}</p>
+                  )}
+                </div>
+
+                <div className="relative">
+                  <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700 mb-1">
+                    Date of Birth
+                  </label>
+                  <input
+                    name="dateOfBirth"
+                    id="dateOfBirth"
+                    type="date"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={formData.dateOfBirth}
+                    className={`block w-full rounded-md border-gray-300 shadow-sm py-2 px-2 focus:border-blue-500 focus:ring-blue-500 ${
+                      touched.dateOfBirth && errors.dateOfBirth ? 'border-red-500' : 'border'
+                    }`}
+                    aria-required="true"
+                    max={new Date().toISOString().split('T')[0]}
+                  />
+                  {touched.dateOfBirth && errors.dateOfBirth && (
+                    <p className="mt-1 text-sm text-red-600">{errors.dateOfBirth}</p>
                   )}
                 </div>
               </div>
 
-              {/* Password Fields */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {(['password', 'confirmPassword'] as PasswordField[]).map((field) => (
-                  <div key={field}>
+                  <div key={field} className="relative">
                     <label htmlFor={field} className="block text-sm font-medium text-gray-700 mb-1">
                       {field === 'password' ? 'Password' : 'Confirm Password'}
                     </label>
-                    <div className="relative group">
+                    <div className="relative">
                       <input
                         id={field}
                         name={field}
                         type={showPassword[field] ? 'text' : 'password'}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        value={formik.values[field]}
-                        className={`block w-full rounded-lg py-2.5 px-4 pr-10 border ${
-                          formik.touched[field] && formik.errors[field]
-                            ? 'border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500'
-                            : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
-                        } transition-all duration-300 group-hover:border-blue-400`}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={formData[field]}
+                        className={`block w-full rounded-md border-gray-300 shadow-sm py-2 px-2 focus:border-blue-500 focus:ring-blue-500 ${
+                          touched[field] && errors[field as keyof FormErrors] ? 'border-red-500' : 'border'
+                        }`}
                         placeholder={field === 'password' ? 'Create password' : 'Confirm password'}
+                        aria-required="true"
                       />
                       <button
                         type="button"
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
                         onClick={() => togglePasswordVisibility(field)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500 transition-colors duration-300"
-                        aria-label={showPassword[field] ? 'Hide password' : 'Show password'}
+                        aria-label={`${showPassword[field] ? 'Hide' : 'Show'} ${field}`}
+                        tabIndex={-1}
                       >
                         {renderPasswordIcon(field)}
                       </button>
-                      {formik.touched[field] && formik.errors[field] && (
-                        <p className="mt-1 text-sm text-red-600">{formik.errors[field]}</p>
-                      )}
                     </div>
+                    {touched[field] && errors[field as keyof FormErrors] && (
+                      <p className="mt-1 text-sm text-red-600">{errors[field as keyof FormErrors]}</p>
+                    )}
                   </div>
                 ))}
               </div>
 
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={isLoading || !formik.isValid}
-                className={`w-full py-2.5 px-4 rounded-lg text-white font-medium transition-all duration-300 transform hover:scale-[1.02] ${
-                  isLoading || !formik.isValid
-                    ? 'bg-blue-400 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl'
-                }`}
-              >
-                {isLoading ? (
-                  <div className="flex items-center justify-center">
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Creating Account...
-                  </div>
-                ) : 'Create Account'}
-              </button>
-
-              {/* Links */}
-              <div className="text-center space-y-3 mt-6">
-                <p className="text-sm text-gray-600">
-                  Already have an account?{' '}
-                  <button 
-                    type="button"
-                    onClick={() => {
-                      onClose();
-                      onLoginClick?.();
-                    }}
-                    className="text-blue-600 hover:text-blue-800 font-medium transition-colors duration-300 hover:underline"
-                  >
-                    Sign In
-                  </button>
-                </p>
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#2C4FFF] hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                    isLoading ? 'opacity-75 cursor-not-allowed' : ''
+                  }`}
+                  aria-busy={isLoading ? "true" : "false"}
+                >
+                  {isLoading ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Processing...
+                    </>
+                  ) : 'Sign Up'}
+                </button>
               </div>
-            </form>
+            </fieldset>
+          </form>
+
+          <div className="mt-6 text-center text-sm">
+            <p className="text-gray-600">
+              Already have an account?{' '}
+              <button onClick={showLogin} className="font-medium text-[#2C4FFF] hover:text-blue-700">
+                Log in
+              </button>
+            </p>
           </div>
         </div>
       </div>
-
-      {/* OTP Modal */}
-      {showOtp && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center">
-          <div className="fixed inset-0 bg-black/75 transition-opacity duration-300"></div>
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 sm:p-8 mx-4 transform transition-all duration-300">
-            <Otp 
-              email={formik.values.email}
-              onClose={() => setShowOtp(false)}
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 };

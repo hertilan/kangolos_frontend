@@ -85,7 +85,7 @@ const Dashboard: React.FC = () => {
           transition={{ duration: 0.3 }}
           className='grid grid-cols-1 lg:grid-cols-2 gap-6'
         >
-          {chartComponents[activeTab].map((ChartComponent, index) => (
+          {chartComponents[activeTab as keyof typeof chartComponents].map((ChartComponent, index) => (
             <motion.div
               key={index}
               whileHover={{ y: -5 }}

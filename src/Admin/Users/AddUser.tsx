@@ -139,91 +139,107 @@ const AddUser: React.FC = () => {
                 </div>
                 
                 <div className='w-2/3 flex flex-row gap-2'>
-                    <div className='flex flex-col w-full'>
-                        <label htmlFor='role'>Role</label>
-                        <select
-                            name='role'
-                            value={users.role}
-                            onChange={(e) => {
-                                setUsers({ ...users, role: e.target.value })
-                            }}
-                            className='p-2 rounded-md text-gray-800 border border-gray-300 w-full bg-white focus:outline-none focus:ring-2 focus:ring-blue-500'
-                        >
-                            <option value='' disabled>Select user's role</option>
-                            <option value='Student'>Student</option>
-                            <option value='Deen'>Deen</option>
-                            <option value='HOD'>Hod</option>
-                            <option value='Supervisor'>Supervisor</option>
-                        </select>
-                    </div>
-                    <div className='flex flex-col w-full'>
-                        <label htmlFor='college'>College</label>
-                        <select
-                            name='college'
-                            value={users.college}
-                            onChange={(e) => {
-                                setUsers({ ...users, college: e.target.value })
-                            }}
-                            className='p-2 rounded-md text-gray-800 border border-gray-300 w-full bg-white focus:outline-none focus:ring-2 focus:ring-blue-500'
-                        >
-                            <option value='' disabled> Select user's college </option>
-                            <option value='CST-Nyarugenge'>CST-Nyarugenge</option>
-                            <option value='CST-Huye'>CST-Huye</option>
-                            <option value='CE-Nyagatare'>CE-Nyagatare</option>
-                            <option value='UR-Gikondo'>UR-Gikondo</option>
-                            <option value='UR-Musanze'>UR-Musanze</option>
-                            <option value='UR-Remera'>UR-Remera</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div className='w-2/3 flex flex-row gap-2'>
-                    <div className='flex flex-col w-full'>
-                        <label htmlFor='scholl'>School</label>
-                        <select
-                            name='school'
-                            value={users.school}
-                            onChange={(e) => {
-                                setUsers({ ...users, school: e.target.value })
-                            }}
-                            className='p-2 rounded-md text-gray-800 border border-gray-300 bg-white w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
-                        >
-                            <option value='' disabled> Select user's college </option>
-                            <option value='CST-Nyarugenge'>CST-Nyarugenge</option>
-                            <option value='CST-Huye'>CST-Huye</option>
-                            <option value='CE-Nyagatare'>CE-Nyagatare</option>
-                            <option value='UR-Gikondo'>UR-Gikondo</option>
-                            <option value='UR-Musanze'>UR-Musanze</option>
-                            <option value='UR-Remera'>UR-Remera</option>
-                        </select>
-                    </div>
+<div className='flex flex-col w-full'>
+  {/* Role Selection */}
+  <div className='flex flex-col w-full'>
+    <label htmlFor='role'>Role</label>
+    <select
+      id="role"
+      name='role'
+      value={users.role}
+      onChange={(e) => {
+        setUsers({ ...users, role: e.target.value });
+      }}
+      aria-required="true"
+      className='p-2 rounded-md text-gray-800 border border-gray-300 w-full bg-white focus:outline-none focus:ring-2 focus:ring-blue-500'
+    >
+      <option value='' disabled>Select user's role</option>
+      <option value='Student'>Student</option>
+      <option value='Deen'>Deen</option>
+      <option value='HOD'>HOD</option>
+      <option value='Supervisor'>Supervisor</option>
+    </select>
+  </div>
+
+  {/* College Selection */}
+  <div className='flex flex-col w-full'>
+    <label htmlFor='college'>College</label>
+    <select
+      id="college"
+      name='college'
+      value={users.college}
+      onChange={(e) => {
+        setUsers({ ...users, college: e.target.value });
+      }}
+      className='p-2 rounded-md text-gray-800 border border-gray-300 w-full bg-white focus:outline-none focus:ring-2 focus:ring-blue-500'
+    >
+      <option value='' disabled>Select user's college</option>
+      <option value='CST-Nyarugenge'>CST-Nyarugenge</option>
+      <option value='CST-Huye'>CST-Huye</option>
+      <option value='CE-Nyagatare'>CE-Nyagatare</option>
+      <option value='UR-Gikondo'>UR-Gikondo</option>
+      <option value='UR-Musanze'>UR-Musanze</option>
+      <option value='UR-Remera'>UR-Remera</option>
+    </select>
+  </div>
+</div>
+
+     <div className='w-2/3 flex flex-row gap-2'>
+       {/* School Selection (with visually hidden label) */}
+       <div className='flex flex-col w-full'>
+         <label htmlFor='school' className="sr-only">School</label>
+         <select
+           id='school'
+           name='school'
+           value={users.school}
+           onChange={(e) => {
+             setUsers({ ...users, school: e.target.value });
+           }}
+           className='p-2 rounded-md text-gray-800 border border-gray-300 bg-white w-full focus:outline-none focus:ring-2 focus:ring-blue-500'
+         >
+           <option value='' disabled>Select user's school</option>
+           <option value='CST-Nyarugenge'>CST-Nyarugenge</option>
+           <option value='CST-Huye'>CST-Huye</option>
+           <option value='CE-Nyagatare'>CE-Nyagatare</option>
+           <option value='UR-Gikondo'>UR-Gikondo</option>
+           <option value='UR-Musanze'>UR-Musanze</option>
+           <option value='UR-Remera'>UR-Remera</option>
+         </select>
+       </div>
+     </div>
+
                     <div className='flex flex-col w-full'>
                         <label htmlFor='Department'>Department</label>
-                        <select
-                            name='Department'
-                            value={users.department}
-                            onChange={(e) => {
-                                setUsers({ ...users, department: e.target.value })
-                            }}
-                            className='p-2 rounded-md text-gray-800 border border-gray-300 w-full bg-white focus:outline-none focus:ring-2 focus:ring-blue-500'
-                        >
-                            <option value='' disabled> Select user's school </option>
-                            <option value='CST-Nyarugenge'>CST-Nyarugenge</option>
-                            <option value='CST-Huye'>CST-Huye</option>
-                            <option value='CE-Nyagatare'>CE-Nyagatare</option>
-                            <option value='UR-Gikondo'>UR-Gikondo</option>
-                            <option value='UR-Musanze'>UR-Musanze</option>
-                            <option value='UR-Remera'>UR-Remera</option>
-                        </select>
+                  <label htmlFor="department-select" className="sr-only">
+                    Select user's school
+                  </label>
+                  <select
+                    id="department-select"
+                    name="Department"
+                    value={users.department}
+                    onChange={(e) => {
+                      setUsers({ ...users, department: e.target.value });
+                    }}
+                    className="p-2 rounded-md text-gray-800 border border-gray-300 w-full bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value='' disabled> Select user's school </option>
+                    <option value='CST-Nyarugenge'>CST-Nyarugenge</option>
+                    <option value='CST-Huye'>CST-Huye</option>
+                    <option value='CE-Nyagatare'>CE-Nyagatare</option>
+                    <option value='UR-Gikondo'>UR-Gikondo</option>
+                    <option value='UR-Musanze'>UR-Musanze</option>
+                    <option value='UR-Remera'>UR-Remera</option>
+                  </select>
+
                     </div>
                 </div>
                 <div className='flex flex-row gap-3'>
                     <label htmlFor='gender'>Male</label>
-                    <input type="radio" name="gender" value='Male' onChange={(e)=>{
+                    <input placeholder='h' type="radio" name="gender" value='Male' onChange={(e)=>{
                         setUsers({...users, gender: e.target.value})
                     }} />
                     <label htmlFor='gender'>Female</label>
-                    <input type="radio" name="gender" value='Female' onChange={(e)=>{
+                    <input placeholder='m' type="radio" name="gender" value='Female' onChange={(e)=>{
                         setUsers({...users, gender: e.target.value})
                     }} />
                 </div>

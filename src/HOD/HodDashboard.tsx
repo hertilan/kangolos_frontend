@@ -1,22 +1,30 @@
 import React, { useState } from 'react';
-import {FiSettings, FiLogOut, FiBook, FiMessageSquare } from 'react-icons/fi';
-import { FaChalkboardTeacher, FaUserGraduate } from 'react-icons/fa';
+import {FiLogOut, FiBook, FiMessageSquare } from 'react-icons/fi';
+import { FaUserGraduate } from 'react-icons/fa';
 import { BsCalendarCheck } from 'react-icons/bs';
 import { RiTeamFill } from 'react-icons/ri';
-import { Link } from 'react-router-dom';
 import Projects from '../Admin/Projects/Projects';
 import Users from '../Admin/Users/Users';
-import ViewStaffs from '../Admin/Users/ViewStaffs';
+// import ViewStaffs from '../Admin/Users/ViewStaffs';
 import HodOverview from './HodOverview';
 import { MdDashboard, MdSchool } from 'react-icons/md';
 import HodHeader from './HodHeader';
-import Colleges from '../Admin/Colleges/College';
 import Feedback from '../Principal/Feedback';
+// import { useAuth } from '../context/AuthContext';
+import University from '../Institutions/University/University';
+import { useNavigate } from 'react-router-dom';
+import AllTeams from '../Admin/Teams/AllTeams';
+import ReportsPage from '../SupervisorSmall/Reports';
 
 const HODDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+      const navigate=useNavigate()
+    const logout=()=>{
+        navigate('/')
+    }
+     // const { logout } = useAuth();;
 
 
   // Sample data for University of Rwanda final year projects
@@ -75,25 +83,25 @@ const HODDashboard: React.FC = () => {
           </button>
           <button
             onClick={() => {
-              setActiveTab('departments');
+              setActiveTab('institutions');
               setMobileMenuOpen(false);
             }}
-            className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'departments' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
+            className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'institutions' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
           >
             <MdSchool className="mr-3" />
-            Departments
+            Institutions
           </button>
           <button
             onClick={() => {
-              setActiveTab('students');
+              setActiveTab('users');
               setMobileMenuOpen(false);
             }}
-            className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'students' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
+            className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'users' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
           >
             <FaUserGraduate className="mr-3" />
-            Students
+            users
           </button>
-          <button
+          {/* <button
             onClick={() => {
               setActiveTab('supervisors');
               setMobileMenuOpen(false);
@@ -102,7 +110,7 @@ const HODDashboard: React.FC = () => {
           >
             <FaChalkboardTeacher className="mr-3" />
             Supervisors
-          </button>
+          </button> */}
           <button
             onClick={() => {
               setActiveTab('teams');
@@ -115,16 +123,16 @@ const HODDashboard: React.FC = () => {
           </button>
           <button
             onClick={() => {
-              setActiveTab('defenses');
+              setActiveTab('reports');
               setMobileMenuOpen(false);
             }}
-            className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'defenses' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
+            className={`flex items-center w-full px-6 py-3 text-left ${activeTab === 'reports' ? 'bg-blue-800' : 'hover:bg-blue-700'}`}
           >
             <BsCalendarCheck className="mr-3" />
-            Defenses
+            Reports
           </button>
           <div className="mt-12">
-            <button
+            {/* <button
               onClick={() => {
                 setActiveTab('settings');
                 setMobileMenuOpen(false);
@@ -133,7 +141,7 @@ const HODDashboard: React.FC = () => {
             >
               <FiSettings className="mr-3" />
               Settings
-            </button>
+            </button> */}
             <button
               onClick={() => {
                 setShowFeedbackModal(true);
@@ -143,14 +151,13 @@ const HODDashboard: React.FC = () => {
               <FiMessageSquare className="mr-3" />
               Send Feedback
             </button>
-            <Link 
-              to='/' 
+            <button
               className="flex items-center w-full px-6 py-3 text-left hover:bg-blue-700"
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={logout}
             >
               <FiLogOut className="mr-3" />
               Logout
-            </Link>
+            </button>
           </div>
         </nav>
         
@@ -181,30 +188,24 @@ const HODDashboard: React.FC = () => {
           {activeTab === 'projects' && (
             <Projects/>
           )}
-          {activeTab === 'departments' && (
-            <Colleges displayed={false} viewAddSchool={false} />
+          {activeTab === 'institutions' && (
+            <University displayed={false} viewAddSchool={false} />
           )}
 
-          {activeTab === 'students' && (
+          {activeTab === 'users' && (
             <Users/>
           )}
 
-          {activeTab === 'supervisors' && (
+          {/* {activeTab === 'supervisors' && (
             <ViewStaffs/>
-          )}
+          )} */}
 
           {activeTab === 'teams' && (
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold mb-6">Project Teams</h3>
-              <p className="text-gray-500">Project team management interface will be displayed here</p>
-            </div>
+            <AllTeams/>
           )}
 
-          {activeTab === 'defenses' && (
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold mb-6">Defense Scheduling</h3>
-              <p className="text-gray-500">Defense scheduling interface will be displayed here</p>
-            </div>
+          {activeTab === 'reports' && (
+            <ReportsPage/>
           )}
         </main>
       </div>

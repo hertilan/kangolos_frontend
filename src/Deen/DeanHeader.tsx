@@ -19,7 +19,7 @@ const DeanHeader :React.FC= () => {
           read: true 
         },
       ]);
-        const [activeTab, setActiveTab] = useState('dashboard');
+        const [activeTab] = useState('dashboard');
 
           const markAsRead = (id: number) => {
     setNotifications(notifications.map(n => 

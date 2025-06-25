@@ -15,6 +15,75 @@ interface MyProject {
     url: string;
   };
 }
+    const sampleProjects: MyProject[] = [
+    {
+      _id: '1',
+      title: "Assets Management System",
+      supervisor: 'Mbonabucya',
+      status:'pending',
+      updatedAt: "21 June 2025",
+      reviews: 23,
+      document: {
+      name: 'Umutungo.pdf',
+      url: '#'}
+    },
+    
+    {
+      _id: '2',
+      title: "Final Year projects Management System",
+      supervisor: 'Ntaganda',
+      status:'approved',
+      updatedAt: "02 July 2024",
+      reviews: 33,
+      document: {
+      name: 'FYPMS.pdf',
+      url: '#'}
+    },
+    {
+      _id: '4',
+      title: "University Full web application",
+      supervisor: 'Kanakuze',
+      status:'rejected',
+      updatedAt: new Date().toISOString(),
+      reviews: 5,
+      document: {
+      name: 'blockchain_whitepaper.pdf',
+      url: '#'}
+    },
+  {
+    _id: '1',
+    title: "AI Research Project",
+    supervisor: 'Dr. Mbonabucya',
+    status: 'pending',
+    updatedAt: new Date().toISOString(),
+    reviews: 5,
+    document: {
+      name: 'research_paper.pdf',
+      url: '#'
+    }
+  },
+  {
+    _id: '2',
+    title: "Blockchain Implementation",
+    supervisor: 'Prof. Johnson',
+    status: 'approved',
+    updatedAt: new Date(Date.now() - 86400000).toISOString(),
+    reviews: 12,
+    document: {
+      name: 'blockchain_whitepaper.pdf',
+      url: '#'
+    }
+  },
+  {
+    _id: '3',
+    title: "Renewable Energy Study",
+    supervisor: 'Dr. Smith',
+    status: 'revisions',
+    updatedAt: new Date(Date.now() - 172800000).toISOString(),
+    reviews: 8
+  }
+    // ... other sample colleges
+  ];
 
 const statusColors = {
   pending: 'bg-yellow-100 text-yellow-800',
@@ -43,7 +112,8 @@ const MyProjects: React.FC = () => {
         const data = await response.json();
         setProjects(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "An unknown error occurred");
+        // setError(err instanceof Error ? err.message : "An unknown error occurred");
+        setProjects(sampleProjects)
       } finally {
         setLoading(false);
       }

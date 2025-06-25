@@ -35,7 +35,8 @@ const Barchart :React.FC= () => {
           <Legend />
                  <Bar dataKey="value" label={{ position: 'top', fontSize: 12 }}>
                    {data.map((entry, index) => (
-                     <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+                     <Cell key={`cell-${index}`} fill={colors[index % colors.length]}
+                      />
                    ))}
                  </Bar>
           

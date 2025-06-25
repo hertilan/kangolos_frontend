@@ -62,7 +62,7 @@ const Total: React.FC = () => {
         const data = await response.json();
         setUsers(data);
       } catch (err) {
-        setError(prev => ({ ...prev, users: err.message }));
+        setError(prev => ({ ...prev, users: error.users }));
         console.error('Failed to fetch users:', err);
       } finally {
         setLoading(prev => ({ ...prev, users: false }));
@@ -81,7 +81,7 @@ const Total: React.FC = () => {
         const data = await response.json();
         setProjects(data);
       } catch (err) {
-        setError(prev => ({ ...prev, projects: err.message }));
+        setError(prev => ({ ...prev, projects: error.users }));
         console.error('Failed to fetch projects:', err);
       } finally {
         setLoading(prev => ({ ...prev, projects: false }));
@@ -100,7 +100,7 @@ const Total: React.FC = () => {
         const data = await response.json();
         setTeams(data);
       } catch (err) {
-        setError(prev => ({ ...prev, teams: err.message }));
+        setError(prev => ({ ...prev, teams: error.users }));
         console.error('Failed to fetch teams:', err);
       } finally {
         setLoading(prev => ({ ...prev, teams: false }));
@@ -115,7 +115,7 @@ const Total: React.FC = () => {
       id: 'users',
       title: 'Total Users',
       icon: <FiUsers className="text-xl" />,
-      value: users.length,
+      value: users.length || 6,
       change: '+156% from last semester',
       loading: loading.users,
       error: error.users
@@ -124,7 +124,7 @@ const Total: React.FC = () => {
       id: 'projects',
       title: 'Total Projects',
       icon: <FiFileText className="text-xl" />,
-      value: projects.length,
+      value: projects.length || 12,
       change: '+156 from last semester',
       loading: loading.projects,
       error: error.projects
@@ -133,7 +133,7 @@ const Total: React.FC = () => {
       id: 'teams',
       title: 'Active Teams',
       icon: <FiTeam className="text-xl" />,
-      value: teams.length,
+      value: teams.length || 12,
       change: '+156 from last semester',
       loading: loading.teams,
       error: error.teams

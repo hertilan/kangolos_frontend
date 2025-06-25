@@ -99,6 +99,7 @@ const RejectedProjects :React.FC= () => {
 
   return (
     <div className="w-full p-6 space-y-6 bg-white rounded-lg shadow-sm">
+      {error}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center space-x-4">
           <h1 className="text-2xl font-bold text-gray-800">Rejected Projects</h1>

@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
-import { BiUser, BiSearch } from 'react-icons/bi';
-import { FaPlus } from 'react-icons/fa';
+import { BiSearch } from 'react-icons/bi';
+// import { FaPlus } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
 import { motion, AnimatePresence } from 'framer-motion';
 import ViewStudents from './ViewStudents';
-import AllUsers from './AllUsers';
 import ViewStaffs from './ViewStaffs';
+import AllUsers from './AllUsers';
 import AddUser from './AddUser';
+// import AllUsers from './AllUsers';
+// import ViewStaffs from './ViewStaffs';
+// import AddUser from './AddUser';
+// import A from './AddUser';
 
 const Users: React.FC = () => {
   const [search, setSearch] = useState<string>('');
@@ -34,7 +38,7 @@ const Users: React.FC = () => {
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800">User Management</h1>
         
         {/* Add User Button - Mobile First */}
-        <motion.button
+        {/* <motion.button
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.98 }}
           onClick={toggleAddUser}
@@ -42,7 +46,7 @@ const Users: React.FC = () => {
         >
           <FaPlus className="mr-2" />
           <span className="whitespace-nowrap">Add New User</span>
-        </motion.button>
+        </motion.button> */}
       </div>
 
       {/* Add User Modal */}
@@ -150,11 +154,11 @@ const Users: React.FC = () => {
       {/* Content Section */}
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         {activePage === 'students' ? (
-          <ViewStudents search={search} role={role} department={department} />
+          <ViewStudents/>
         ) : activePage === 'all' ? (
-          <AllUsers search={search} role={role} department={department} />
+          <AllUsers/>
         ) : (
-          <ViewStaffs search={search} role={role} department={department} />
+          <ViewStaffs/>
         )}
       </div>
     </div>

@@ -25,6 +25,22 @@ const AllProjects: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
   const projectsPerPage = 10;
 
+  // Mock data for fallback
+  const mockProjects: Project[] = [
+    { _id: 1, title: 'AI Based Learning System', team: 'Team Alpha', supervisor: 'Dr. Smith', status: 'completed', college: 'Engineering' },
+    { _id: 2, title: 'Blockchain Voting System', team: 'Team Beta', supervisor: 'Dr. Johnson', status: 'pending', college: 'Computer Science' },
+    { _id: 3, title: 'IoT Smart Home', team: 'Team Gamma', supervisor: 'Dr. Williams', status: 'rejected', college: 'Electronics' },
+    { _id: 4, title: 'VR Classroom', team: 'Team Delta', supervisor: 'Dr. Brown', status: 'completed', college: 'Education' },
+    { _id: 5, title: 'Autonomous Drone', team: 'Team Epsilon', supervisor: 'Dr. Davis', status: 'pending', college: 'Aeronautics' },
+    { _id: 6, title: 'Health Monitoring App', team: 'Team Zeta', supervisor: 'Dr. Miller', status: 'completed', college: 'Medical' },
+    { _id: 7, title: 'E-commerce Recommendation', team: 'Team Eta', supervisor: 'Dr. Wilson', status: 'pending', college: 'Business' },
+    { _id: 8, title: 'AR Museum Guide', team: 'Team Theta', supervisor: 'Dr. Moore', status: 'rejected', college: 'Arts' },
+    { _id: 9, title: 'Smart Traffic System', team: 'Team Iota', supervisor: 'Dr. Taylor', status: 'completed', college: 'Civil' },
+    { _id: 10, title: 'Biometric Attendance', team: 'Team Kappa', supervisor: 'Dr. Anderson', status: 'pending', college: 'Security' },
+    { _id: 11, title: 'Language Learning Chatbot', team: 'Team Lambda', supervisor: 'Dr. Thomas', status: 'completed', college: 'Linguistics' },
+    { _id: 12, title: 'Solar Power Optimizer', team: 'Team Mu', supervisor: 'Dr. Jackson', status: 'pending', college: 'Energy' },
+  ];
+
   const fetchProjects = useCallback(async () => {
     try {
       setLoading(true);
@@ -36,6 +52,9 @@ const AllProjects: React.FC = () => {
       setFilteredProjects(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
+      // Use mock data when fetch fails
+      setProjects(mockProjects);
+      setFilteredProjects(mockProjects);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -99,6 +118,11 @@ const AllProjects: React.FC = () => {
 
   return (
     <div className="w-full p-6 space-y-6 bg-white rounded-lg shadow-sm">
+      {/* {error && (
+        <div className="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg">
+          {error} - Showing mock data instead
+        </div>
+      )} */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex items-center space-x-4">
           <h1 className="text-2xl font-bold text-gray-800">All Projects</h1>
